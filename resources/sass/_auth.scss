@@ -1,0 +1,17 @@
+.min-h-full {
+    height: 100% !important;
+}
+
+.auth-bg {
+    background-color: #f3f4f6;
+}
+
+.auth-container{
+    width: 33%;
+}
+
+@media (max-width:768px) {
+    .auth-container{
+        width: 100%;
+    }
+}

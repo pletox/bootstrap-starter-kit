@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import 'bootstrap/scss/bootstrap';
+@import "bootstrap-icons/font/bootstrap-icons.css";
+@import "toastr";
+
+@import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
+@import "datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css";
+
+@import "select2/dist/css/select2.css";
+
+@import "jquery-ui/dist/themes/base/jquery-ui.min.css";
+@import "flatpickr/dist/flatpickr.min.css";
+
+@import "base";
+@import "auth";
+
+table.dataTable thead>tr>th {
+    border-top: 1px solid  var(--bs-border-color);
+}
+
+table.dataTable {
+    border-left: 1px solid  var(--bs-border-color);
+    border-right: 1px solid  var(--bs-border-color);
+}
+
+table.dataTable thead>tr>th, table.dataTable tbody>tr>td  {
+    border-right: 1px solid var(--bs-border-color);
+}
+
+table.dataTable thead>tr>th {
+    background-color: var(--bs-table-head) !important;
+}
+
