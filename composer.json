@@ -1,5 +1,5 @@
 {
-    "name": "trumpets-codes/bootstrap-starter-kit",
+    "name": "pletox/bootstrap-starter-kit",
     "type": "project",
     "description": "The skeleton application for the Laravel framework using bootstrap 5 and fortify.",
     "keywords": ["laravel", "starter", "kit"],
