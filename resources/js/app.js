@@ -16,7 +16,11 @@ import 'datatables.net-responsive-bs5';
 import "./easyAjax.js"
 import "./easyDelete.js"
 
+import {createIcons, icons} from "lucide";
+
 document.addEventListener('livewire:navigated', function () {
+    createIcons({icons});
+
     $('.form-select').each(function (i, element) {
         $(element).select2({
             dropdownParent: $(element).parent(),

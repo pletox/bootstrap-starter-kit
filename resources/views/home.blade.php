@@ -5,11 +5,11 @@
 @section('content')
     <div class="container-fluid">
 
-        <div class="mb-3">
+        <div class="mb-3 tw:bg-red-500">
             <h4>Admin Dashboard</h4>
         </div>
 
-        <div class="row mb-4">
+        <div class="row  mb-4">
             <div class="col-12 col-md-6 d-flex">
                 <div class="card flex-fill shadow-sm illustration">
                     <div class="card-body p-0 d-flex flex-fill">
@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="col-12 col-md-6 d-flex">
-                <div class="card flex-fill shadow-sm">
+                <div class="card flex-fill shadow-sm ">
                     <div class="card-body py-4">
                         <div class="d-flex align-items-start">
                             <div class="flex-grow-1">

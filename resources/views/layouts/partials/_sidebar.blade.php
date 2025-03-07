@@ -2,7 +2,7 @@
     <!-- Content For Sidebar -->
     <div class="h-100">
         <div class="sidebar-logo ms-2">
-            <a href="#">HedgePOS</a>
+            <a href="#">Bootstrap Starter Kit</a>
         </div>
         <ul class="sidebar-nav">
             <li class="sidebar-item">
@@ -28,10 +28,10 @@
                 </a>
                 <ul id="posts" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                     <li class="sidebar-item">
-                        <a href="{{ route('sales.index') }}" wire:navigate class="sidebar-link">All Sales</a>
+                        <a href="#" wire:navigate class="sidebar-link">All Sales</a>
                     </li>
                     <li class="sidebar-item">
-                        <a href="{{ route('sales.create') }}#" class="sidebar-link" wire:navigate>Add Sale</a>
+                        <a href="#" class="sidebar-link" wire:navigate>Add Sale</a>
                     </li>
 
                 </ul>

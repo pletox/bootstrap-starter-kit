@@ -33,9 +33,5 @@ Route::group(['middleware' => 'auth:web'], function () {
     Route::delete('customers/{customer}', [CustomersController::class, 'destroy'])->name('customers.delete');
     Route::get('customers/{customer}/view', [CustomersController::class, 'show'])->name('customers.show');
 
-    Route::get('sales', [SalesController::class, 'index'])->name('sales.index');
-    Route::get('sales/create', [SalesController::class, 'create'])->name('sales.create');
-    Route::post('sales', [SalesController::class, 'store'])->name('sales.store');
-    Route::delete('sales/{sale}', [SalesController::class, 'destroy'])->name('sales.delete');
 
 });
