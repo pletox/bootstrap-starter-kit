@@ -73,8 +73,7 @@
                         </div>
 
                         <div class="modal-footer bg-light d-flex justify-content-end py-1">
-                            <button type="submit" class="btn btn-dark" id="save">Save Customer
-                            </button>
+                           <x-button type="submit" color="dark" id="save">Create Customer</x-button>
                         </div>
                     </form>
                 </div>
@@ -104,6 +103,7 @@
                 $('#customerForm').trigger("reset");
                 $('#modelHeading').html("Create New Customer");
                 $('#customerModal').modal('show');
+                $('#save .button-text').text('Create Customer');
             });
 
             $('#customerForm').on('submit', function (e) {
@@ -135,6 +135,7 @@
                 axios.get(route('customers.edit', {customer: id})).then((response) => {
                     $('#modelHeading').html("Edit Customer");
                     $('#customerModal').modal('show');
+                    $('#save .button-text').text('Update Customer');
 
                     var form = $('#customerForm'); // Adjust the form ID as needed
 

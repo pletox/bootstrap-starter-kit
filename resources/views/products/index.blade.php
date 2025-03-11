@@ -40,43 +40,26 @@
                     <form id="productForm" class="form-horizontal">
                         <div class="modal-body">
                             <input type="hidden" name="id" id="id">
-                            <div class="form-group mb-3">
-                                <label for="name" class="form-label">Name</label>
-                                <div>
-                                    <input type="text" class="form-control" id="name" name="name"
-                                           placeholder="Enter Name"
-                                           value="">
-                                    <div class="invalid-feedback">Invalid feedback</div>
-                                </div>
-                            </div>
 
-                            <div class="form-group mb-3">
-                                <label for="name" class="form-label">Description</label>
-                                <div>
-                                <textarea type="text" class="form-control" id="description" name="description"
-                                          placeholder="Enter Description"></textarea>
-                                    <div class="invalid-feedback">Invalid feedback</div>
-                                </div>
-                            </div>
 
-                            <div class="form-group mb-3">
-                                <label for="name" class="form-label">Category</label>
-                                <div>
-                                    <select class="form-control form-select" id="description" name="category_id"
-                                            placeholder="Select Category">
-                                        @foreach($categories as $category)
-                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div class="invalid-feedback">Invalid feedback</div>
-                                </div>
-                            </div>
+                            <x-input name="name" id="name" label="Name" placeholder="Enter Name"/>
+
+                            <x-textarea id="description" name="description" label="Enter Description"
+                                        placeholder="Enter Description"/>
+
+
+                            <x-select id="category_id" name="category_id" label="Select Category"
+                                      placeholder="Select Category">
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </x-select>
 
 
                         </div>
                         <div class="modal-footer bg-light d-flex justify-content-end py-1">
-                            <button type="submit" class="btn btn-dark" id="save">Save Product
-                            </button>
+                            <x-button type="submit" color="dark" id="save">Save Product
+                            </x-button>
                         </div>
                     </form>
                 </div>
@@ -174,8 +157,8 @@
                 var id = $(this).data('id');
                 var status = $(this).data('status');
 
-                axios.post(route('products.toggleStatus', {product:id}), {status}).then((response) => {
-                    if(status) {
+                axios.post(route('products.toggleStatus', {product: id}), {status}).then((response) => {
+                    if (status) {
                         $(this).removeClass('text-bg-danger');
                         $(this).addClass('text-bg-success');
                         $(this).html('Active');

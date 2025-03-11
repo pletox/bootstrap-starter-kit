@@ -21,12 +21,6 @@ import {createIcons, icons} from "lucide";
 document.addEventListener('livewire:navigated', function () {
     createIcons({icons});
 
-    $('.form-select').each(function (i, element) {
-        $(element).select2({
-            dropdownParent: $(element).parent(),
-            theme: 'bootstrap-5'
-        })
-    });
 
     $('.form-datepicker').each(function (i, element) {
         $(element).flatpickr({

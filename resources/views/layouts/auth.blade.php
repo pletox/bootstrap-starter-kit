@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en" data-bs-theme="light" class="h-100">
 <head>
     <meta charset="UTF-8">
@@ -27,6 +27,7 @@
         @yield('content')
     </div>
 </div>
-
+@stack('js')
+@livewireScripts
 
 </body>

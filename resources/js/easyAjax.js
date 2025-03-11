@@ -61,6 +61,10 @@ $.easyAjax = (options) => {
         if (opt.blockUI !== false) {
             $(opt.container).removeClass('disabled-block');
         }
+
+        window.dispatchEvent(new CustomEvent('button-loading', {
+            detail: {id: $(opt.buttonSelector).attr('id'), state: false}
+        }));
     }).catch((error) => {
             console.log('error...');
             //emit failed event etc...
@@ -114,6 +118,10 @@ $.easyAjax = (options) => {
             if (opt.blockUI !== false) {
                 $(opt.container).removeClass('disabled-block');
             }
+
+            window.dispatchEvent(new CustomEvent('button-loading', {
+                detail: {id: $(opt.buttonSelector).attr('id'), state: false}
+            }));
         }
     );
 }
