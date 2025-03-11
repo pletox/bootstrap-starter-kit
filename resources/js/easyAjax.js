@@ -68,7 +68,9 @@ $.easyAjax = (options) => {
     }).catch((error) => {
             console.log('error...');
             //emit failed event etc...
+
             var response = error.response;
+
 
             if (response.data.errors !== undefined) {
                 var keys = Object.keys(response.data.errors);
@@ -108,6 +110,8 @@ $.easyAjax = (options) => {
                     element.focus();
                 }
             } else {
+                showErrorModal(response.data || "An unexpected error occurred!");
+
                 toastr.error('Something went wrong! Please reload', '', {timeOut: 3000})
             }
 
@@ -124,4 +128,63 @@ $.easyAjax = (options) => {
             }));
         }
     );
+}
+
+// Function to show a Livewire-style error popup
+// Function to show a Bootstrap error modal
+function showErrorModal(errorResponse) {
+    let modal = $('#error-modal');
+
+    if (modal.length === 0) {
+        $('body').append(`
+            <div class="modal  fade" id="error-modal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content ">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title">Error</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="error-modal-message" class="text-danger"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        `);
+        modal = $('#error-modal');
+    }
+
+    let messageContainer = $('#error-modal-message');
+
+    // Evaluate the error response
+    if (typeof errorResponse === 'string') {
+        // If the response is plain text
+        messageContainer.html(errorResponse);
+    } else if (typeof errorResponse === 'object') {
+        // If the response is JSON
+        let formattedMessage = "";
+
+        if (errorResponse.message) {
+            formattedMessage += `<strong>${errorResponse.message}</strong><br>`;
+        }
+
+        if (errorResponse.errors) {
+            formattedMessage += "<ul>";
+            Object.values(errorResponse.errors).forEach(messages => {
+                messages.forEach(msg => {
+                    formattedMessage += `<li>${msg}</li>`;
+                });
+            });
+            formattedMessage += "</ul>";
+        }
+
+        messageContainer.html(formattedMessage);
+    } else {
+        // If unknown type, just display as text
+        messageContainer.text("An unexpected error occurred!");
+    }
+
+    let bootstrapModal = new bootstrap.Modal(modal[0]);
+    bootstrapModal.show();
 }

@@ -8,11 +8,9 @@
 
                 <x-input label="E-mail Address" name="email" id="email"/>
 
-
                 <x-input type="password" label="Password" name="password" id="password"/>
 
                 <x-checkbox name="remember_me" id="remember_me" label="Remember Me"/>
-
 
                 <div class="d-flex align-items-center justify-content-end gap-3">
                     <a href="{{ route('password.request') }}" class="text-decoration-underline text-muted">Forgot your

@@ -31,40 +31,36 @@
         </div>
 
 
-        <div class="modal fade" id="productModal" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="modelHeading"></h4>
-                    </div>
-                    <form id="productForm" class="form-horizontal">
-                        <div class="modal-body">
-                            <input type="hidden" name="id" id="id">
+        <x-modal id="productModal" title="Create Product">
+            <form id="productForm" class="form-horizontal">
+
+                <input type="hidden" name="id" id="id">
 
 
-                            <x-input name="name" id="name" label="Name" placeholder="Enter Name"/>
+                <x-input name="name" id="name" label="Name" placeholder="Enter Name"/>
 
-                            <x-textarea id="description" name="description" label="Enter Description"
-                                        placeholder="Enter Description"/>
-
-
-                            <x-select id="category_id" name="category_id" label="Select Category"
-                                      placeholder="Select Category">
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
-                            </x-select>
+                <x-textarea id="description" name="description" label="Enter Description"
+                            placeholder="Enter Description"/>
 
 
-                        </div>
-                        <div class="modal-footer bg-light d-flex justify-content-end py-1">
-                            <x-button type="submit" color="dark" id="save">Save Product
-                            </x-button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+                <x-select id="category_id" name="category_id" label="Select Category"
+                          placeholder="Select Category">
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    @endforeach
+                </x-select>
+
+                <x-datepicker name="date" id="date" label="Select Date" placeholder="Select Date" range/>
+
+                <x-datepicker name="date2" id="date2" label="Select Date 2" placeholder="Select Date 2" timeOnly/>
+            </form>
+
+            <x-slot name="footer">
+                <x-button type="submit" form="productForm" color="dark" id="save">Save Product
+                </x-button>
+            </x-slot>
+        </x-modal>
+
     </div>
 
 @endsection
@@ -89,7 +85,7 @@
             $('#add-product-btn').click(function () {
                 $('#id').val('');
                 $('#productForm').trigger("reset");
-                $('#modelHeading').html("Create New Product");
+                $('#productModal .model-title').html("Create New Product");
                 $('.form-select').trigger('change');
                 $('#productModal').modal('show');
             });
@@ -122,7 +118,7 @@
                 e.preventDefault();
                 var id = $(this).data('id');
                 axios.get(route('products.edit', {product: id})).then((response) => {
-                    $('#modelHeading').html("Edit Product");
+                    $('#productModal .model-title').html("Edit Product");
                     $('#productModal').modal('show');
 
                     var form = $('#productForm'); // Adjust the form ID as needed

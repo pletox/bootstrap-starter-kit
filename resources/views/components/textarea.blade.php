@@ -31,9 +31,7 @@
         {{ $attributes }}  {{-- Enables wire:model and x-model --}}
     ></textarea>
 
-    @error($name)
-    <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
+    <div class="invalid-feedback"> @error($name) {{ $message }}   @enderror</div>
 </div>
 
 @if ($autoHeight)

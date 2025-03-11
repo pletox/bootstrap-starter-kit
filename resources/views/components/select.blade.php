@@ -19,7 +19,7 @@
      $wireModel = collect($attributes->whereStartsWith('wire:model'))->first();
 @endphp
 
-<div class="w-100">
+<div class="form-group mb-3 w-100">
     @if ($label)
         <label for="{{ $id }}" class="form-label">{{ $label }}</label>
     @endif
@@ -35,9 +35,9 @@
         {{ $slot }}
     </select>
 
-    @error($name)
-    <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
+
+    <div class="invalid-feedback"> @error($name) {{ $message }}   @enderror</div>
+
 </div>
 
 <script>
@@ -59,7 +59,7 @@
             @endif
 
             // Update Alpine.js model if x-model is used
-            select.get(0).dispatchEvent(new Event('input', { bubbles: true }));
+            select.get(0).dispatchEvent(new Event('input', {bubbles: true}));
         });
     });
 </script>

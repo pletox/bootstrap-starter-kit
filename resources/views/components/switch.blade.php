@@ -13,7 +13,7 @@
     };
 @endphp
 
-<div class="form-check form-switch {{ $sizeClass }}">
+<div class="form-group form-check form-switch {{ $sizeClass }}">
     <input
         id="{{ $name }}"
         type="checkbox"
@@ -26,9 +26,7 @@
         {{ $label }}
     </label>
 
-    @error($name)
-    <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
+    <div class="invalid-feedback"> @error($name) {{ $message }}   @enderror</div>
 </div>
 
 <style>

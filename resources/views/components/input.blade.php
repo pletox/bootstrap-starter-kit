@@ -46,11 +46,7 @@
             </button>
         @endif
 
-        @error($name)
-        <div class="invalid-feedback d-block">{{ $message }}</div>
-        @enderror
-
-        <div class="invalid-feedback"></div>
+        <div class="invalid-feedback"> @error($name) {{ $message }}   @enderror</div>
 
     </div>
 
