@@ -34,31 +34,35 @@
         <x-modal id="productModal" title="Create Product">
             <form id="productForm" class="form-horizontal">
 
-                <input type="hidden" name="id" id="id">
+                <x-modal.body>
+                    <input type="hidden" name="id" id="id">
 
 
-                <x-input name="name" id="name" label="Name" placeholder="Enter Name"/>
+                    <x-input name="name" id="name" label="Name" placeholder="Enter Name"/>
 
-                <x-textarea id="description" name="description" label="Enter Description"
-                            placeholder="Enter Description"/>
+                    <x-richtext mention id="description" name="description" label="Enter Description"
+                                placeholder="Enter Description"/>
 
 
-                <x-select id="category_id" name="category_id" label="Select Category"
-                          placeholder="Select Category">
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                    @endforeach
-                </x-select>
+                    <x-select id="category_id" name="category_id" label="Select Category"
+                              placeholder="Select Category">
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </x-select>
 
-                <x-datepicker name="date" id="date" label="Select Date" placeholder="Select Date" range/>
+                    <x-datepicker name="date" id="date" label="Select Date" placeholder="Select Date" range/>
 
-                <x-datepicker name="date2" id="date2" label="Select Date 2" placeholder="Select Date 2" timeOnly/>
+                    <x-datepicker name="date2" id="date2" label="Select Date 2" placeholder="Select Date 2" timeOnly/>
+
+                </x-modal.body>
+
+                <x-modal.footer>
+                    <x-button color="secondary" data-bs-dismiss="modal">Cancel</x-button>
+                    <x-button color="dark" type="submit">Submit</x-button>
+                </x-modal.footer>
             </form>
 
-            <x-slot name="footer">
-                <x-button type="submit" form="productForm" color="dark" id="save">Save Product
-                </x-button>
-            </x-slot>
         </x-modal>
 
     </div>

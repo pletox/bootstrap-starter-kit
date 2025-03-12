@@ -4,8 +4,9 @@ use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CustomersController;
 use App\Http\Controllers\Products\ProductsController;
 use App\Http\Controllers\Products\ProductStatusToggleController;
-use App\Http\Controllers\SalesController;
 use Illuminate\Support\Facades\Route;
+
+include '_utilities.php';
 
 Route::redirect('/', 'home');
 

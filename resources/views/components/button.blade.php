@@ -34,9 +34,14 @@
         id="{{ $buttonId }}"
         x-data="{ loading: @json($loading) }"
         x-init="
-            let form = $el.closest('form');
+          let form = $el.closest('form');
             if (form) {
-                form.addEventListener('submit', () => loading = true);
+                form.addEventListener('submit', (event) => {
+                    let submitButton = event.submitter; // Gets the clicked submit button
+                    if (submitButton === $el) {
+                        loading = true; // Apply loading only to this button
+                    }
+                });
             }
 
             // Detect AJAX request completion (for jQuery-based AJAX forms)

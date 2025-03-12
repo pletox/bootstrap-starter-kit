@@ -24,17 +24,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <!-- Modal Body -->
-            <div class="modal-body">
-                {{ $slot }}
-            </div>
 
-            <!-- Modal Footer (Optional) -->
-            @isset($footer)
-                <div class="modal-footer">
-                    {{ $footer }}
-                </div>
-            @endisset
+            <!-- Slot for modal body and footer -->
+            {{ $slot }}
+
         </div>
     </div>
 </div>

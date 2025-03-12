@@ -20,3 +20,14 @@ import flatpickr from "flatpickr";
 
 window.flatpickr = flatpickr;
 
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css'; // Quill styles
+import "quill-mention/autoregister";
+
+// Optionally import the mention styles
+import 'quill-mention/dist/quill.mention.min.css';
+
+
+window.Quill = Quill;
+
+

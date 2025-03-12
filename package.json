@@ -15,6 +15,7 @@
     "dependencies": {
         "@popperjs/core": "^2.11.8",
         "@tailwindcss/vite": "^4.0.11",
+        "@types/quill": "^2.0.14",
         "bootstrap": "^5.3.3",
         "bootstrap-icons": "^1.11.3",
         "datatables.net-bs5": "^2.1.7",
@@ -24,9 +25,12 @@
         "jquery": "^3.7.1",
         "jquery-ui": "^1.14.0",
         "lucide": "^0.477.0",
+        "quill": "^2.0.3",
+        "quill-mention": "^6.0.2",
         "sass": "~1.70.0",
         "select2": "^4.1.0-rc.0",
         "sweetalert2": "^11.14.1",
+        "tinymce": "^7.7.1",
         "toastr": "^2.1.4"
     }
 }
