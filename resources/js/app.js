@@ -65,3 +65,4 @@ document.addEventListener('livewire:navigated', function () {
         toggleRootClass();
     }
 });
+

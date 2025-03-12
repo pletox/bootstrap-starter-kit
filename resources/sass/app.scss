@@ -13,6 +13,9 @@
 @import "base";
 @import "auth";
 
+
+//**** Datatables ****//
+
 table.dataTable thead > tr > th {
     border-top: 1px solid var(--bs-border-color);
 }
@@ -29,4 +32,5 @@ table.dataTable thead > tr > th, table.dataTable tbody > tr > td {
 table.dataTable thead > tr > th {
     background-color: var(--bs-table-head) !important;
 }
+
 

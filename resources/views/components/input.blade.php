@@ -46,7 +46,7 @@
             </button>
         @endif
 
-        <div class="invalid-feedback"> @error($name) {{ $message }}   @enderror</div>
+        <div class="invalid-feedback">@error($name) {{ $message }}   @enderror</div>
 
     </div>
 
@@ -66,7 +66,6 @@
 
     /* Fixes validation message positioning */
     .input-group .invalid-feedback {
-        display: block;
         width: 100%;
     }
 

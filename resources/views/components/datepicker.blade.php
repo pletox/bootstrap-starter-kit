@@ -46,23 +46,25 @@
     document.addEventListener('livewire:navigated', function () {
         let dateInput = document.getElementById('{{ $id }}');
 
-        let flatpickrInstance = flatpickr(dateInput, {
-            mode: '{{ $range ? "range" : "single" }}',
-            dateFormat: '{{ $timeOnly ? "H:i" : $format }}',
-            enableTime: {{ $enableTime || $timeOnly ? 'true' : 'false' }},
-            noCalendar: {{ $timeOnly ? 'true' : 'false' }},
-            allowInput: false,
-            onChange: function(selectedDates, dateStr) {
-                // Update Livewire model only if wire:model is present
-                @if ($wireModel)
-                if (window.Livewire) {
-                    Livewire.find('{{ $wireModel }}')?.set('{{ $wireModel }}', dateStr);
-                }
-                @endif
+        if (dateInput) {
+            let flatpickrInstance = flatpickr(dateInput, {
+                mode: '{{ $range ? "range" : "single" }}',
+                dateFormat: '{{ $timeOnly ? "H:i" : $format }}',
+                enableTime: {{ $enableTime || $timeOnly ? 'true' : 'false' }},
+                noCalendar: {{ $timeOnly ? 'true' : 'false' }},
+                allowInput: false,
+                onChange: function (selectedDates, dateStr) {
+                    // Update Livewire model only if wire:model is present
+                    @if ($wireModel)
+                    if (window.Livewire) {
+                        Livewire.find('{{ $wireModel }}')?.set('{{ $wireModel }}', dateStr);
+                    }
+                    @endif
 
-                // Update Alpine.js model if x-model is used
-                dateInput.dispatchEvent(new Event('input', { bubbles: true }));
-            }
-        });
+                    // Update Alpine.js model if x-model is used
+                    dateInput.dispatchEvent(new Event('input', {bubbles: true}));
+                }
+            });
+        }
     });
 </script>

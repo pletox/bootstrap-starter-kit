@@ -32,7 +32,7 @@
 
 
         <x-modal id="productModal" title="Create Product">
-            <form id="productForm" class="form-horizontal">
+            <x-form id="productForm" class="form-horizontal">
 
                 <x-modal.body>
                     <input type="hidden" name="id" id="id">
@@ -40,7 +40,7 @@
 
                     <x-input name="name" id="name" label="Name" placeholder="Enter Name"/>
 
-                    <x-richtext mention id="description" name="description" label="Enter Description"
+                    <x-textarea id="description" name="description" label="Enter Description"
                                 placeholder="Enter Description"/>
 
 
@@ -61,7 +61,7 @@
                     <x-button color="secondary" data-bs-dismiss="modal">Cancel</x-button>
                     <x-button color="dark" type="submit">Submit</x-button>
                 </x-modal.footer>
-            </form>
+            </x-form>
 
         </x-modal>
 
@@ -72,7 +72,13 @@
 @push('js')
     <script type="module">
         $(function () {
-            var table = $('#products-table').DataTable({
+            let table = $('#products-table');
+
+            if ($.fn.DataTable.isDataTable(table)) {
+                table.DataTable().destroy(); // Destroy existing instance
+            }
+
+            table = $('#products-table').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('products.index') }}",
@@ -110,7 +116,7 @@
                     onComplete: () => {
                         $('#productModal').modal('hide');
                         $('#modelHeading').html("Create New Product");
-                        $('#productForm').trigger("reset");
+                        $('#productForm')[0].reset();
 
                         table.draw(false);
                     }
@@ -122,6 +128,7 @@
                 e.preventDefault();
                 var id = $(this).data('id');
                 axios.get(route('products.edit', {product: id})).then((response) => {
+                    $('#productForm')[0].reset();
                     $('#productModal .model-title').html("Edit Product");
                     $('#productModal').modal('show');
 
