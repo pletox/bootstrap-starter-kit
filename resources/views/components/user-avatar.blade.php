@@ -29,10 +29,10 @@
     $textClass = $textSize ?? ($sizeClasses[$size] ?? '');
 @endphp
 
-<div class="d-flex align-items-center justify-content-center overflow-hidden bg-{{ $color }} text-white {{ $sizeClasses[$size] ?? '' }} {{ $shapeClasses[$shape] ?? '' }} {{ $class }}">
+<div class="d-flex align-items-center justify-content-center overflow-hidden bg-{{ $color }} text-black {{ $sizeClasses[$size] ?? '' }} {{ $shapeClasses[$shape] ?? '' }} {{ $class }}">
     @if ($avatarUrl)
         <img src="{{ $avatarUrl }}" alt="{{ $user->name }}" class="w-100 h-100 object-fit-cover">
     @else
-        <span class="fw-bold {{ $textClass }}">{{ $initials }}</span>
+        <span class=" {{ $textClass }}">{{ $initials }}</span>
     @endif
 </div>

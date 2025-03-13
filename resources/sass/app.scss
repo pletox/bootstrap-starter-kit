@@ -50,5 +50,16 @@ a.sidebar-link {
 .sidebar-logo:hover{
     border-radius: 7px;
     background-color: var(--bs-sidebar-hover);
+}
 
+//**** Header ****//
+
+#sidebar-toggle:hover{
+    background-color: var(--bs-sidebar-hover);
+    border-radius: 7px;
+}
+
+.theme-toggle a:hover{
+    background-color: var(--bs-sidebar-hover);
+    border-radius: 7px;
 }

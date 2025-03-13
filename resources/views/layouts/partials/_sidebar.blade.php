@@ -1,12 +1,12 @@
 <aside id="sidebar" class="js-sidebar ">
     <!-- Content For Sidebar -->
     <div class="h-100">
-        <div class="sidebar-logo ms-2 text-truncate p-2 my-2 mx-3 ms-3">
+        <div class="sidebar-logo text-truncate p-2 my-2 mx-3 ms-3">
             <a href="#" class="text-sm d-flex align-items-center gap-2">
                 <div class="d-flex align-items-center justify-content-center overflow-hidden rounded w-8 h-8 bg-black">
                     <x-lucide-building class="w-5 h-5 text-white" />
                 </div>
-                Bootstrap Starter Kit
+                <span class="text-truncate">Bootstrap Starter Kit</span>
             </a>
         </div>
         <p class="mx-3 mb-2 text-xs text-gray-500">Platform</p>
