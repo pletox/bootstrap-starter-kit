@@ -12,9 +12,9 @@ Route::redirect('/', 'home');
 
 Route::get('/home', function () {
     return view('home');
-})->name('home')->middleware('auth:web');
+})->name('home')->middleware(['auth:web', 'verified']);
 
-Route::group(['middleware' => 'auth:web'], function () {
+Route::group(['middleware' => ['auth:web', 'verified']], function () {
 
     Route::get('categories', [CategoriesController::class, 'index'])->name('categories.index');
     Route::post('categories', [CategoriesController::class, 'storeOrUpdate'])->name('categories.storeOrUpdate');
