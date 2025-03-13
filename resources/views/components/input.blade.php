@@ -20,7 +20,7 @@
     $id = $id ?? $name;
 @endphp
 
-<div class="form-group mb-3" @if($type === 'password') x-data="{ show: false }" @endif>
+<div class="form-group" @if($type === 'password') x-data="{ show: false }" @endif>
     @if($label)
         <label for="{{ $name }}" class="form-label">{{ $label }}</label>
     @endif

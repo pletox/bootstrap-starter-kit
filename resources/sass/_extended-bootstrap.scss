@@ -1,0 +1,155 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+
+// Custom Width & Height Scale (Matching Tailwind)
+$custom-sizes: (
+    1: 0.25rem,   // 4px
+    2: 0.5rem,    // 8px
+    3: 0.75rem,   // 12px
+    4: 1rem,      // 16px
+    5: 1.25rem,   // 20px
+    6: 1.5rem,    // 24px
+    8: 2rem,      // 32px
+    10: 2.5rem,   // 40px
+    12: 3rem,     // 48px
+    16: 4rem,     // 64px
+    20: 5rem,     // 80px
+    24: 6rem,     // 96px
+    32: 8rem,     // 128px
+    40: 10rem,    // 160px
+    48: 12rem,    // 192px
+    56: 14rem,    // 224px
+    64: 16rem,    // 256px
+    72: 18rem,    // 288px
+    80: 20rem,    // 320px
+    96: 24rem,    // 384px
+    full: 100%,
+    screen: 100vw
+);
+
+// Merge into Bootstrap Utilities
+$utilities: map-merge(
+        $utilities,
+        (
+            "width": (
+                property: width,
+                class: w,
+                values: $custom-sizes
+            ),
+            "height": (
+                property: height,
+                class: h,
+                values: $custom-sizes
+            )
+        )
+);
+
+
+// ✅ Import Full Tailwind Color Palette
+$tailwind-colors: (
+    "slate-50": #f8fafc, "slate-100": #f1f5f9, "slate-200": #e2e8f0, "slate-300": #cbd5e1,
+    "slate-400": #94a3b8, "slate-500": #64748b, "slate-600": #475569, "slate-700": #334155,
+    "slate-800": #1e293b, "slate-900": #0f172a, "gray-50": #f9fafb, "gray-100": #f3f4f6,
+    "gray-200": #e5e7eb, "gray-300": #d1d5db, "gray-400": #9ca3af, "gray-500": #6b7280,
+    "gray-600": #4b5563, "gray-700": #374151, "gray-800": #1f2937, "gray-900": #111827,
+    "red-50": #fef2f2, "red-100": #fee2e2, "red-200": #fecaca, "red-300": #fca5a5,
+    "red-400": #f87171, "red-500": #ef4444, "red-600": #dc2626, "red-700": #b91c1c,
+    "red-800": #991b1b, "red-900": #7f1d1d, "blue-50": #eff6ff, "blue-100": #dbeafe,
+    "blue-200": #bfdbfe, "blue-300": #93c5fd, "blue-400": #60a5fa, "blue-500": #3b82f6,
+    "blue-600": #2563eb, "blue-700": #1d4ed8, "blue-800": #1e40af, "blue-900": #1e3a8a,
+    "green-50": #ecfdf5, "green-100": #d1fae5, "green-200": #a7f3d0, "green-300": #6ee7b7,
+    "green-400": #34d399, "green-500": #10b981, "green-600": #059669, "green-700": #047857,
+    "green-800": #065f46, "green-900": #064e3b, "yellow-50": #fffbeb, "yellow-100": #fef3c7,
+    "yellow-200": #fde68a, "yellow-300": #fcd34d, "yellow-400": #fbbf24, "yellow-500": #f59e0b,
+    "yellow-600": #d97706, "yellow-700": #b45309, "yellow-800": #92400e, "yellow-900": #78350f
+);
+
+// ✅ Merge Tailwind Colors into Bootstrap Theme
+$theme-colors: map-merge($theme-colors, $tailwind-colors);
+
+// ✅ Extend Bootstrap Utilities for Tailwind-Like Classes
+$utilities: map-merge(
+        $utilities,
+        (
+            "text-color": (
+                property: color,
+                class: text,
+                values: $tailwind-colors
+            ),
+            "background-color": (
+                property: background-color,
+                class: bg,
+                values: $tailwind-colors
+            ),
+            "border-color": (
+                property: border-color,
+                class: border,
+                values: $tailwind-colors
+            )
+        )
+);
+
+// Extend Bootstrap utilities for text sizes
+$utilities: map-merge(
+        $utilities,
+        (
+            "text-size": (
+                property: font-size,
+                class: text,
+                values: (
+                    xs: 0.75rem,   // Tailwind text-xs
+                    sm: 0.875rem,  // Tailwind text-sm
+                    base: 1rem,    // Tailwind text-base
+                    lg: 1.125rem,  // Tailwind text-lg
+                    xl: 1.25rem,   // Tailwind text-xl
+                    2xl: 1.5rem,   // Tailwind text-2xl
+                    3xl: 1.875rem, // Tailwind text-3xl
+                    4xl: 2.25rem,  // Tailwind text-4xl
+                    5xl: 3rem,     // Tailwind text-5xl
+                    6xl: 3.75rem,  // Tailwind text-6xl
+                    7xl: 4.5rem,   // Tailwind text-7xl
+                    8xl: 6rem,     // Tailwind text-8xl
+                    9xl: 8rem      // Tailwind text-9xl
+                )
+            )
+        )
+);
+
+/* ✅ Space between child elements (horizontal) */
+.space-x-1 > *:not(:last-child) { margin-right: 0.25rem !important; }
+.space-x-2 > *:not(:last-child) { margin-right: 0.5rem !important; }
+.space-x-3 > *:not(:last-child) { margin-right: 0.75rem !important; }
+.space-x-4 > *:not(:last-child) { margin-right: 1rem !important; }
+.space-x-5 > *:not(:last-child) { margin-right: 1.25rem !important; }
+.space-x-6 > *:not(:last-child) { margin-right: 1.5rem !important; }
+.space-x-8 > *:not(:last-child) { margin-right: 2rem !important; }
+.space-x-10 > *:not(:last-child) { margin-right: 2.5rem !important; }
+.space-x-12 > *:not(:last-child) { margin-right: 3rem !important; }
+
+/* ✅ Space between child elements (vertical) */
+.space-y-1 > *:not(:last-child) { margin-bottom: 0.25rem !important; }
+.space-y-2 > *:not(:last-child) { margin-bottom: 0.5rem !important; }
+.space-y-3 > *:not(:last-child) { margin-bottom: 0.75rem !important; }
+.space-y-4 > *:not(:last-child) { margin-bottom: 1rem !important; }
+.space-y-5 > *:not(:last-child) { margin-bottom: 1.25rem !important; }
+.space-y-6 > *:not(:last-child) { margin-bottom: 1.5rem !important; }
+.space-y-8 > *:not(:last-child) { margin-bottom: 2rem !important; }
+.space-y-10 > *:not(:last-child) { margin-bottom: 2.5rem !important; }
+.space-y-12 > *:not(:last-child) { margin-bottom: 3rem !important; }
+
+/* ✅ Gap for Flex/Grid Containers (Bootstrap already has `gap-*`, this extends it) */
+.gap-1 { gap: 0.25rem !important; }
+.gap-2 { gap: 0.5rem !important; }
+.gap-3 { gap: 0.75rem !important; }
+.gap-4 { gap: 1rem !important; }
+.gap-5 { gap: 1.25rem !important; }
+.gap-6 { gap: 1.5rem !important; }
+.gap-8 { gap: 2rem !important; }
+.gap-10 { gap: 2.5rem !important; }
+.gap-12 { gap: 3rem !important; }
+
+// Import Bootstrap Utilities API (to generate classes)
+@import "bootstrap/scss/utilities/api";

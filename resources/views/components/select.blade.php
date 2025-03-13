@@ -6,6 +6,7 @@
     'multiple' => false,
     'size' => 'md', // sm, md, lg
     'error' => null,
+    'containerClass' => '',
 ])
 
 @php
@@ -19,7 +20,7 @@
      $wireModel = collect($attributes->whereStartsWith('wire:model'))->first();
 @endphp
 
-<div class="form-group mb-3 w-100">
+<div class="form-group {{ $containerClass }}">
     @if ($label)
         <label for="{{ $id }}" class="form-label">{{ $label }}</label>
     @endif

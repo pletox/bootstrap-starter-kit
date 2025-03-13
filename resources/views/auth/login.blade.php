@@ -4,7 +4,7 @@
     <div class="card shadow-sm border-0">
         <form method="POST" action="{{ route('login') }}">
             @csrf
-            <div class="card-body px-4">
+            <div class="card-body px-4 space-y-3">
 
                 <x-input label="E-mail Address" name="email" id="email"/>
 

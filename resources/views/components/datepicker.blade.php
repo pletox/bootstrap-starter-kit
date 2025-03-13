@@ -23,7 +23,7 @@
     if($enableTime) $format = $format . ' H:i';
 @endphp
 
-<div class="form-group mb-3">
+<div class="form-group">
     @if ($label)
         <label for="{{ $id }}" class="form-label">{{ $label }}</label>
     @endif

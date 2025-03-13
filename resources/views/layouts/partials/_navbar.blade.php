@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand py-1 px-3 shadow-sm border-bottom">
     <button class="btn" id="sidebar-toggle" type="button">
-        <i data-lucide="panel-left"></i>
+        <x-lucide-panel-left class="w-4 h-4 text-slate-600" />
     </button>
     <div class="navbar-collapse navbar">
         <ul class="navbar-nav">
@@ -9,9 +9,7 @@
             </li>
             <li class="nav-item dropdown">
                 <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
-                    <img
-                        src="https://ui-avatars.com/api/?background=FFCCA6&color=000&name={{urlencode(auth()->user()->name)}}"
-                        class="avatar img-fluid rounded" alt="">
+                    <x-user-avatar class="w-8 h-8 bg-slate-400" text-size="text-xs" shape="rounded" :user="auth()->user()" />
                 </a>
                 <div class="dropdown-menu dropdown-menu-end">
                     <a href="#" class="dropdown-item"><i class="bi bi-person"></i> Profile</a>
