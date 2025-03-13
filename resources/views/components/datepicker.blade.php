@@ -46,6 +46,8 @@
     document.addEventListener('livewire:navigated', function () {
         let dateInput = document.getElementById('{{ $id }}');
 
+        let isInModal = dateInput.closest(".modal") !== null;
+
         if (dateInput) {
             let flatpickrInstance = flatpickr(dateInput, {
                 mode: '{{ $range ? "range" : "single" }}',
@@ -53,6 +55,7 @@
                 enableTime: {{ $enableTime || $timeOnly ? 'true' : 'false' }},
                 noCalendar: {{ $timeOnly ? 'true' : 'false' }},
                 allowInput: false,
+                // static: isInModal, // Fix for modal scrolling issue
                 onChange: function (selectedDates, dateStr) {
                     // Update Livewire model only if wire:model is present
                     @if ($wireModel)
@@ -63,8 +66,18 @@
 
                     // Update Alpine.js model if x-model is used
                     dateInput.dispatchEvent(new Event('input', {bubbles: true}));
-                }
+                },
+
             });
+
+
         }
     });
 </script>
+
+<style>
+    .flatpickr-wrapper {
+        position: relative;
+        display: block;
+    }
+</style>

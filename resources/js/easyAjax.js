@@ -112,6 +112,10 @@ $.easyAjax = (options) => {
             } else {
                 showErrorModal(response.data || "An unexpected error occurred!");
 
+                window.dispatchEvent(new CustomEvent('button-loading', {
+                    detail: {id: $(opt.buttonSelector).attr('id'), state: false}
+                }));
+
                 toastr.error('Something went wrong! Please reload', '', {timeOut: 3000})
             }
 

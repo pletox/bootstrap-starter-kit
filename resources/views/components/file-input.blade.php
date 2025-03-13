@@ -32,7 +32,7 @@
     @endif
 
     <div
-        class="d-flex  {{ $previewPosition === 'left' || $previewPosition === 'right' ? 'flex-row' : 'flex-column' }} align-items-{{ $previewPosition === 'top' || $previewPosition === 'bottom' ? 'center' : 'start' }}">
+        class="d-flex  {{ $previewPosition === 'left' || $previewPosition === 'right' ? 'flex-row' : 'flex-column' }} align-items-{{ $previewPosition === 'top' || $previewPosition === 'bottom' ? 'center' : 'center' }}">
 
         @if($preview && $previewPosition === 'left')
             <div class="me-3 w-24 h-24">

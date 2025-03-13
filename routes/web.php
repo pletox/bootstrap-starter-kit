@@ -11,11 +11,12 @@ include '_utilities.php';
 
 Route::redirect('/', 'home');
 
-Route::get('/home', function () {
-    return view('home');
-})->name('home')->middleware(['auth:web', 'verified']);
 
-Route::group(['middleware' => ['auth:web', 'verified']], function () {
+Route::group(['middleware' => ['auth:web']], function () {
+
+    Route::get('/home', function () {
+        return view('home');
+    })->name('home');
 
     Route::get('categories', [CategoriesController::class, 'index'])->name('categories.index');
     Route::post('categories', [CategoriesController::class, 'storeOrUpdate'])->name('categories.storeOrUpdate');
@@ -36,11 +37,10 @@ Route::group(['middleware' => ['auth:web', 'verified']], function () {
     Route::get('customers/{customer}/view', [CustomersController::class, 'show'])->name('customers.show');
 
 
-    Route::group(['prefix' => 'settings'] , function (){
+    Route::group(['prefix' => 'settings'], function () {
         Route::get('profile', [ProfileController::class, 'profile'])->name('settings.profile');
         Route::post('profile/delete', [ProfileController::class, 'destroy'])->name('settings.profile.delete');
         Route::get('profile/password-update', [ProfileController::class, 'passwordUpdate'])->name('settings.profile.password-update');
-
 
 
     });

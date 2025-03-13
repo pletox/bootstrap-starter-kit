@@ -2,6 +2,7 @@
     'id' => 'modal-' . uniqid(), // Unique modal ID
     'title' => null,
     'size' => 'md', // sm, md, lg
+    'headerHidden' => false,
 ])
 
 @php
@@ -18,11 +19,13 @@
     <div class="modal-dialog {{ $modalSizeClass }}">
         <div class="modal-content">
 
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h5 class="modal-title">{{ $title }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+            @if(!$headerHidden)
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ $title }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            @endif
 
 
             <!-- Slot for modal body and footer -->
