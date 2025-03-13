@@ -34,4 +34,21 @@ table.dataTable thead > tr > th {
     background-color: var(--bs-table-head) !important;
 }
 
+//**** Sidebar ****//
 
+.sidebar-link:hover, .sidebar-link:focus, .sidebar-link.active {
+    border-radius: 7px;
+    margin: 0 15px 5px 15px;
+}
+
+a.sidebar-link {
+    padding: 6px;
+    margin: 0 15px 5px 15px;
+    font-weight: 500;
+}
+
+.sidebar-logo:hover{
+    border-radius: 7px;
+    background-color: var(--bs-sidebar-hover);
+
+}
