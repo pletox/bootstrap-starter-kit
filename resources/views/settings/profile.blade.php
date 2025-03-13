@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mt-5">
+    <div class="container">
         <div class="row">
-            <div class="col-lg-3">
+            <div class="col-lg-2">
                @include('settings.nav')
             </div>
             <div class="col-lg-9">
