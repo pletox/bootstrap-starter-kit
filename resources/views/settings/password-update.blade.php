@@ -1,15 +1,19 @@
 @extends('layouts.app')
 
+@section('title', 'Password Setting')
+
 @section('content')
-    <div class="container">
+
+        @include('settings.header')
+
         <div class="row">
-            <div class="col-lg-2">
+            <div class="col-md-3 ps-0">
                 @include('settings.nav')
             </div>
-            <div class="col-lg-9">
+            <div class="col-md-6 ps-0">
                 <section>
-                    <h4 class="mb-3">Update password</h4>
-                    <p class="text-muted">Ensure your account is using a long, random password to stay secure</p>
+                    <h4 class="mb-1 text-base font-medium text-gray-700">Update password</h4>
+                    <p class="text-sm text-muted">Ensure your account is using a long, random password to stay secure</p>
                     <x-form id="profilePasswordForm" class="space-y-4">
                         <x-input name="current_password"  type="password" id="current_password" label="Current password" placeholder="Current password" autocomplete="off"/>
                         <x-input name="password" type="password" id="new_password" label="New password" placeholder="New password" autocomplete="off"/>
@@ -20,7 +24,7 @@
                 </section>
             </div>
         </div>
-    </div>
+
 @endsection
 @push('js')
     <script type="module">

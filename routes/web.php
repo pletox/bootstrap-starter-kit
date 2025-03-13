@@ -40,9 +40,7 @@ Route::group(['middleware' => ['auth:web', 'verified']], function () {
         Route::get('profile', [ProfileController::class, 'profile'])->name('settings.profile');
         Route::post('profile/delete', [ProfileController::class, 'destroy'])->name('settings.profile.delete');
         Route::get('profile/password-update', [ProfileController::class, 'passwordUpdate'])->name('settings.profile.password-update');
-
-
-
+        Route::get('profile/appearance', [ProfileController::class, 'appearance'])->name('settings.profile.appearance');
     });
 
 

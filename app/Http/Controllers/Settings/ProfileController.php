@@ -44,4 +44,9 @@ class ProfileController extends Controller
     {
         return view('settings.password-update');
     }
+
+    public  function appearance()
+    {
+        return view('settings.appearance');
+    }
 }

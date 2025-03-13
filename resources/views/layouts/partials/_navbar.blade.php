@@ -5,7 +5,6 @@
     <div class="navbar-collapse navbar py-1">
         <p class="mb-0 ms-2">Dashboard</p>
         <ul class="navbar-nav">
-
             <li class="nav-item me-2 theme-toggle">
                 <a class="nav-link" href="#"><i class="bi bi-moon"></i> <i class="bi bi-sun"></i></a>
             </li>
@@ -13,7 +12,7 @@
                 <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
                     <x-user-avatar class="w-8 h-8 bg-slate-400" text-size="text-xs" color="gray-100" shape="rounded" :user="auth()->user()" />
                 </a>
-                <div class="dropdown-menu dropdown-menu-end border-0 shadow-sm py-0">
+                <div class="dropdown-menu dropdown-menu-end border shadow-sm py-0">
                     <div class="d-flex align-items-center gap-2 border-bottom p-2">
                         <x-user-avatar class="w-8 h-8" text-size="text-xs" color="gray-100" shape="rounded" :user="auth()->user()" />
                         <div>
@@ -22,7 +21,7 @@
                         </div>
                     </div>
                     <div class="m-1">
-                        <a href="#" class="rounded dropdown-item p-1 text-sm">
+                        <a href="{{ route('settings.profile') }}" class="rounded dropdown-item p-1 text-sm">
                             <x-lucide-settings class="w-4 h-4 text-slate-600" /><span class="ms-3"> Settings</span>
                         </a>
                     </div>

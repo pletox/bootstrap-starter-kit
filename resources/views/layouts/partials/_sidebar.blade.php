@@ -9,7 +9,7 @@
                 <span class="text-truncate">Bootstrap Starter Kit</span>
             </a>
         </div>
-        <p class="mx-3 mb-2 text-xs text-gray-500">Platform</p>
+        <p class="mx-4 mb-2 text-xs text-gray-500">Platform</p>
         <ul class="sidebar-nav">
             <li class="sidebar-item">
                 <a href="{{ route('home') }}" class="sidebar-link text-gray-600 font-bold {{ request()->routeIs('home') ? 'active' : '' }}"

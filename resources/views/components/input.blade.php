@@ -32,7 +32,7 @@
             name="{{ $name }}"
             placeholder="{{ $placeholder }}"
             {{ $attributes->merge([
-                'class' => 'form-control ' . $sizeClass . ($inInvalid ? ' is-invalid' : '')
+                'class' => 'form-control text-sm text-muted p-2 rounded' . $sizeClass . ($inInvalid ? ' is-invalid' : '')
             ]) }}
             @if($required) required @endif
         >
