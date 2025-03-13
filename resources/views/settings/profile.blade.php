@@ -58,6 +58,11 @@
     <script type="module">
         $(function () {
 
+
+            $('#delete-user-btn').click(function () {
+                $('#deleteUserModal').modal('show');
+            });
+
             $('#deleteUserForm').on('submit', function (e) {
                 e.preventDefault();
                 var data = new FormData($('#deleteUserForm')[0]);

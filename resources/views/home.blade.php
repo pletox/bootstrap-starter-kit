@@ -54,7 +54,6 @@
         <x-card title="Basic Table" subtitle="Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum ducimus,
                     necessitatibus reprehenderit itaque!">
 
-
             <table class="table">
                 <thead>
                 <tr>

@@ -33,11 +33,11 @@ class ProductsController extends Controller
 
     public function storeOrUpdate(Request $request)
     {
-
         $request->validate([
             'name' => 'required',
             'description' => 'required',
             'category_id' => 'required',
+            'date' => 'required',
         ]);
 
         if ($request->id) {
