@@ -32,17 +32,15 @@
 
 
         <x-modal id="productModal" title="Create Product">
-            <x-form id="productForm" class="space-x-3">
+            <x-form id="productForm" >
 
-                <x-modal.body>
+                <x-modal.body class="space-y-4">
                     <input type="hidden" name="id" id="id">
-
 
                     <x-input name="name" id="name" label="Name" placeholder="Enter Name"/>
 
                     <x-textarea id="description" name="description" label="Enter Description"
                                 placeholder="Enter Description"/>
-
 
                     <x-select id="category_id" name="category_id" label="Select Category"
                               placeholder="Select Category">
@@ -51,9 +49,12 @@
                         @endforeach
                     </x-select>
 
+
+                    <x-file-input name="photo" label="Select Image" preview preview-position="left"  />
+
                     <x-datepicker name="date" id="date" label="Select Date" placeholder="Select Date" range/>
 
-                    <x-datepicker name="date2" id="date2" label="Select Date 2" placeholder="Select Date 2" timeOnly/>
+                    <x-datepicker name="date2" id="date2" label="Select Date 2" placeholder="Select Date 2" />
 
                 </x-modal.body>
 
