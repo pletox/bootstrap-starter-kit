@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CustomersController;
 use App\Http\Controllers\Products\ProductsController;
 use App\Http\Controllers\Products\ProductStatusToggleController;
+use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 include '_utilities.php';
@@ -33,6 +34,16 @@ Route::group(['middleware' => ['auth:web', 'verified']], function () {
     Route::get('customers/{customer}', [CustomersController::class, 'edit'])->name('customers.edit');
     Route::delete('customers/{customer}', [CustomersController::class, 'destroy'])->name('customers.delete');
     Route::get('customers/{customer}/view', [CustomersController::class, 'show'])->name('customers.show');
+
+
+    Route::group(['prefix' => 'settings'] , function (){
+        Route::get('profile', [ProfileController::class, 'profile'])->name('settings.profile');
+        Route::post('profile/delete', [ProfileController::class, 'destroy'])->name('settings.profile.delete');
+        Route::get('profile/password-update', [ProfileController::class, 'passwordUpdate'])->name('settings.profile.password-update');
+
+
+
+    });
 
 
 });
