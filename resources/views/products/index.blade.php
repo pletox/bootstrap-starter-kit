@@ -32,7 +32,7 @@
 
 
         <x-modal id="productModal" title="Create Product">
-            <x-form id="productForm" class="form-horizontal">
+            <x-form id="productForm" class="space-x-3">
 
                 <x-modal.body>
                     <input type="hidden" name="id" id="id">
