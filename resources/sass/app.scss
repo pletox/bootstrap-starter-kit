@@ -73,4 +73,34 @@ a.sidebar-link {
     border-radius: 7px;
 }
 
+//**** Bottom Bar ****//
+
+.bottom-bar {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    z-index: 1050; /* Ensure it's above other elements */
+}
+
+.bottom-bar .bottom-bar-item.active {
+   color: $dark !important;
+    font-weight: 500;
+}
+
+.fab-container {
+    position: absolute;
+    top: -25px; /* Adjust floating button position */
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.fab-button {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    border: none;
+}
 

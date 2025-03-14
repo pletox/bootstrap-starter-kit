@@ -31,7 +31,7 @@ body {
     font-family: 'Inter', sans-serif;
     font-size: 0.875rem;
     opacity: 1;
-    overflow-y: scroll;
+    overflow-y: auto;
     margin: 0;
 }
 
@@ -67,7 +67,10 @@ h4 {
     background: var(--bs-bg-sidebar);
     border-right: 1px solid var(--bs-border-color);
     transition: all 0.35s ease-in-out;
+    padding-bottom: 20px;
+    overflow: hidden;
 }
+
 
 .main {
     margin-left: 264px; /* Push content to the right */
@@ -117,6 +120,12 @@ h4 {
     margin-bottom: 0;
     padding-left: 0;
     margin-left: 0;
+    max-height: 90%;
+    overflow: hidden;
+}
+
+.sidebar-nav:hover {
+    overflow-y: auto;
 }
 
 .sidebar-header {
@@ -179,7 +188,7 @@ a.sidebar-link {
     width: 100vw;
 }
 
-@media (min-width:768px) {
+@media (min-width: 768px) {
     .content {
         width: auto;
     }
@@ -204,7 +213,7 @@ a.sidebar-link {
 
 /* Footer and Nav */
 
-@media (max-width:767.98px) {
+@media (max-width: 767.98px) {
 
     .js-sidebar {
         margin-left: -264px;
@@ -220,6 +229,10 @@ a.sidebar-link {
         margin-left: 0;
     }
 
+    .sidebar-nav {
+        overflow-y: auto;
+    }
+
     .navbar,
     footer {
         width: 100vw;
@@ -227,18 +240,18 @@ a.sidebar-link {
 
     .main {
         margin-left: 0;
+        padding-bottom: 80px;
     }
 }
 
 /* Theme Toggler */
 
 
-
 html[data-bs-theme="dark"] .theme-toggle .bi-moon {
     display: none;
 }
 
-html[data-bs-theme="light"] .theme-toggle .bi-sun{
+html[data-bs-theme="light"] .theme-toggle .bi-sun {
     display: none;
 }
 
@@ -246,4 +259,33 @@ html[data-bs-theme="light"] .theme-toggle .bi-sun{
     font-size: 14px;
 }
 
-[x-cloak] { display: none !important; }
+[x-cloak] {
+    display: none !important;
+}
+
+/* WebKit-based browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    width: 6px; /* Thin scrollbar */
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Light gray background */
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #bbb; /* Scrollbar color */
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #888; /* Darker on hover */
+}
+
+/* Firefox (only works with width) */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #bbb #f1f1f1;
+}

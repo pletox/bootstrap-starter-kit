@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool)env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -122,5 +122,18 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+
+    /*
+   |--------------------------------------------------------------------------
+   | Enable Bottom Bar Navigation
+   |--------------------------------------------------------------------------
+   |
+   | This configuration determines whether to show bottom bar in mobile view or not.
+   |
+   | Supported values: true, false
+   |
+   */
+
+    'enable_bottom_bar' => env('ENABLE_BOTTOM_BAR', false),
 
 ];

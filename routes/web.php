@@ -30,13 +30,6 @@ Route::group(['middleware' => ['auth:web']], function () {
 
     Route::post('products/{product}/toggleStatus', ProductStatusToggleController::class)->name('products.toggleStatus');
 
-    Route::get('customers', [CustomersController::class, 'index'])->name('customers.index');
-    Route::post('customers', [CustomersController::class, 'storeOrUpdate'])->name('customers.storeOrUpdate');
-    Route::get('customers/{customer}', [CustomersController::class, 'edit'])->name('customers.edit');
-    Route::delete('customers/{customer}', [CustomersController::class, 'destroy'])->name('customers.delete');
-    Route::get('customers/{customer}/view', [CustomersController::class, 'show'])->name('customers.show');
-
-
     Route::group(['prefix' => 'settings'], function () {
         Route::get('profile', [ProfileController::class, 'profile'])->name('settings.profile');
         Route::post('profile/delete', [ProfileController::class, 'destroy'])->name('settings.profile.delete');
