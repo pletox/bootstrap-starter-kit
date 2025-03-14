@@ -14,6 +14,8 @@ class ProductsController extends Controller
     {
         if ($request->ajax()) {
             $products = Product::with('category')->latest()->get();
+
+
             return Datatables::of($products)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {

@@ -34,7 +34,7 @@
 
 
         <x-modal id="productModal" title="Create Product">
-            <x-form id="productForm" >
+            <x-form id="productForm">
 
                 <x-modal.body class="space-y-4">
                     <input type="hidden" name="id" id="id">
@@ -52,11 +52,11 @@
                     </x-select>
 
 
-                    <x-file-input name="photo" label="Select Image" preview preview-position="left"  />
+                    <x-file-input name="photo" label="Select Image" preview preview-position="left"/>
 
                     <x-datepicker name="date" id="date" label="Select Date" placeholder="Select Date" range/>
 
-                    <x-datepicker name="date2" id="date2" label="Select Date 2" placeholder="Select Date 2" />
+                    <x-datepicker name="date2" id="date2" label="Select Date 2" placeholder="Select Date 2"/>
 
                 </x-modal.body>
 
@@ -75,13 +75,9 @@
 @push('js')
     <script type="module">
         $(function () {
-            let table = $('#products-table');
+            new DataTable('#products-table').destroy();
 
-            if ($.fn.DataTable.isDataTable(table)) {
-                table.DataTable().destroy(); // Destroy existing instance
-            }
-
-            table = $('#products-table').DataTable({
+            let table = $('#products-table').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('products.index') }}",

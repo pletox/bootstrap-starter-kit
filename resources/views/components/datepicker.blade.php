@@ -46,9 +46,10 @@
     document.addEventListener('livewire:navigated', function () {
         let dateInput = document.getElementById('{{ $id }}');
 
-        let isInModal = dateInput.closest(".modal") !== null;
 
         if (dateInput) {
+            let isInModal = dateInput.closest(".modal") !== null;
+
             let flatpickrInstance = flatpickr(dateInput, {
                 mode: '{{ $range ? "range" : "single" }}',
                 dateFormat: '{{ $timeOnly ? "H:i" : $format }}',

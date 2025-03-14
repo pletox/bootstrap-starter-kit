@@ -9,6 +9,7 @@ import DataTable from 'datatables.net-bs5';
 window.DataTable = DataTable;
 
 import Handlebars from "handlebars";
+
 window.Handlebars = Handlebars;
 
 import 'datatables.net-responsive-bs5';
@@ -20,7 +21,6 @@ import {createIcons, icons} from "lucide";
 
 document.addEventListener('livewire:navigated', function () {
     createIcons({icons});
-
 
     $('.form-datepicker').each(function (i, element) {
         $(element).flatpickr({
