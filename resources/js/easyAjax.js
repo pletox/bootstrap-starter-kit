@@ -23,7 +23,7 @@ $.easyAjax = (options) => {
     }
 
     if (opt.disableButton !== false) {
-        $(opt.buttonSelector).addClass('disabled');
+        $(opt.container).find(opt.buttonSelector).addClass('disabled');
     }
 
     if (opt.blockUI !== false) {
@@ -55,7 +55,7 @@ $.easyAjax = (options) => {
         }
 
         if (opt.disableButton !== false) {
-            $(opt.buttonSelector).removeClass('disabled');
+            $(opt.container).find(opt.buttonSelector).removeClass('disabled');
         }
 
         if (opt.blockUI !== false) {
@@ -63,7 +63,7 @@ $.easyAjax = (options) => {
         }
 
         window.dispatchEvent(new CustomEvent('button-loading', {
-            detail: {id: $(opt.buttonSelector).attr('id'), state: false}
+            detail: {id: $(opt.container).find(opt.buttonSelector).attr('id'), state: false}
         }));
     }).catch((error) => {
             console.log('error...');
@@ -112,15 +112,12 @@ $.easyAjax = (options) => {
             } else {
                 showErrorModal(response.data || "An unexpected error occurred!");
 
-                window.dispatchEvent(new CustomEvent('button-loading', {
-                    detail: {id: $(opt.buttonSelector).attr('id'), state: false}
-                }));
 
                 toastr.error('Something went wrong! Please reload', '', {timeOut: 3000})
             }
 
             if (opt.disableButton !== false) {
-                $(opt.buttonSelector).removeClass('disabled');
+                $(opt.container).find(opt.buttonSelector).removeClass('disabled');
             }
 
             if (opt.blockUI !== false) {
@@ -128,7 +125,7 @@ $.easyAjax = (options) => {
             }
 
             window.dispatchEvent(new CustomEvent('button-loading', {
-                detail: {id: $(opt.buttonSelector).attr('id'), state: false}
+                detail: {id: $(opt.container).find(opt.buttonSelector).attr('id'), state: false}
             }));
         }
     );

@@ -15,8 +15,10 @@
                 <h4 class="mb-1 text-base font-medium text-gray-700">Profile Information</h4>
                 <p class="text-sm text-muted">Update your name and email address</p>
                 <x-form id="profileForm" class="space-y-4">
-                    <x-input name="name" id="name" label="Name" placeholder="Enter Name" value="{{ auth()->user()->name }}"/>
-                    <x-input name="email" id="email" label="Email address" placeholder="Enter Email" value="{{ auth()->user()->email }}"/>
+                    <x-input name="name" id="name" label="Name" placeholder="Enter Name"
+                             value="{{ auth()->user()->name }}"/>
+                    <x-input name="email" id="email" label="Email address" placeholder="Enter Email"
+                             value="{{ auth()->user()->email }}"/>
                     <x-button color="dark" type="submit">Save</x-button>
                 </x-form>
             </section>
@@ -26,20 +28,22 @@
                 <div class="alert alert-danger bg-red-50" role="alert" style="border-color: #ffd9d9;">
                     <h6 class="alert-heading text-red-600 mb-1">Warning</h6>
                     <p class="text-red-600">Please proceed with caution, this cannot be undone.</p>
-                    <a href="#" data-bs-toggle="#deleteUserModal" id="delete-user-btn" class="btn bg-red-500 text-white">
+                    <a href="#" data-bs-toggle="#deleteUserModal" id="delete-user-btn"
+                       class="btn bg-red-500 text-white">
                         Delete Account
                     </a>
 
                 </div>
 
                 <x-modal id="deleteUserModal" title="Are you sure you want to delete your account?">
-                    <x-form id="deleteUserForm" >
+                    <x-form id="deleteUserForm">
                         <x-modal.body class="space-y-4">
                             <p>
-                                Once your account is deleted, all of its resources and data will also be permanently deleted.
+                                Once your account is deleted, all of its resources and data will also be permanently
+                                deleted.
                                 Please enter your password to confirm you would like to permanently delete your account.
                             </p>
-                            <x-input name="password" id="password" placeholder="Password"/>
+                            <x-input type="password" name="password" id="password" placeholder="Password"/>
                         </x-modal.body>
 
                         <x-modal.footer>
@@ -75,7 +79,7 @@
                     data: data,
                     onComplete: (response) => {
                         $('#deleteUserForm')[0].reset();
-                        if(response.data.status === 200){
+                        if (response.data.status === 200) {
                             window.location.reload();
                         }
                     }

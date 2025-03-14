@@ -32,8 +32,8 @@
             name="{{ $name }}"
             placeholder="{{ $placeholder }}"
             {{ $attributes->merge([
-                'class' => 'form-control text-sm text-muted p-2 rounded' . $sizeClass . ($inInvalid ? ' is-invalid' : '')
-            ]) }}
+               'class' => 'form-control text-sm text-muted p-2 ' . $sizeClass . ($type === 'password' ? ' rounded-start' : ' rounded') . ($inInvalid ? ' is-invalid' : '')
+           ]) }}
             @if($required) required @endif
         >
 
@@ -41,8 +41,8 @@
             <button type="button"
                     class="btn btn-outline-secondary border-start-0 shadow-none {{ $inInvalid ? ' is-invalid' : '' }}"
                     @click="show = !show">
-                <x-lucide-eye x-show="!show" class="icon-size"/>
-                <x-lucide-eye-off x-show="show" class="icon-size"/>
+                <x-lucide-eye-off x-show="!show" class="icon-size"/>
+                <x-lucide-eye x-show="show" class="icon-size"/>
             </button>
         @endif
 

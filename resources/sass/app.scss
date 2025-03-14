@@ -14,6 +14,15 @@
 @import "base";
 @import "auth";
 
+//**** Button Loader ****//
+.btn .loader {
+    display: none;
+}
+
+.btn.loading .loader {
+    display: inline-block;
+}
+
 
 //**** Datatables ****//
 
@@ -47,19 +56,19 @@ a.sidebar-link {
     font-weight: 500;
 }
 
-.sidebar-logo:hover{
+.sidebar-logo:hover {
     border-radius: 7px;
     background-color: var(--bs-sidebar-hover);
 }
 
 //**** Header ****//
 
-#sidebar-toggle:hover{
+#sidebar-toggle:hover {
     background-color: var(--bs-sidebar-hover);
     border-radius: 7px;
 }
 
-.theme-toggle a:hover{
+.theme-toggle a:hover {
     background-color: var(--bs-sidebar-hover);
     border-radius: 7px;
 }

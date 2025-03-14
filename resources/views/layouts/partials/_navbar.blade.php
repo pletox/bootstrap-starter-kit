@@ -21,7 +21,7 @@
                         </div>
                     </div>
                     <div class="m-1">
-                        <a href="{{ route('settings.profile') }}" class="rounded dropdown-item p-1 text-sm">
+                        <a href="{{ route('settings.profile') }}" wire:navigate class="rounded dropdown-item p-1 text-sm">
                             <x-lucide-settings class="w-4 h-4 text-slate-600" /><span class="ms-3"> Settings</span>
                         </a>
                     </div>

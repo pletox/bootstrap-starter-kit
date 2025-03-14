@@ -42,6 +42,11 @@
                         loading = true; // Apply loading only to this button
                     }
                 });
+
+
+                form.addEventListener('reset', () => {
+                    loading = false;
+                });
             }
 
             // Detect AJAX request completion (for jQuery-based AJAX forms)
@@ -49,10 +54,13 @@
                 loading = false;
             });
 
-             window.addEventListener('button-loading', (event) => {
-                if (event.detail.id === '{{ $buttonId }}') {
-                    loading = event.detail.state;
-                }
+          // Ensure each button listens for updates
+            window.addEventListener('button-loading', (event) => {
+                $nextTick(() => {
+                    if (event.detail.id === '{{ $buttonId }}') {
+                        loading = event.detail.state;
+                    }
+                });
             });
 
             // Detect Livewire request completion
