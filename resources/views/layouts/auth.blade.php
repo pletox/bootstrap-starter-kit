@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>@yield('title') - {{ config('app.name') }}</title>
-    <script src="https://kit.fontawesome.com/ae360af17e.js" crossorigin="anonymous"></script>
 
     @vite('resources/js/jquery.js')
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
