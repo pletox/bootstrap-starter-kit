@@ -41,8 +41,8 @@
             <button type="button"
                     class="btn btn-outline-secondary border-start-0 shadow-none {{ $inInvalid ? ' is-invalid' : '' }}"
                     @click="show = !show">
-                <x-lucide-eye-off x-show="!show" class="icon-size"/>
-                <x-lucide-eye x-show="show" class="icon-size"/>
+                <x-lucide-eye-off x-cloak x-show="!show" class="icon-size"/>
+                <x-lucide-eye x-cloak x-show="show" class="icon-size"/>
             </button>
         @endif
 

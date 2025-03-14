@@ -30,6 +30,8 @@ class CategoriesController extends Controller
                 $categories = $categories->orderBy($sortCol, $sortDir ?? 'asc');
             }
 
+
+
             $filterCount = $categories->clone()->count();
             $totalCount = Category::count();
 
