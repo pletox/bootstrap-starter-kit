@@ -1,10 +1,15 @@
 @extends('layouts.auth')
 
 @section('content')
-    <div class="card shadow-sm border-0">
+    <div class="space-y-2 text-center">
+        <h1 class="text-xl font-medium">Create an account</h1>
+        <p class="text-center text-sm text-muted mb-4">Enter your details below to create your account</p>
+    </div>
+
+    <div class="">
         <form method="POST" action="{{ route('register') }}">
              @csrf
-            <div class="card-body px-4">
+            <div class="px-4">
                 <div class="form-group mb-3">
                     <label for="name" class="form-label">Name</label>
                     <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror"/>
@@ -37,9 +42,14 @@
                 </div>
 
 
-                <div class="d-flex align-items-center justify-content-end gap-3">
-                    <a href="login.html" class="text-decoration-underline text-muted">Already Registered?</a>
-                    <button class="btn btn-dark">REGISTER</button>
+                <div class="mt-4">
+                    <button class="btn btn-dark w-100">Create Account</button>
+                </div>
+
+                <div class="text-center text-sm text-muted mt-4 authentication"> Already have an account?
+                    <a tabindex="5" class=" text-decoration-underline text-gray-800" href="{{ route('login') }}">
+                        Log in
+                    </a>
                 </div>
             </div>
         </form>

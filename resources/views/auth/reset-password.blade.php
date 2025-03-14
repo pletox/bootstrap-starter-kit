@@ -1,20 +1,21 @@
 @extends('layouts.auth')
 
 @section('content')
+    <div class="space-y-2 text-center">
+        <h1 class="text-xl font-medium mb-4">Reset Password</h1>
+    </div>
+
     @if (session('status'))
-        <div class="alert alert-success">
-            {{ session('status') }}
-        </div>
+        {{--        <div class="alert alert-success">{{ session('status') }}</div>     --}}
+        <div class="my-4 text-center text-sm font-bold text-green-500">{{ session('status') }}</div>
     @endif
 
-    <div class="card shadow-sm border-0">
+    <div class="">
         <form method="POST" action="{{ route('password.update') }}">
             @csrf
             <input type="hidden" name="token" value="{{ $token }}">
 
-            <div class="card-body px-4">
-                <h5 class="mb-3">Reset Password</h5>
-
+            <div class="px-4">
                 <div class="form-group mb-3">
                     <label for="email" class="form-label">Email</label>
                     <input type="email" name="email" id="email" value="{{ old('email',request('email')) }}"
@@ -39,8 +40,8 @@
                            class="form-control" required />
                 </div>
 
-                <div class="d-flex align-items-center justify-content-end gap-3">
-                    <button class="btn btn-dark">RESET PASSWORD</button>
+                <div class="mt-4">
+                    <button class="btn btn-dark w-100">Reset Password</button>
                 </div>
             </div>
         </form>
