@@ -32,6 +32,17 @@ document.addEventListener('livewire:navigated', function () {
     if (sidebarToggle) {
         sidebarToggle.addEventListener("click", function () {
             document.querySelector("#sidebar").classList.toggle("collapsed");
+            document.querySelector("body").classList.toggle("sidebar-collapsed");
+            document.querySelector("#sidebarBackdrop").classList.toggle("show");
+        });
+    }
+
+    const sidebarBackdrop = document.querySelector("#sidebarBackdrop");
+    if (sidebarBackdrop) {
+        sidebarBackdrop.addEventListener("click", function () {
+            document.querySelector("#sidebar").classList.toggle("collapsed");
+            document.querySelector("body").classList.toggle("sidebar-collapsed");
+            document.querySelector("#sidebarBackdrop").classList.toggle("show");
         });
     }
 

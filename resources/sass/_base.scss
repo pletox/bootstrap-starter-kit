@@ -6,6 +6,8 @@
     --bs-sidebar-link-color: #1e293b;
     --bs-sidebar-hover: #efefef;
     --bs-table-head: #eeeeee;
+    --bs-dropdown-link-active-bg: --bs-dropdown-link-hover-bg;
+    --bs-dropdown-link-active-color: --bs-dropdown-link-hover-color;
 }
 
 [data-bs-theme="dark"] {
@@ -58,6 +60,8 @@ h4 {
 }
 
 #sidebar {
+    position: fixed;
+    height: 100vh;
     max-width: 264px;
     min-width: 264px;
     background: var(--bs-bg-sidebar);
@@ -66,6 +70,7 @@ h4 {
 }
 
 .main {
+    margin-left: 264px; /* Push content to the right */
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -76,7 +81,26 @@ h4 {
     background: var(--bs-dark-bg-subtle);
 }
 
+.sidebar-collapsed .main {
+    margin-left: 0;
+}
+
 /* Sidebar Elements Style */
+
+/* Sidebar Backdrop */
+.sidebar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    z-index: 998;
+}
+
 
 .sidebar-logo {
     padding: 1.15rem;
@@ -157,9 +181,9 @@ a.sidebar-link {
 
 @media (min-width:768px) {
     .content {
-        max-width: auto;
         width: auto;
     }
+
 }
 
 .illustration {
@@ -184,6 +208,12 @@ a.sidebar-link {
 
     .js-sidebar {
         margin-left: -264px;
+        z-index: 99999;
+    }
+
+    .sidebar-backdrop.show {
+        opacity: 1;
+        visibility: visible;
     }
 
     #sidebar.collapsed {
@@ -193,6 +223,10 @@ a.sidebar-link {
     .navbar,
     footer {
         width: 100vw;
+    }
+
+    .main {
+        margin-left: 0;
     }
 }
 

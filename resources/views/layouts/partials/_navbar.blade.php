@@ -1,8 +1,8 @@
-<nav class="navbar navbar-expand py-1 px-3 border-bottom">
+<nav class="navbar navbar-expand py-1 px-3 border-bottom" >
     <button class="btn p-2 py-1 border-0" id="sidebar-toggle" type="button">
         <x-lucide-panel-left class="w-4 h-4 text-slate-600" />
     </button>
-    <div class="navbar-collapse navbar py-1">
+    <div class="navbar-collapse navbar ">
         <p class="mb-0 ms-2">Dashboard</p>
         <ul class="navbar-nav">
             <li class="nav-item me-2 theme-toggle">

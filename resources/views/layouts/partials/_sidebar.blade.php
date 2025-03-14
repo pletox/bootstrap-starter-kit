@@ -61,3 +61,6 @@
         </ul>
     </div>
 </aside>
+
+<!-- Sidebar Backdrop -->
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
