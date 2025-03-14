@@ -71,7 +71,7 @@
         :disabled="loading || {{ $disabled ? 'true' : 'false' }}"
         {{ $attributes->merge(['class' => "btn $colorClass $sizeClass d-flex align-items-center justify-content-center gap-2"]) }}>
 
-        <span x-show="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <span x-cloak x-show="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         <span class="button-text">{{ $slot }}</span>
     </button>
 @endif

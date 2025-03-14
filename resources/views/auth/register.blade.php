@@ -1,5 +1,7 @@
 @extends('layouts.auth')
 
+@section('title', 'Register')
+
 @section('content')
     <div class="space-y-2 text-center">
         <h1 class="text-xl font-medium">Create an account</h1>
@@ -7,51 +9,27 @@
     </div>
 
     <div class="">
-        <form method="POST" action="{{ route('register') }}">
-             @csrf
-            <div class="px-4">
-                <div class="form-group mb-3">
-                    <label for="name" class="form-label">Name</label>
-                    <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror"/>
-                    @error('name')
-                    <span class="invalid-feedback">{{ $message }}</span>
-                    @enderror
-                </div>
+        <x-form class="space-y-4" method="POST" action="{{ route('register') }}">
 
-                <div class="form-group mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="text" name="email" id="email" class="form-control @error('email') is-invalid @enderror"/>
-                    @error('email')
-                    <span class="invalid-feedback">{{ $message }}</span>
-                    @enderror
-                </div>
+            <x-input placeholder="Full name" label="Name" name="name" id="name"/>
 
-                <div class="form-group mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror"/>
-                    @error('password')
-                    <span class="invalid-feedback">{{ $message }}</span>
-                    @enderror
-                </div>
+            <x-input placeholder="email@example.com" type="email" label="E-mail Address" name="email" id="email"/>
 
-                <div class="form-group mb-3">
-                    <label for="password_confirmation" class="form-label">Confirm Password</label>
-                    <input type="password" name="password_confirmation" id="password_confirmation"
-                           class="form-control"/>
-                    <span class="invalid-feedback"></span>
-                </div>
+            <x-input placeholder="Password" type="password" label="Password" name="password" id="password"/>
+
+            <x-input label="Confirm Password" placeholder="Confirm New Password" type="password"
+                     name="password_confirmation" id="password_confirmation"/>
 
 
-                <div class="mt-4">
-                    <button class="btn btn-dark w-100">Create Account</button>
-                </div>
+            <x-button type="submit" color="dark" class="w-100 mt-4">Create Account</x-button>
 
-                <div class="text-center text-sm text-muted mt-4 authentication"> Already have an account?
-                    <a tabindex="5" class=" text-decoration-underline text-gray-800" href="{{ route('login') }}">
-                        Log in
-                    </a>
-                </div>
+
+            <div class="text-center text-sm text-muted mt-4 authentication"> Already have an account?
+                <a wire:navigate class="text-decoration-underline text-gray-800" href="{{ route('login') }}">
+                    Log in
+                </a>
             </div>
-        </form>
+
+        </x-form>
     </div>
 @endsection

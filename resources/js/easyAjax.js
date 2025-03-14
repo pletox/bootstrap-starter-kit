@@ -43,11 +43,9 @@ $.easyAjax = (options) => {
 
         }
     }).then((response) => {
-        if (response.data.message !== '')
 
-
-            if (response.data.message !== '')
-                toastr.success(response.data.message, '', {timeOut: 3000})
+        if (response.data.message !== '' && response.data.message !== undefined)
+            toastr.success(response.data.message, '', {timeOut: 3000})
 
 
         if (opt.onComplete && typeof opt.onComplete === "function") {

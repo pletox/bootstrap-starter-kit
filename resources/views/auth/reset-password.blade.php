@@ -1,49 +1,31 @@
 @extends('layouts.auth')
 
+@section('title', 'Reset Password')
+
 @section('content')
     <div class="space-y-2 text-center">
         <h1 class="text-xl font-medium mb-4">Reset Password</h1>
     </div>
 
     @if (session('status'))
-        {{--        <div class="alert alert-success">{{ session('status') }}</div>     --}}
         <div class="my-4 text-center text-sm font-bold text-green-500">{{ session('status') }}</div>
     @endif
 
     <div class="">
-        <form method="POST" action="{{ route('password.update') }}">
-            @csrf
+        <x-form class="space-y-4" method="POST" action="{{ route('password.update') }}">
+
             <input type="hidden" name="token" value="{{ $token }}">
 
-            <div class="px-4">
-                <div class="form-group mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" name="email" id="email" value="{{ old('email',request('email')) }}"
-                           class="form-control @error('email') is-invalid @enderror" required autofocus readonly />
-                    @error('email')
-                    <span class="invalid-feedback">{{ $message }}</span>
-                    @enderror
-                </div>
+            <x-input label="Email Address" placeholder="email@example.com" type="email" name="email" id="email"
+                     value="{{ request('email') }}"/>
 
-                <div class="form-group mb-3">
-                    <label for="password" class="form-label">New Password</label>
-                    <input type="password" name="password" id="password"
-                           class="form-control @error('password') is-invalid @enderror" required />
-                    @error('password')
-                    <span class="invalid-feedback">{{ $message }}</span>
-                    @enderror
-                </div>
+            <x-input label="New Password" placeholder="New Password" type="password" name="password" id="password"/>
 
-                <div class="form-group mb-3">
-                    <label for="password_confirmation" class="form-label">Confirm Password</label>
-                    <input type="password" name="password_confirmation" id="password_confirmation"
-                           class="form-control" required />
-                </div>
+            <x-input label="Confirm New Password" placeholder="Confirm New Password" type="password"
+                     name="password_confirmation" id="password_confirmation"/>
 
-                <div class="mt-4">
-                    <button class="btn btn-dark w-100">Reset Password</button>
-                </div>
-            </div>
-        </form>
+            <x-button type="submit" color="dark" class="w-100">Reset Password</x-button>
+
+        </x-form>
     </div>
 @endsection

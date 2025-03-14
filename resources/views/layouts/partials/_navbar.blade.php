@@ -2,12 +2,12 @@
     <button class="btn p-2 py-1 border-0" id="sidebar-toggle" type="button">
         <x-lucide-panel-left class="w-4 h-4 text-slate-600" />
     </button>
-    <div class="navbar-collapse navbar ">
+    <div class="navbar-collapse navbar py-1">
         <p class="mb-0 ms-2">Dashboard</p>
         <ul class="navbar-nav">
-            <li class="nav-item me-2 theme-toggle">
-                <a class="nav-link" href="#"><i class="bi bi-moon"></i> <i class="bi bi-sun"></i></a>
-            </li>
+{{--            <li class="nav-item me-2 theme-toggle">--}}
+{{--                <a class="nav-link" href="#"><i class="bi bi-moon"></i> <i class="bi bi-sun"></i></a>--}}
+{{--            </li>--}}
             <li class="nav-item dropdown">
                 <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
                     <x-user-avatar class="w-8 h-8 bg-slate-400" text-size="text-xs" color="gray-100" shape="rounded" :user="auth()->user()" />

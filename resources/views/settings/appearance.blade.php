@@ -1,19 +1,12 @@
-@extends('layouts.app')
+@extends('settings.layout')
 
-@section('title', 'Appearance Setting')
+@section('title', 'Appearance settings')
 
-@section('content')
+@section('settings.content')
 
-    @include('settings.header')
-
-    <div class="row">
-        <div class="col-md-3 ps-0">
-            @include('settings.nav')
-        </div>
-        <div class="col-md-6 ps-0">
-
-        </div>
-    </div>
+    <section>
+        <p class="text-sm text-muted mb-4">You can add app theme settings here!</p>
+    </section>
 
 @endsection
 
