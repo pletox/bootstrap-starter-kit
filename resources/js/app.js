@@ -19,6 +19,10 @@ import "./easyDelete.js"
 
 import {createIcons, icons} from "lucide";
 
+document.addEventListener('livewire:navigating', function () {
+    $.fn.dataTable.tables({ visible: true, api: true }).destroy();
+});
+
 document.addEventListener('livewire:navigated', function () {
     createIcons({icons});
 
