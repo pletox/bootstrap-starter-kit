@@ -8,12 +8,13 @@
         <div class="d-flex align-items-center justify-content-between">
             <h3>Manage Categories</h3>
 
-            <a href="#" data-bs-toggle="#categoryModal" id="add-category-btn" class="btn btn-dark">
-                <i class="fas fa-add me-1"></i> Add Category
-            </a>
+            <x-button data-bs-toggle="#categoryModal" id="add-category-btn" color="dark">
+                <x-lucide-plus class="w-4 h-4"/>
+                <span class="d-none d-sm-inline-block">Add Category</span>
+            </x-button>
         </div>
 
-        <div class="card mt-3 rounded-top-0">
+        <x-card class="mt-3" body-class="px-0 pt-0 pt-sm-3">
             <div class="table-responsive">
                 <table id="categories-table" class="table">
                     <thead>
@@ -28,41 +29,21 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </x-card>
 
+        <x-modal id="categoryModal" title="Create Category">
+            <x-form id="categoryForm">
+                <x-modal.body class="space-y-3">
+                    <x-input name="name" label="Name" placeholder="Enter name"/>
+                </x-modal.body>
 
-        <div class="modal fade" id="categoryModal" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h6 class="modal-title fw-bold" id="modelHeading"></h6>
-                    </div>
-                    <form id="categoryForm" class="form-horizontal">
-                        <div class="modal-body">
+                <x-modal.footer>
+                    <x-button color="secondary" data-bs-dismiss="modal">Cancel</x-button>
+                    <x-button color="dark" type="submit">Submit</x-button>
+                </x-modal.footer>
+            </x-form>
+        </x-modal>
 
-                            <input type="hidden" name="id" id="id">
-                            <div class="form-group">
-                                <label for="name" class="form-label">Name</label>
-                                <div class="col-sm-12">
-                                    <input type="text" class="form-control" id="name" name="name"
-                                           placeholder="Enter Name"
-                                           value="">
-                                    <div class="invalid-feedback">Invalid feedback</div>
-                                </div>
-                            </div>
-
-
-
-                        </div>
-
-                        <div class="modal-footer bg-light d-flex justify-content-end py-1">
-                            <button type="submit" class="btn btn-dark" id="save">Save Category
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
     </div>
 
 @endsection

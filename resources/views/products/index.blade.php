@@ -8,12 +8,13 @@
         <div class="d-flex align-items-center justify-content-between">
             <h3>Manage Products</h3>
 
-            <a href="#" data-bs-toggle="#productModal" id="add-product-btn" class="btn btn-dark">
-                <i class="fas fa-add me-1"></i> Add Product
-            </a>
+            <x-button data-bs-toggle="#productModal" id="add-product-btn" color="dark">
+                <x-lucide-plus class="w-4 h-4"/>
+                <span class="d-none d-sm-inline-block">Add Product</span>
+            </x-button>
         </div>
 
-        <div class="card mt-3 rounded-top-0">
+        <x-card class="mt-3" body-class="px-0 pt-0 pt-sm-3">
             <div class="table-responsive">
                 <table id="products-table" class="table">
                     <thead>
@@ -30,13 +31,13 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </x-card>
 
 
         <x-modal id="productModal" title="Create Product">
             <x-form id="productForm">
 
-                <x-modal.body class="space-y-4">
+                <x-modal.body class="space-y-3">
                     <input type="hidden" name="id" id="id">
 
                     <x-input name="name" id="name" label="Name" placeholder="Enter Name"/>
@@ -51,12 +52,6 @@
                         @endforeach
                     </x-select>
 
-
-                    <x-file-input name="photo" label="Select Image" preview preview-position="left"/>
-
-                    <x-datepicker name="date" id="date" label="Select Date" placeholder="Select Date" range/>
-
-                    <x-datepicker name="date2" id="date2" label="Select Date 2" placeholder="Select Date 2"/>
 
                 </x-modal.body>
 

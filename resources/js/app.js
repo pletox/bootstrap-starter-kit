@@ -16,21 +16,16 @@ import 'datatables.net-responsive-bs5';
 
 import "./easyAjax.js"
 import "./easyDelete.js"
+import "./extendJquery.js"
 
 import {createIcons, icons} from "lucide";
 
 document.addEventListener('livewire:navigating', function () {
-    $.fn.dataTable.tables({ visible: true, api: true }).destroy();
+    $.fn.dataTable.tables({visible: true, api: true}).destroy();
 });
 
 document.addEventListener('livewire:navigated', function () {
     createIcons({icons});
-
-    $('.form-datepicker').each(function (i, element) {
-        $(element).flatpickr({
-            dateFormat: 'd/m/Y'
-        });
-    });
 
     const sidebarToggle = document.querySelector("#sidebar-toggle");
     if (sidebarToggle) {
