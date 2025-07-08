@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Products')
+@section('title', 'Equipments')
 
 @section('content')
 
     <div class="px-3">
         <div class="d-flex align-items-center justify-content-between">
-            <h3>Manage Products</h3>
+            <h3>Manage Equipments</h3>
 
             <x-button data-bs-toggle="#productModal" id="add-product-btn" color="dark">
                 <x-lucide-plus class="w-4 h-4"/>
-                <span class="d-none d-sm-inline-block">Add Product</span>
+                <span class="d-none d-sm-inline-block">Add Equipment</span>
             </x-button>
         </div>
 
@@ -33,35 +33,7 @@
             </div>
         </x-card>
 
-
-        <x-modal id="productModal" title="Create Product">
-            <x-form id="productForm">
-
-                <x-modal.body class="space-y-3">
-                    <input type="hidden" name="id" id="id">
-
-                    <x-input name="name" id="name" label="Name" placeholder="Enter Name"/>
-
-                    <x-textarea id="description" name="description" label="Enter Description"
-                                placeholder="Enter Description"/>
-
-                    <x-select id="category_id" name="category_id" label="Select Category"
-                              placeholder="Select Category">
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                        @endforeach
-                    </x-select>
-
-
-                </x-modal.body>
-
-                <x-modal.footer>
-                    <x-button color="secondary" data-bs-dismiss="modal">Cancel</x-button>
-                    <x-button color="dark" type="submit">Submit</x-button>
-                </x-modal.footer>
-            </x-form>
-
-        </x-modal>
+     @include('products._form')
 
     </div>
 
@@ -89,7 +61,7 @@
             $('#add-product-btn').click(function () {
                 $('#id').val('');
                 $('#productForm').trigger("reset");
-                $('#productModal .model-title').html("Create New Product");
+                $('#productModal .model-title').html("Create New Equipment");
                 $('.form-select').trigger('change');
                 $('#productModal').modal('show');
             });
@@ -137,7 +109,8 @@
                         }
                     });
 
-
+                    // **Set the attributes array dynamically:**
+                    setAttributesFromAjax(response.data.attributes || []);
                 });
             });
 
@@ -176,5 +149,74 @@
                 });
             });
         });
+
+        // Initial attributes from old input or default empty
+        let attributes = @json(old('attributes', [['key' => '', 'value' => '']]));
+
+        function renderAttributes() {
+            const container = $('#attributeRows');
+            container.empty();
+
+            attributes.forEach((attr, index) => {
+                const row = `
+                <div class="row mb-2 align-items-end attribute-row" data-index="${index}">
+                    <div class="col-md-5">
+                        <input type="text"
+                               class="form-control"
+                               name="attributes[${index}][key]"
+                               value="${attr.key}"
+                               placeholder="Attribute Key (e.g. Phase)"
+                               required />
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text"
+                               class="form-control"
+                               name="attributes[${index}][value]"
+                               value="${attr.value}"
+                               placeholder="Attribute Value (e.g. 3-Phase)"
+                               required />
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <button type="button" class="btn btn-outline-danger btn-sm remove-attribute" ${attributes.length <= 1 ? 'disabled' : ''}>
+                            <i class="bi bi-x-circle"></i> Remove
+                        </button>
+                    </div>
+                </div>
+            `;
+                container.append(row);
+            });
+        }
+
+        function addAttribute() {
+            attributes.push({ key: '', value: '' });
+            renderAttributes();
+        }
+
+        function removeAttribute(index) {
+            attributes.splice(index, 1);
+            renderAttributes();
+        }
+
+        // On page ready
+        $(document).ready(function () {
+            renderAttributes();
+
+            $('#addAttributeBtn').on('click', function () {
+                addAttribute();
+            });
+
+            // Delegate remove buttons
+            $('#attributeWrapper').on('click', '.remove-attribute', function () {
+                const index = $(this).closest('.attribute-row').data('index');
+                removeAttribute(index);
+            });
+        });
+
+        // To use from JS (e.g. when loading product to edit)
+        function setAttributesFromAjax(newAttributes) {
+            attributes = newAttributes.length > 0 ? newAttributes : [{ key: '', value: '' }];
+            renderAttributes();
+        }
     </script>
+
 @endpush

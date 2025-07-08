@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Products;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductAttribute;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
@@ -39,20 +40,49 @@ class ProductsController extends Controller
             'name' => 'required',
             'description' => 'required',
             'category_id' => 'required',
-            'date' => 'required',
         ]);
 
         if ($request->id) {
-            Product::find($request->id)->update($request->all());
+            // Update existing product
+            $product = Product::findOrFail($request->id);
+            $product->update($request->all());
+
+            // Delete old attributes
+            ProductAttribute::where('product_id', $product->id)->delete();
+
+            // Insert new attributes
+            foreach ($request->input('attributes', []) as $attr) {
+                if (!empty($attr['key']) && !empty($attr['value'])) {
+                    ProductAttribute::create([
+                        'product_id' => $product->id,
+                        'key' => $attr['key'],
+                        'value' => $attr['value'],
+                    ]);
+                }
+            }
         } else {
-            Product::create($request->all());
+            // Create new product
+            $product = Product::create($request->all());
+
+            // Insert attributes
+            foreach ($request->input('attributes', []) as $attr) {
+                if (!empty($attr['key']) && !empty($attr['value'])) {
+                    ProductAttribute::create([
+                        'product_id' => $product->id,
+                        'key' => $attr['key'],
+                        'value' => $attr['value'],
+                    ]);
+                }
+            }
         }
 
         return response()->json(['message' => 'Product saved successfully.']);
     }
 
+
     public function edit(Product $product)
     {
+        $product->load('attributes');
         return response()->json($product);
     }
 

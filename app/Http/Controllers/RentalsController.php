@@ -6,7 +6,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
-class CategoriesController extends Controller
+class RentalsController extends Controller
 {
     public function index(Request $request)
     {

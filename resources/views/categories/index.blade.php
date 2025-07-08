@@ -21,6 +21,7 @@
                     <tr>
                         <th>#</th>
                         <th>Name</th>
+                        <th>Description</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -31,18 +32,7 @@
             </div>
         </x-card>
 
-        <x-modal id="categoryModal" title="Create Category">
-            <x-form id="categoryForm">
-                <x-modal.body class="space-y-3">
-                    <x-input name="name" label="Name" placeholder="Enter name"/>
-                </x-modal.body>
-
-                <x-modal.footer>
-                    <x-button color="secondary" data-bs-dismiss="modal">Cancel</x-button>
-                    <x-button color="dark" type="submit">Submit</x-button>
-                </x-modal.footer>
-            </x-form>
-        </x-modal>
+       @include('categories._form')
 
     </div>
 
@@ -59,6 +49,7 @@
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'name', name: 'name'},
+                    {data: 'description', name: 'description'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ],
             });
