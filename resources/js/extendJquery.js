@@ -719,6 +719,6 @@ $(document).on('click', '[data-toggle-block]', function (e) {
 });
 
 
-window.onLivewireNavigated = function (callback) {
+window.onPageNavigated = function (callback) {
     document.addEventListener('livewire:navigated', callback);
 };

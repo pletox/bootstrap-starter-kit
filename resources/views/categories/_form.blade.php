@@ -2,7 +2,7 @@
     <x-form id="categoryForm">
         <x-modal.body class="space-y-3">
             <input type="hidden" name="id" />
-            <x-input name="name" label="Name" placeholder="Enter name"/>
+            <x-input  name="name" label="Name" placeholder="Enter name"/>
             <x-textarea name="description" label="Description" placeholder="Enter description"/>
 
             <x-select id="status" name="status" label="Status" placeholder="Select Status">
@@ -19,7 +19,8 @@
 </x-modal>
 
 <script type="module">
-    onLivewireNavigated(() => {
+    onPageNavigated(() => {
         $('#status').jpSelect2();
+
     });
 </script>
