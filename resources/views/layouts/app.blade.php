@@ -8,11 +8,13 @@
 
     @routes
 
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"/>
+
+
     @vite('resources/js/jquery.js')
     @vite('resources/js/jqueryui.js')
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"/>
     @stack('css')
 
 </head>

@@ -104,3 +104,45 @@ a.sidebar-link {
     border: none;
 }
 
+/* General placeholder style for Bootstrap inputs */
+.form-control::placeholder {
+    font-size: 0.875rem; /* small text */
+    color: #6c757d;      /* Bootstrap's default placeholder gray */
+    opacity: 1;          /* override browser default */
+}
+
+/* Force same style on inputs/selects */
+.form-control,
+.form-select {
+    font-size: 0.875rem;
+}
+
+/* Select2 single placeholder */
+.select2-container--bootstrap-5 .select2-selection--single .select2-selection__placeholder {
+    font-size: 0.875rem !important;
+    color: #6c757d !important;
+    opacity: 1;
+}
+
+/* Select2 multiple placeholder */
+.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__placeholder {
+    font-size: 0.875rem !important;
+    color: #6c757d !important;
+    opacity: 1;
+}
+
+/* jQuery UI Datepicker placeholder text (input) */
+input.hasDatepicker::placeholder {
+    font-size: 0.875rem;
+    color: #6c757d;
+    opacity: 1;
+}
+
+/* Ensure Select2 dropdown text matches */
+.select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered,
+.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered {
+    padding-left: 0 !important;
+    padding-top: 1px;
+    font-size: 0.875rem !important;
+    color: #212529 !important; /* normal text */
+}
