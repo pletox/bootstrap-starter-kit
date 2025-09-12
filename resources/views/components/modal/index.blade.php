@@ -21,9 +21,9 @@
 
             @if(!$headerHidden)
                 <!-- Modal Header -->
-                <div class="modal-header">
-                    <h5 class="modal-title">{{ $title }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header py-2">
+                    <h6 class="modal-title">{{ $title }}</h6>
+                    <button type="button" class="btn-close" style="font-size: 12px;" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
             @endif
 

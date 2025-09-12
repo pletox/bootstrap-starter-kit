@@ -21,6 +21,5 @@
 <script type="module">
     onPageNavigated(() => {
         $('#status').jpSelect2();
-
     });
 </script>
