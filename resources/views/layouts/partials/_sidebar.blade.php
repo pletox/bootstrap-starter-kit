@@ -6,7 +6,7 @@
                 <div class="d-flex align-items-center justify-content-center overflow-hidden rounded w-8 h-8 bg-black">
                     <x-lucide-building class="w-5 h-5 text-white"/>
                 </div>
-                <span class="text-truncate">ERM</span>
+                <span class="text-truncate">{{ env('APP_NAME') }}</span>
             </a>
         </div>
 
@@ -22,79 +22,12 @@
             </li>
 
             <li class="sidebar-item">
-                <a href="{{ route('products.index') }}" wire:navigate
-                   class="sidebar-link text-gray-600 font-bold {{ request()->routeIs('products.index') ? 'active' : '' }}">
-                    <x-lucide-bell class="w-4 h-4 text-slate-600"/>
-                    <span class="ps-2">Notifications</span>
-                </a>
-            </li>
-
-            <li class="sidebar-item">
                 <a href="{{ route('categories.index') }}" wire:navigate
                    class="sidebar-link text-gray-600 font-bold {{ request()->routeIs('categories.index') ? 'active' : '' }}">
                     <x-lucide-layout-grid class="w-4 h-4 text-slate-600"/>
                     <span class="ps-2">Categories</span>
                 </a>
             </li>
-
-            <li class="sidebar-item">
-                <a href="{{ route('products.index') }}" wire:navigate
-                   class="sidebar-link text-gray-600 font-bold {{ request()->routeIs('products.index') ? 'active' : '' }}">
-                    <x-lucide-package-search class="w-4 h-4 text-slate-600"/>
-                    <span class="ps-2">Equipments</span>
-                </a>
-            </li>
-
-            <li class="sidebar-item">
-                <a href="{{ route('products.index') }}" wire:navigate
-                   class="sidebar-link text-gray-600 font-bold {{ request()->routeIs('products.index') ? 'active' : '' }}">
-                    <x-lucide-file-box class="w-4 h-4 text-slate-600"/>
-                    <span class="ps-2">Rentals</span>
-                </a>
-            </li>
-
-            <li class="sidebar-item">
-                <a href="{{ route('products.index') }}" wire:navigate
-                   class="sidebar-link text-gray-600 font-bold {{ request()->routeIs('products.index') ? 'active' : '' }}">
-                    <x-lucide-wrench class="w-4 h-4 text-slate-600"/>
-                    <span class="ps-2">Maintenance Logs</span>
-                </a>
-            </li>
-            <hr class="">
-            <li class="sidebar-item">
-                <a href="{{ route('products.index') }}" wire:navigate
-                   class="sidebar-link text-gray-600 font-bold {{ request()->routeIs('products.index') ? 'active' : '' }}">
-                    <x-lucide-users class="w-4 h-4 text-slate-600"/>
-                    <span class="ps-2">Customers</span>
-                </a>
-            </li>
-
-            <li class="sidebar-item">
-                <a href="{{ route('products.index') }}" wire:navigate
-                   class="sidebar-link text-gray-600 font-bold {{ request()->routeIs('products.index') ? 'active' : '' }}">
-                    <x-lucide-file-text class="w-4 h-4 text-slate-600"/>
-                    <span class="ps-2">Invoices</span>
-                </a>
-            </li>
-
-            <li class="sidebar-item">
-                <a href="{{ route('products.index') }}" wire:navigate
-                   class="sidebar-link text-gray-600 font-bold {{ request()->routeIs('products.index') ? 'active' : '' }}">
-                    <x-lucide-credit-card class="w-4 h-4 text-slate-600"/>
-                    <span class="ps-2">Payments</span>
-                </a>
-            </li>
-
-            <li class="sidebar-item">
-                <a href="{{ route('products.index') }}" wire:navigate
-                   class="sidebar-link text-gray-600 font-bold {{ request()->routeIs('products.index') ? 'active' : '' }}">
-                    <x-lucide-bar-chart class="w-4 h-4 text-slate-600"/>
-                    <span class="ps-2">Reports</span>
-                </a>
-            </li>
-
-
-
 
 
 

@@ -4,6 +4,11 @@
             <input type="hidden" name="id" />
             <x-input name="name" label="Name" placeholder="Enter name"/>
             <x-textarea name="description" label="Description" placeholder="Enter description"/>
+
+            <x-select id="status" name="status" label="Status" placeholder="Select Status">
+                <option>Active</option>
+                <option>In Active</option>
+            </x-select>
         </x-modal.body>
 
         <x-modal.footer>
@@ -12,3 +17,9 @@
         </x-modal.footer>
     </x-form>
 </x-modal>
+
+<script type="module">
+    onLivewireNavigated(() => {
+        $('#status').jpSelect2();
+    });
+</script>

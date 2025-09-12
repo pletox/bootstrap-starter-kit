@@ -1,9 +1,9 @@
 $.easyAjax = (options) => {
     var defaults = {
-        type: 'GET',
+        type: 'POST',
         container: 'body',
         blockUI: true,
-        disableButton: false,
+        disableButton: true,
         buttonSelector: "[type='submit']",
         dataType: "json",
         messagePosition: "toastr",

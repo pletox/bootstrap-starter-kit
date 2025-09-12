@@ -1,66 +1,52 @@
 @props([
-    'name',
+    'label' => '',
     'id' => null,
-    'label' => null,
-    'placeholder' => 'Select an option',
-    'multiple' => false,
-    'size' => 'md', // sm, md, lg
-    'error' => null,
-    'containerClass' => '',
+    'name' => '',
+    'placeholder' => '',
+    'size' => 'md',   // sm|md|lg
+    'required' => false,
+    'append' => null,
 ])
 
 @php
-    $id = $id ?? Str::random(10); // Generate a unique ID if not provided
+    use Illuminate\Support\Str;
+
     $sizeClass = match($size) {
         'sm' => 'form-select-sm',
         'lg' => 'form-select-lg',
-        default => 'form-select'
+        default => '',
     };
 
-     $wireModel = collect($attributes->whereStartsWith('wire:model'))->first();
+    $isInvalid = $errors->has($name);
+    $id = $id ?? Str::random(10);
 @endphp
 
-<div class="form-group {{ $containerClass }}">
-    @if ($label)
+<div class="mb-3">
+    @if($label)
         <label for="{{ $id }}" class="form-label">{{ $label }}</label>
     @endif
 
-    <select
-        id="{{ $id }}"
-        name="{{ $name }}"
-        class="form-select {{ $sizeClass }} @error($name) is-invalid @enderror"
-        {{ $multiple ? 'multiple' : '' }}
-        {{ $attributes }}  {{-- Enables wire:model and x-model --}}
-    >
-        <option></option>
-        {{ $slot }}
-    </select>
-
-
-    <div class="invalid-feedback"> @error($name) {{ $message }}   @enderror</div>
-
-</div>
-
-<script>
-    document.addEventListener('livewire:navigated', function () {
-        let select = $('#{{ $id }}').select2({
-            dropdownParent: $('#{{ $id }}').parent(),
-            theme: 'bootstrap-5',
-            placeholder: '{{ $placeholder }}',
-            allowClear: true
-        });
-
-        select.on('change', function () {
-            let value = $(this).val();
-
-            @if ($wireModel)
-            if (window.Livewire) {
-                Livewire.find('{{ $wireModel }}')?.set('{{ $wireModel }}', value);
-            }
+    <div class="input-group">
+        <select
+            id="{{ $id }}"
+            name="{{ $name }}"
+            @if($required) required @endif
+            aria-invalid="{{ $isInvalid ? 'true' : 'false' }}"
+            {{ $attributes->merge([
+                'class' => 'form-select ' . $sizeClass . ($isInvalid ? ' is-invalid' : ''),
+            ]) }}
+        >
+            @if($placeholder)
+                <option value="" disabled selected hidden>{{ $placeholder }}</option>
             @endif
 
-            // Update Alpine.js model if x-model is used
-            select.get(0).dispatchEvent(new Event('input', {bubbles: true}));
-        });
-    });
-</script>
+            {{ $slot }}
+        </select>
+
+        @if(!is_null($append))
+            <span class="input-group-text rounded-start-0">{{ $append }}</span>
+        @endif
+    </div>
+
+    <div class="invalid-feedback"> @error($name) {{ $message }}   @enderror</div>
+</div>

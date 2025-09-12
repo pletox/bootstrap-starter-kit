@@ -16,23 +16,23 @@
 
         <x-card class="mt-3" body-class="px-0 pt-0 pt-sm-3">
             <div class="table-responsive">
-                <table id="categories-table" class="table">
+                <x-table id="categories-table" class="table">
                     <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Actions</th>
-                    </tr>
+                    <x-table.row>
+                        <x-table.header>#</x-table.header>
+                        <x-table.header>Name</x-table.header>
+                        <x-table.header>Description</x-table.header>
+                        <x-table.header>Actions</x-table.header>
+                    </x-table.row>
                     </thead>
                     <tbody>
 
                     </tbody>
-                </table>
+                </x-table>
             </div>
         </x-card>
 
-       @include('categories._form')
+        @include('categories._form')
 
     </div>
 
@@ -41,24 +41,22 @@
 @push('js')
     <script type="module">
         $(function () {
+            let form = useForm('#categoryForm');
+            let modal = useModal('#categoryModal');
 
-            var table = $('#categories-table').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: "{{ route('categories.index') }}",
+            let table = $('#categories-table').jpDataTable({
+                url: route('categories.index'),
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'name', name: 'name'},
                     {data: 'description', name: 'description'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ],
-            });
+            })
 
             $('#add-category-btn').click(function () {
-                $('#id').val('');
-                $('#categoryForm').trigger("reset");
-                $('#modelHeading').html("Create New Category");
-                $('#categoryModal').modal('show');
+                form.reset();
+                modal.open('Create New Category');
             });
 
             $('#categoryForm').on('submit', function (e) {
@@ -66,18 +64,13 @@
 
                 var data = new FormData($('#categoryForm')[0]);
 
-
                 $.easyAjax({
                     url: "{{ route('categories.storeOrUpdate') }}",
                     container: '#categoryForm',
-                    type: "POST",
-                    disableButton: true,
-                    blockUI: true,
                     data: data,
                     onComplete: () => {
-                        $('#categoryModal').modal('hide');
-                        $('#modelHeading').html("Create New Category");
-                        $('#categoryForm').trigger("reset");
+                        modal.close();
+                        form.reset();
                         table.draw(false);
                     }
                 })
@@ -88,20 +81,8 @@
                 e.preventDefault();
                 var id = $(this).data('id');
                 axios.get(route('categories.edit', {category: id})).then((response) => {
-                    $('#modelHeading').html("Edit Category");
-                    $('#categoryModal').modal('show');
-
-                    var form = $('#categoryForm'); // Adjust the form ID as needed
-
-                    $.each(response.data, function (key, value) {
-                        var inputField = form.find('[name="' + key + '"]'); // Scope to form
-
-                        if (inputField.length) {
-                            inputField.val(value);
-                            $(inputField).trigger('change')
-                        }
-                    });
-
+                    form.fill(response.data);
+                    modal.open('Edit Category');
                 });
             });
 
