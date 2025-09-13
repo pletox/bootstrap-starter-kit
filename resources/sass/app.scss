@@ -36,6 +36,7 @@ table.dataTable {
 }
 
 table.dataTable thead > tr > th, table.dataTable tbody > tr > td {
+    padding: .35rem .6rem !important;   /* was ~.9–1rem */
     border-right: 1px solid var(--bs-border-color);
 }
 
@@ -146,3 +147,4 @@ input.hasDatepicker::placeholder {
     font-size: 0.875rem !important;
     color: #212529 !important; /* normal text */
 }
+
