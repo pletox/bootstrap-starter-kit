@@ -30,8 +30,6 @@ class CategoriesController extends Controller
                 $categories = $categories->orderBy($sortCol, $sortDir ?? 'asc');
             }
 
-
-
             $filterCount = $categories->clone()->count();
             $totalCount = Category::count();
 
@@ -62,6 +60,7 @@ class CategoriesController extends Controller
         $request->validate([
             'name' => 'required|min:2'
         ]);
+
         if ($request->id) {
             Category::find($request->id)->update($request->all());
         } else {

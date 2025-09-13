@@ -14,9 +14,10 @@
             </x-button>
         </div>
 
-        <x-card class="mt-3" body-class="px-0 pt-0 pt-sm-3">
+
+        <x-card class="mt-3" body-class="px-0 pt-0 pb-1">
             <div class="table-responsive">
-                <x-table id="categories-table" class="table">
+                <x-table id="categories-table" class="table table-borderless">
                     <thead>
                     <x-table.row>
                         <x-table.header>#</x-table.header>
@@ -31,6 +32,7 @@
                 </x-table>
             </div>
         </x-card>
+
 
         @include('categories._form')
 
