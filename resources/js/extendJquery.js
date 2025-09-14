@@ -212,13 +212,55 @@ window.useForm = function (formSelector) {
     };
 };
 
+window.getInputFieldVal = function (inputField) {
+    const $input = $(inputField);
+
+    // --- File input (return FileList or null) ---
+    if ($input.attr('type') === 'file') {
+        return $input[0].files.length ? $input[0].files : null;
+    }
+
+    // --- jpEditor (Quill wrapper) ---
+    if ($input[0] && $input[0].jpEditor) {
+        const quill = $input[0].jpEditor;
+        return quill.root.innerHTML;
+    }
+
+    // --- Checkbox ---
+    if ($input.is(':checkbox')) {
+        return $input.is(':checked');
+    }
+
+    // --- Radio group ---
+    if ($input.attr('type') === 'radio') {
+        let name = $input.attr('name');
+        if (name) {
+            return $('input[type="radio"][name="' + name + '"]:checked').val() || null;
+        }
+        return $input.is(':checked') ? $input.val() : null;
+    }
+
+    // --- Flatpickr Datepicker ---
+    if ($input[0] && $input[0]._flatpickr) {
+        const fp = $input[0]._flatpickr;
+        return fp.selectedDates.length ? fp.input.value : null;
+    }
+
+    // --- Select2 ---
+    if ($input.hasClass('select2-hidden-accessible')) {
+        return $input.val();
+    }
+
+    // --- Default input fallback ---
+    return $input.val();
+};
+
 
 window.setInputFieldVal = function (inputField, value) {
     const $input = $(inputField);
 
-    // --- Default input fallback ---
+    // --- File input (skip) ---
     if ($input.attr('type') === 'file') {
-        // Skip file inputs – browsers block programmatic file value setting
         return;
     }
 
@@ -239,6 +281,18 @@ window.setInputFieldVal = function (inputField, value) {
 
     if (colorWrapper.length && typeof colorWrapper[0].colorVal === 'function') {
         colorWrapper[0].colorVal(value);
+        return;
+    }
+
+    // --- jpEditor (Quill wrapper) ---
+    if ($input[0] && $input[0].jpEditor) {
+        const quill = $input[0].jpEditor;
+        if (value) {
+            quill.root.innerHTML = value;
+        } else {
+            quill.root.innerHTML = '';
+        }
+        $input.val(quill.root.innerHTML).trigger('change');
         return;
     }
 
@@ -287,7 +341,6 @@ window.setInputFieldVal = function (inputField, value) {
         if (!url || missing.length === 0) {
             applyValue();
         } else {
-            // Fetch missing values
             $.ajax({
                 url: url,
                 data: {id: missing},
@@ -710,6 +763,152 @@ $.fn.jpDatepicker = function (options = {}) {
         if ($original.val()) $clearBtn.show();
     });
 };
+
+(function ($) {
+    $.fn.jpTabs = function (options) {
+        // Default options
+        let settings = $.extend({
+            ajax: {},          // { tabId: "url" }
+            reload: false,     // reload AJAX every time tab is shown
+            onTabChange: null  // callback(tabId, relatedTarget)
+        }, options);
+
+        return this.each(function () {
+            let $tabs = $(this);
+
+            // Listen for tab shown event
+            $tabs.on('shown.bs.tab', function (e) {
+                let $tab = $(e.target);
+                let tabId = $tab.attr('id');
+                let targetId = $tab.attr('data-bs-target');
+                let $pane = $(targetId);
+
+                // Fire callback
+                if (typeof settings.onTabChange === "function") {
+                    settings.onTabChange(tabId, e.relatedTarget);
+                }
+
+                // Load AJAX if URL is defined
+                if (settings.ajax[tabId]) {
+                    if (settings.reload || $pane.is(':empty')) {
+                        // Bootstrap spinner
+                        $pane.html(`
+                            <div class="d-flex justify-content-center align-items-center p-3">
+                                <div class="spinner-border text-secondary me-2" role="status" style="width:1.5rem;height:1.5rem;">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <span class="text-muted small">Loading...</span>
+                            </div>
+                        `);
+
+                        $.get(settings.ajax[tabId], function (data) {
+                            $pane.html(data);
+                        }).fail(function () {
+                            $pane.html('<div class="p-3 text-danger small">⚠ Failed to load data.</div>');
+                        });
+                    }
+                }
+            });
+        });
+    };
+})(jQuery);
+
+(function ($) {
+    $.fn.jpEditor = function (options) {
+        const settings = $.extend({
+            theme: 'snow',
+            placeholder: 'Start writing...',
+            uploadUrl: '/api/editor/upload', // Laravel API route
+            csrfToken: $('meta[name="csrf-token"]').attr('content'),
+            modules: {
+                toolbar: {
+                    container: [
+                        ['bold', 'italic', 'underline'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['link', 'blockquote', 'code-block'],
+                        [{ 'align': [] }],
+                        ['image']
+                    ],
+                    handlers: {
+                        image: function () {
+                            let fileInput = this.container.querySelector('input.ql-image[type=file]');
+                            if (fileInput == null) {
+                                fileInput = document.createElement('input');
+                                fileInput.setAttribute('type', 'file');
+                                fileInput.setAttribute('accept', 'image/*');
+                                fileInput.classList.add('ql-image');
+                                fileInput.style.display = 'none';
+
+                                fileInput.addEventListener('change', () => {
+                                    const file = fileInput.files[0];
+                                    if (file != null) {
+                                        let formData = new FormData();
+                                        formData.append('image', file);
+
+                                        fetch(settings.uploadUrl, {
+                                            method: 'POST',
+                                            headers: {
+                                                'X-CSRF-TOKEN': settings.csrfToken
+                                            },
+                                            body: formData
+                                        })
+                                            .then(res => res.json())
+                                            .then(data => {
+                                                if (data.url) {
+                                                    const range = this.quill.getSelection();
+                                                    this.quill.insertEmbed(range.index, 'image', data.url);
+                                                }
+                                            })
+                                            .catch(err => console.error(err));
+                                    }
+                                });
+
+                                this.container.appendChild(fileInput);
+                            }
+                            fileInput.click();
+                        }
+                    }
+                }
+            }
+        }, options);
+
+        return this.each(function () {
+            let $textarea = $(this);
+
+            // prevent duplicate init
+            if ($textarea.attr("data-jp-editor")) return;
+
+            let quillId = 'jp-editor-' + Math.random().toString(36).substring(2, 9);
+            let $editorContainer = $('<div/>').attr('id', quillId).insertAfter($textarea);
+            $textarea.hide().attr("data-jp-editor", "true");
+
+            let quill = new Quill(`#${quillId}`, settings);
+
+            quill.root.innerHTML = $textarea.val();
+            quill.on('text-change', function () {
+                $textarea.val(quill.root.innerHTML).trigger('change');
+            });
+
+            $textarea[0].jpEditor = quill;
+        });
+    };
+
+    // --- Destroy Method ---
+    $.fn.jpEditorDestroy = function () {
+        return this.each(function () {
+            let $textarea = $(this);
+            let quill = $textarea[0].jpEditor;
+
+            if (quill) {
+                $(quill.root).closest('.ql-container').remove();
+                $textarea.show().removeAttr("data-jp-editor");
+                delete $textarea[0].jpEditor;
+            }
+        });
+    };
+})(jQuery);
+
+
 
 // Auto-init on a page load
 $(document).on('click', '[data-toggle-block]', function (e) {

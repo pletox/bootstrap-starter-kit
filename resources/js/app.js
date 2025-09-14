@@ -14,6 +14,7 @@ window.Handlebars = Handlebars;
 
 import 'datatables.net-responsive-bs5';
 
+
 import "./easyAjax.js"
 import "./easyDelete.js"
 import "./extendJquery.js"
@@ -22,6 +23,7 @@ import {createIcons, icons} from "lucide";
 
 document.addEventListener('livewire:navigating', function () {
     $.fn.dataTable.tables({visible: true, api: true}).destroy();
+    $('[data-jp-editor]').jpEditorDestroy();
 });
 
 document.addEventListener('livewire:navigated', function () {

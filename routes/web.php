@@ -31,4 +31,15 @@ Route::group(['middleware' => ['auth:web']], function () {
     });
 
 
+    /* EXAMPLE CODE CAN BE DELETED ONCE REFERRED */
+    Route::view('ui-kit', 'uikit')->name('ui-kit');
+
+    Route::get('tabs/profile', function () {
+        return '<p>Profile From Ajax</p>';
+    })->name('tabs.profile');
+
+    Route::get('tabs/contact', function () {
+        return '<p>Contact In Ajax</p>';
+    })->name('tabs.contact');
+
 });

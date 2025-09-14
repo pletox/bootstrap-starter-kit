@@ -8,7 +8,9 @@
         <div class="d-flex align-items-center justify-content-between">
             <div>
                 <x-heading>Manage Categories</x-heading>
-                <x-text>This is the standard text component for body copy and general content throughout your application.</x-text>
+                <x-text>This is the standard text component for body copy and general content throughout your
+                    application.
+                </x-text>
             </div>
 
             <x-button data-bs-toggle="#categoryModal" id="add-category-btn" color="dark">
@@ -16,7 +18,6 @@
                 <span class="d-none d-sm-inline-block">Add Category</span>
             </x-button>
         </div>
-
 
         <x-card class="mt-3" body-class="px-0 pt-0 pb-1">
             <div class="table-responsive">
