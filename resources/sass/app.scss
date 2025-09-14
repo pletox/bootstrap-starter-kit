@@ -223,3 +223,49 @@ input.hasDatepicker::placeholder {
     height: 100%;
     object-fit: cover;
 }
+
+
+/* Remove Bootstrap default chevron from dropdown toggle */
+.dropdown-toggle::after {
+    display: none !important;
+    content: none !important;
+}
+
+/* Base dropdown styling */
+.dropdown-modern {
+    padding: 0.2rem;
+    min-width: 135px;
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    border-radius: 8px;
+}
+
+/* Dropdown items */
+.dropdown-modern .dropdown-item {
+    font-size: 0.875rem; /* small text */
+    font-weight: 500;
+    color: #111827; /* Tailwind gray-900 */
+    transition: all 0.15s ease-in-out;
+}
+
+/* Hover/active states */
+.dropdown-modern .dropdown-item:hover,
+.dropdown-modern .dropdown-item:focus {
+    background-color: #f9fafb; /* subtle gray bg */
+    color: #111827;
+}
+
+/* Divider look */
+.dropdown-modern .dropdown-divider {
+    margin: 4px 0;
+    border-color: #e5e7eb; /* gray-200 */
+}
+
+/* Danger item */
+.dropdown-modern .dropdown-item.text-danger {
+    color: #dc2626 !important; /* Tailwind red-600 */
+}
+
+.dropdown-modern .dropdown-item.text-danger:hover {
+    background-color: #fef2f2; /* subtle red bg */
+}
