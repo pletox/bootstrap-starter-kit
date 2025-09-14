@@ -32,6 +32,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
 
+    protected $appends = ['initials'];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -43,5 +45,17 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function getInitialsAttribute()
+    {
+        $name = $this->name ?? '';
+        $words = preg_split('/\s+/', trim($name));
+
+        if (count($words) >= 2) {
+            return strtoupper(mb_substr($words[0], 0, 1) . mb_substr($words[1], 0, 1));
+        }
+
+        return strtoupper(mb_substr($name, 0, 2));
     }
 }

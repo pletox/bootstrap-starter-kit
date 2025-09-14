@@ -26,7 +26,7 @@
         @if($loading)
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         @endif
-        <span class="button-text">{{ $slot }}</span>
+        <span class="button-text d-flex align-items-center gap-1">{{ $slot }}</span>
     </a>
 @else
     <button
@@ -72,6 +72,6 @@
         {{ $attributes->merge(['class' => "btn $colorClass $sizeClass d-flex align-items-center justify-content-center gap-2"]) }}>
 
         <span x-cloak x-show="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        <span class="button-text">{{ $slot }}</span>
+        <span class="button-text d-flex align-items-center gap-1">{{ $slot }}</span>
     </button>
 @endif

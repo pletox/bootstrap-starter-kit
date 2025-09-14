@@ -12,7 +12,7 @@
         </x-modal.body>
 
         <x-modal.footer>
-            <x-button color="secondary" data-bs-dismiss="modal">Cancel</x-button>
+            <x-button color="light" data-bs-dismiss="modal">Cancel</x-button>
             <x-button color="dark" type="submit">Submit</x-button>
         </x-modal.footer>
     </x-form>

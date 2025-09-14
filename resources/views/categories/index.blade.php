@@ -4,9 +4,12 @@
 
 @section('content')
 
-    <div class="px-3">
+    <div class="px-2">
         <div class="d-flex align-items-center justify-content-between">
-            <h3>Manage Categories</h3>
+            <div>
+                <x-heading>Manage Categories</x-heading>
+                <x-text>This is the standard text component for body copy and general content throughout your application.</x-text>
+            </div>
 
             <x-button data-bs-toggle="#categoryModal" id="add-category-btn" color="dark">
                 <x-lucide-plus class="w-4 h-4"/>
