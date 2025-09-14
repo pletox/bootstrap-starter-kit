@@ -19,11 +19,22 @@
             </x-button>
         </div>
 
+        <x-card class="mt-2" id="bulk-actions" style="display:none">
+            <!-- Uses global ajaxUrl -->
+            <button data-action="delete" class="btn btn-sm btn-danger">Delete Selected</button>
+
+            <!-- Custom url for this button -->
+            <button data-action="export" data-url="/api/items/export" class="btn btn-sm btn-secondary">
+                Export Selected
+            </button>
+        </x-card>
+
         <x-card class="mt-3" body-class="px-0 pt-0 pb-1">
             <div class="table-responsive">
                 <x-table id="categories-table" class="table table-borderless">
                     <thead>
                     <x-table.row>
+                        <x-table.header><input type="checkbox" id="select-all"></x-table.header>
                         <x-table.header>#</x-table.header>
                         <x-table.header>Name</x-table.header>
                         <x-table.header>Description</x-table.header>
@@ -53,11 +64,20 @@
             let table = $('#categories-table').jpDataTable({
                 url: route('categories.index'),
                 columns: [
+                    {data: 'select', name: 'select', orderable: false, searchable: false},
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'name', name: 'name'},
                     {data: 'description', name: 'description'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ],
+                bulk: {
+                    enabled: true,
+                    rowSelector: '.row-select',
+                    masterSelector: '#select-all',
+                    actionsSelector: '#bulk-actions',
+                    ajaxUrl: '/api/items/bulk-action', // fallback url
+                    paramName: 'ids'
+                }
             })
 
             $('#add-category-btn').click(function () {

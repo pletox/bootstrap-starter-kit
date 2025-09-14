@@ -488,6 +488,23 @@ $.fn.jpDataTable = function (options = {}) {
 
         const ajaxUrl = options.ajax?.url || $el.data('url');
 
+        // --- Bulk options (new) ---
+        // default markup conventions:
+        // - row checkbox selector e.g. '.row-select' placed inside each <tr>
+        // - master checkbox selector e.g. '#select-all' (can be anywhere)
+        // - actions container selector e.g. '#bulk-actions' which contains buttons with data-action attr
+        const bulkOpts = $.extend({
+            enabled: false,                 // enable bulk behaviour
+            rowSelector: '.row-select',     // checkbox inside each row
+            masterSelector: '#select-all',  // master checkbox to toggle visible rows
+            actionsSelector: '#bulk-actions', // container for bulk action buttons (will be shown/hidden)
+            paramName: 'ids',               // parameter name to send to server
+            ajaxUrl: null,                  // if provided, a POST to this url will be made for actions
+            ajaxMethod: 'POST',
+            ajaxHeaders: {},                // extra headers if needed
+            onBulkAction: null              // callback(action, ids, done) if provided, wont do ajax
+        }, options.bulk || {});
+
         const defaultOptions = {
             processing: true,
             serverSide: true,
@@ -534,10 +551,143 @@ $.fn.jpDataTable = function (options = {}) {
 
         // Store instance on the element for later access if needed
         $el.data('jp-datatable-instance', tableInstance);
+
+        // ----------------------------
+        // Bulk actions implementation
+        // ----------------------------
+        if (bulkOpts.enabled) {
+            // selected ids set
+            const selected = new Set();
+
+            // utility: read ids from currently checked row selectors (only visible rows)
+            function collectVisibleSelectedIds() {
+                const ids = [];
+                $el.find('tbody').find(bulkOpts.rowSelector).each(function () {
+                    const $cb = $(this);
+                    if ($cb.is(':checked')) {
+                        const id = $cb.val() ?? $cb.data('id') ?? $cb.attr('value');
+                        if (id !== undefined && id !== null) ids.push(id);
+                    }
+                });
+                return ids;
+            }
+
+            // update the visual bulk actions container (show/hide) and master checkbox state
+            function refreshBulkUI() {
+                const ids = collectVisibleSelectedIds();
+                const $actions = $(bulkOpts.actionsSelector);
+                if ($actions.length) {
+                    if (ids.length > 0) $actions.show();
+                    else $actions.hide();
+                }
+
+                // master checkbox: checked if all visible rows are selected, indeterminate if some
+                const $master = $(bulkOpts.masterSelector);
+                if ($master.length) {
+                    const $visibleCbs = $el.find('tbody').find(bulkOpts.rowSelector);
+                    const total = $visibleCbs.length;
+                    const checked = $visibleCbs.filter(':checked').length;
+                    $master.prop('checked', total > 0 && checked === total);
+                    $master.prop('indeterminate', checked > 0 && checked < total);
+                }
+            }
+
+            // bind checkbox events for visible rows
+            function bindRowCheckboxes() {
+                // unbind first to avoid duplicate handlers
+                $el.find('tbody').off('change.jpRowSelect', bulkOpts.rowSelector);
+                $el.find('tbody').on('change.jpRowSelect', bulkOpts.rowSelector, function () {
+                    const $cb = $(this);
+                    const id = $cb.val() ?? $cb.data('id') ?? $cb.attr('value');
+                    if ($cb.is(':checked')) selected.add(String(id));
+                    else selected.delete(String(id));
+                    refreshBulkUI();
+                });
+            }
+
+            // master checkbox behavior
+            function bindMasterCheckbox() {
+                $(bulkOpts.masterSelector).off('change.jpMasterSelect').on('change.jpMasterSelect', function () {
+                    const $master = $(this);
+                    const checked = $master.is(':checked');
+                    $el.find('tbody').find(bulkOpts.rowSelector).each(function () {
+                        $(this).prop('checked', checked).trigger('change');
+                    });
+                });
+            }
+
+            // handle action clicks
+            function bindActionButtons() {
+                const $actions = $(bulkOpts.actionsSelector);
+                $actions.off('click.jpBulkAction', '[data-action]').on('click.jpBulkAction', '[data-action]', function (e) {
+                    e.preventDefault();
+                    const action = $(this).data('action');
+                    const customUrl = $(this).data('url'); // <--- custom url support
+                    const ids = collectVisibleSelectedIds();
+                    if (!ids.length) return;
+
+                    // If user provided callback
+                    if (typeof bulkOpts.onBulkAction === 'function') {
+                        const done = () => tableInstance.draw(false);
+                        bulkOpts.onBulkAction(action, ids, done, customUrl);
+                        return;
+                    }
+
+                    // Determine url: prefer button data-url, else global bulk.ajaxUrl
+                    const url = customUrl || bulkOpts.ajaxUrl;
+                    if (!url) return;
+
+                    const payload = {};
+                    payload[bulkOpts.paramName] = ids;
+
+                    $.ajax({
+                        url: url,
+                        method: bulkOpts.ajaxMethod || 'POST',
+                        headers: bulkOpts.ajaxHeaders || {},
+                        data: payload,
+                        traditional: true,
+                        success: function (resp) {
+                            if (typeof options.onBulkSuccess === 'function') {
+                                options.onBulkSuccess(resp, action, ids, url);
+                            } else {
+                                tableInstance.draw(false);
+                            }
+                        },
+                        error: function (xhr) {
+                            if (typeof options.onBulkError === 'function') {
+                                options.onBulkError(xhr, action, ids, url);
+                            } else {
+                                console.error('Bulk action failed', xhr);
+                            }
+                        }
+                    });
+                });
+            }
+
+
+            // initial binds + redraw hook to rebind after table draw/paging
+            bindRowCheckboxes();
+            bindMasterCheckbox();
+            bindActionButtons();
+            refreshBulkUI();
+
+            // Rebind on table draw (paging/search/ordering)
+            tableInstance.on('draw', function () {
+                bindRowCheckboxes();
+                refreshBulkUI();
+            });
+
+            // Optionally expose selected ids on element
+            $el.data('jp-datatable-selected-ids', function () {
+                return collectVisibleSelectedIds();
+            });
+        }
+
     });
 
     return tableInstance;
 };
+
 
 $.fn.jpSelect2 = function (options = {}) {
     return this.each(function () {
