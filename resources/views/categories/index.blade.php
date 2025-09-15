@@ -20,13 +20,18 @@
         </div>
 
         <x-card class="mt-2" id="bulk-actions" style="display:none">
-            <!-- Uses global ajaxUrl -->
-            <button data-action="delete" class="btn btn-sm btn-danger">Delete Selected</button>
 
-            <!-- Custom url for this button -->
-            <button data-action="export" data-url="/api/items/export" class="btn btn-sm btn-secondary">
-                Export Selected
-            </button>
+            <div>You have selected <span class="fw-bold" id="selected-count"></span> entries</div>
+
+            <div class="mt-1">
+                <!-- Uses global ajaxUrl -->
+                <button data-action="delete" class="btn btn-sm btn-danger">Delete Selected</button>
+
+                <!-- Custom url for this button -->
+                <button data-action="export" data-url="/api/items/export" class="btn btn-sm btn-secondary">
+                    Export Selected
+                </button>
+            </div>
         </x-card>
 
         <x-card class="mt-3" body-class="px-0 pt-0 pb-1">
@@ -76,7 +81,11 @@
                     masterSelector: '#select-all',
                     actionsSelector: '#bulk-actions',
                     ajaxUrl: '/api/items/bulk-action', // fallback url
-                    paramName: 'ids'
+                    paramName: 'ids',
+                    // 👇 called every time selection changes
+                    onSelectionChange: function (ids, count) {
+                        $('#selected-count').text(count); // example badge update
+                    }
                 }
             })
 

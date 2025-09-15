@@ -169,11 +169,20 @@ window.useForm = function (formSelector) {
         reset() {
             $form[0]?.reset();
             this.clearSelects();
+            this.clearEditors();
             $form.find('input[type="hidden"]').not('[name="_token"]').val('');
         },
         clearSelects() {
             $form.find('select').each(function () {
                 $(this).val(null).trigger('change');
+            });
+        },
+        clearEditors() {
+            $form.find('textarea').each(function () {
+                if (this.jpEditor) {
+                    this.jpEditor.root.innerHTML = '';
+                    $(this).val('').trigger('change');
+                }
             });
         },
         fill(data = {}) {
@@ -514,6 +523,14 @@ $.fn.jpDataTable = function (options = {}) {
                 search: "_INPUT_",
                 searchPlaceholder: "Search..."
             },
+            columnDefs: [
+                {
+                    targets: 0,       // first column = checkbox
+                    orderable: false,
+                    searchable: false
+                }
+            ],
+            order: [[1, 'desc']], // make second column default sort
             ajax: {
                 url: ajaxUrl,
                 data: function (d) {
@@ -575,13 +592,15 @@ $.fn.jpDataTable = function (options = {}) {
             // update the visual bulk actions container (show/hide) and master checkbox state
             function refreshBulkUI() {
                 const ids = collectVisibleSelectedIds();
+
+                // Show/hide actions
                 const $actions = $(bulkOpts.actionsSelector);
                 if ($actions.length) {
                     if (ids.length > 0) $actions.show();
                     else $actions.hide();
                 }
 
-                // master checkbox: checked if all visible rows are selected, indeterminate if some
+                // Master checkbox sync
                 const $master = $(bulkOpts.masterSelector);
                 if ($master.length) {
                     const $visibleCbs = $el.find('tbody').find(bulkOpts.rowSelector);
@@ -590,7 +609,13 @@ $.fn.jpDataTable = function (options = {}) {
                     $master.prop('checked', total > 0 && checked === total);
                     $master.prop('indeterminate', checked > 0 && checked < total);
                 }
+
+                // 🔹 Call selection change handler if defined
+                if (typeof bulkOpts.onSelectionChange === 'function') {
+                    bulkOpts.onSelectionChange(ids, ids.length);
+                }
             }
+
 
             // bind checkbox events for visible rows
             function bindRowCheckboxes() {

@@ -5,9 +5,9 @@
             <x-input  name="name" label="Name" placeholder="Enter name"/>
             <x-textarea id="description" name="description" label="Description" placeholder="Enter description"/>
 
-            <x-select id="status" name="status" label="Status" placeholder="Select Status">
-                <option>Active</option>
-                <option>In Active</option>
+            <x-select id="status" name="active" label="Status" placeholder="Select Status">
+                <option value="1">Active</option>
+                <option value="0">In Active</option>
             </x-select>
         </x-modal.body>
 

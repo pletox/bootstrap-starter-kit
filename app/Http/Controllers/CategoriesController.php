@@ -46,12 +46,15 @@ class CategoriesController extends Controller
                 ->skipPaging()
                 ->addIndexColumn()
                 ->addColumn('select', function ($row) {
-                    return view('categories._select', ['category' => $row])->render();
+                    return view('categories.columns._select', ['category' => $row])->render();
+                })
+                ->editColumn('description', function ($row) {
+                    return view('categories.columns._description', ['category' => $row])->render();
                 })
                 ->addColumn('action', function ($row) {
-                    return view('categories._actions', ['category' => $row])->render();
+                    return view('categories.columns._actions', ['category' => $row])->render();
                 })
-                ->rawColumns(['action', 'select'])
+                ->rawColumns(['action', 'select', 'description'])
                 ->make(true);
         }
 
