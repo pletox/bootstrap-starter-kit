@@ -62,3 +62,38 @@ it('exports selected categories as a csv download', function () {
         ->toContain('Physical inventory')
         ->toContain('Active');
 });
+
+it('returns category datatable rows for mobile card requests with sparse ordering', function () {
+    $user = User::factory()->create();
+    Category::factory()->create(['name' => 'Hardware']);
+
+    $this->actingAs($user)
+        ->withHeader('X-Requested-With', 'XMLHttpRequest')
+        ->getJson(route('categories.index', [
+            'draw' => 1,
+            'start' => 0,
+            'length' => 8,
+            'columns' => [
+                ['data' => 'select', 'name' => 'select', 'orderable' => 'false', 'searchable' => 'false'],
+                ['data' => 'DT_RowIndex', 'name' => 'DT_RowIndex', 'orderable' => 'true', 'searchable' => 'true'],
+                ['data' => 'name', 'name' => 'name', 'orderable' => 'true', 'searchable' => 'true'],
+            ],
+            'order' => [
+                ['column' => null, 'dir' => 'desc'],
+            ],
+        ]))
+        ->assertOk()
+        ->assertJsonPath('data.0.name', 'Hardware');
+});
+
+it('returns categories as select2 api options', function () {
+    $user = User::factory()->create();
+    Category::factory()->create(['name' => 'Hardware']);
+    Category::factory()->create(['name' => 'Software']);
+
+    $this->actingAs($user)
+        ->getJson(route('categories.options', ['q' => 'Hard']))
+        ->assertOk()
+        ->assertJsonPath('results.0.text', 'Hardware')
+        ->assertJsonPath('pagination.more', false);
+});

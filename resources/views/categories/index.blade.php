@@ -75,6 +75,31 @@
                     {data: 'description', name: 'description'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ],
+                mobileCards: {
+                    enabled: true,
+                    breakpoint: 768,
+                    pageLength: 8,
+                    renderCard: function (row) {
+                        return `
+                            <div class="jp-mobile-card">
+                                <div class="d-flex align-items-start justify-content-between gap-3">
+                                    <div class="d-flex align-items-start gap-2 min-w-0">
+                                        <input type="checkbox" class="form-check-input row-select mt-1" value="${row.id}">
+                                        <div class="min-w-0">
+                                            <div class="fw-semibold text-truncate">${row.name}</div>
+                                            <div class="text-muted text-sm mt-1">${row.description || '<span class="fst-italic">No description</span>'}</div>
+                                        </div>
+                                    </div>
+
+                                    <x-dropdown align="end" color="light" icon="lucide-ellipsis" buttonClass="btn-sm">
+                                        <x-dropdown.item icon="lucide-pencil" class="editCategory" data-id="${row.id}">Edit</x-dropdown.item>
+                                        <x-dropdown.item icon="lucide-trash-2" class="deleteCategory text-danger" data-id="${row.id}">Delete</x-dropdown.item>
+                                    </x-dropdown>
+                                </div>
+                            </div>
+                        `;
+                    }
+                },
                 bulk: {
                     enabled: true,
                     rowSelector: '.row-select',
@@ -154,18 +179,13 @@
             $('#categoryForm').on('submit', function (e) {
                 e.preventDefault();
 
-                var data = new FormData($('#categoryForm')[0]);
-
-                $.easyAjax({
-                    url: "{{ route('categories.storeOrUpdate') }}",
-                    container: '#categoryForm',
-                    data: data,
+                form.post("{{ route('categories.storeOrUpdate') }}", {
                     onComplete: () => {
                         modal.close();
                         form.reset();
                         table.draw(false);
                     }
-                })
+                });
 
             });
 

@@ -495,7 +495,7 @@ $.fn.jpDataTable = function (options = {}) {
         const filterSelectors = options.filters
             || ($el.data('filters') ? $el.data('filters').split(',') : []);
 
-        const ajaxUrl = options.ajax?.url || $el.data('url');
+        const ajaxUrl = options.ajax?.url || options.url || $el.data('url') || window.location.href;
 
         // --- Bulk options (new) ---
         // default markup conventions:
@@ -514,10 +514,21 @@ $.fn.jpDataTable = function (options = {}) {
             onBulkAction: null              // callback(action, ids, done) if provided, wont do ajax
         }, options.bulk || {});
 
+        const mobileCardOpts = $.extend({
+            enabled: false,
+            breakpoint: 768,
+            pageLength: 10,
+            renderCard: null,
+            emptyText: 'No records found.',
+            loadingText: 'Loading more records...'
+        }, options.mobileCards || {});
+
         const defaultOptions = {
             processing: true,
             serverSide: true,
-            responsive: true,
+            responsive: false,
+            scrollX: true,
+            autoWidth: false,
             stateSave: true,
             language: {
                 search: "_INPUT_",
@@ -557,10 +568,15 @@ $.fn.jpDataTable = function (options = {}) {
         // Initialize and store instance
         tableInstance = $el.DataTable(mergedOptions);
 
+        let mobileCardsApi = null;
+
         filterSelectors.forEach(selector => {
             $(selector.trim()).on('change', function () {
                 console.log('here');
                 tableInstance.draw();
+                if (mobileCardsApi) {
+                    mobileCardsApi.reload();
+                }
                 if (options.onFiltersChange)
                     options.onFiltersChange();
             });
@@ -569,6 +585,284 @@ $.fn.jpDataTable = function (options = {}) {
         // Store instance on the element for later access if needed
         $el.data('jp-datatable-instance', tableInstance);
 
+        if (mobileCardOpts.enabled && typeof mobileCardOpts.renderCard === 'function') {
+            mobileCardsApi = initMobileCards();
+            $el.data('jp-mobile-cards-instance', mobileCardsApi);
+            interceptMobileDraws();
+        }
+
+        function interceptMobileDraws() {
+            const originalDraw = tableInstance.draw.bind(tableInstance);
+
+            tableInstance.draw = function (...args) {
+                if (mobileCardsApi && mobileCardsApi.isActive()) {
+                    mobileCardsApi.reload();
+                    return tableInstance;
+                }
+
+                return originalDraw(...args);
+            };
+        }
+
+        function initMobileCards() {
+            const $cards = $('<div class="jp-mobile-cards d-none"></div>');
+            const $list = $('<div class="jp-mobile-card-list"></div>');
+            const $status = $(`<div class="jp-mobile-card-status text-center text-muted text-sm py-3">${mobileCardOpts.loadingText}</div>`);
+            const $sentinel = $('<div class="jp-mobile-card-sentinel" aria-hidden="true"></div>');
+            let $wrapper = $el.closest('.dt-container, .dataTables_wrapper');
+
+            if (!$wrapper.length) {
+                $wrapper = $el.parent();
+            }
+
+            $wrapper.closest('.card').addClass('jp-datatable-shell');
+            $cards.append($list, $status, $sentinel);
+            $wrapper.after($cards);
+
+            let start = 0;
+            let draw = 1;
+            let loading = false;
+            let finished = false;
+            let active = false;
+            let currentRequest = null;
+            let requestVersion = 0;
+            let lastLoadScrollY = null;
+            let nextUserLoadAt = 0;
+            let userLoadLocked = false;
+            let userLoadUnlockY = 0;
+
+            const mediaQuery = window.matchMedia(`(max-width: ${mobileCardOpts.breakpoint - 1}px)`);
+
+            function buildColumnsData() {
+                return (mergedOptions.columns || []).map((column) => ({
+                    data: column.data ?? null,
+                    name: column.name ?? '',
+                    searchable: column.searchable === false ? 'false' : 'true',
+                    orderable: column.orderable === false ? 'false' : 'true',
+                    search: {
+                        value: '',
+                        regex: 'false'
+                    }
+                }));
+            }
+
+            function buildOrderData() {
+                const order = Array.isArray(mergedOptions.order) ? mergedOptions.order : [];
+
+                return order.map((item) => {
+                    const column = Array.isArray(item) ? item[0] : item.column;
+                    const dir = Array.isArray(item) ? item[1] : item.dir;
+                    if (column === null || column === undefined || column === '') {
+                        return null;
+                    }
+
+                    const columnIndex = Number(column);
+                    const columnOptions = mergedOptions.columns?.[columnIndex] || {};
+
+                    return {
+                        column: columnIndex,
+                        dir: dir || 'asc',
+                        name: columnOptions.name || columnOptions.data || ''
+                    };
+                }).filter((item) => item && Number.isInteger(item.column));
+            }
+
+            function buildRequestData() {
+                const data = {
+                    draw: draw++,
+                    start: start,
+                    length: mobileCardOpts.pageLength,
+                    columns: buildColumnsData(),
+                    order: buildOrderData(),
+                    search: {
+                        value: tableInstance.search(),
+                        regex: 'false'
+                    }
+                };
+
+                filterSelectors.forEach(selector => {
+                    const $input = $(selector.trim());
+                    const name = $input.attr('name') || $input.attr('id');
+                    if (name) {
+                        data[name] = $input.val();
+                    }
+                });
+
+                if (mergedOptions.ajax && typeof mergedOptions.ajax.data === 'function') {
+                    mergedOptions.ajax.data(data);
+                } else if (mergedOptions.ajax && typeof mergedOptions.ajax.data === 'object') {
+                    Object.assign(data, mergedOptions.ajax.data);
+                }
+
+                return data;
+            }
+
+            function setStatus(text, visible = true) {
+                $status.text(text).toggleClass('d-none', !visible);
+            }
+
+            function sentinelIsNearViewport() {
+                const rect = $sentinel[0].getBoundingClientRect();
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+
+                return rect.top <= viewportHeight + 160 && rect.bottom >= -160;
+            }
+
+            function pageNeedsMoreContent() {
+                const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+
+                return document.documentElement.scrollHeight <= viewportHeight + 16;
+            }
+
+            function requestUserLoad() {
+                const currentScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+
+                if (userLoadLocked) {
+                    if (currentScrollY < userLoadUnlockY + 160) {
+                        return;
+                    }
+
+                    userLoadLocked = false;
+                }
+
+                loadNextPage();
+            }
+
+            function loadNextPage(force = false) {
+                if (!active || loading || finished) return;
+                if (!force && !sentinelIsNearViewport()) return;
+                if (!force && Date.now() < nextUserLoadAt) return;
+
+                const currentScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+                if (
+                    !force
+                    && start > 0
+                    && lastLoadScrollY !== null
+                    && Math.abs(currentScrollY - lastLoadScrollY) < 80
+                ) {
+                    return;
+                }
+
+                loading = true;
+                if (!force) {
+                    lastLoadScrollY = currentScrollY;
+                    nextUserLoadAt = Date.now() + 1200;
+                    userLoadLocked = true;
+                    userLoadUnlockY = currentScrollY;
+                }
+                setStatus(mobileCardOpts.loadingText);
+                const version = requestVersion;
+
+                currentRequest = $.ajax({
+                    url: ajaxUrl,
+                    method: 'GET',
+                    data: buildRequestData(),
+                    dataType: 'json',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    success: function (response) {
+                        if (version !== requestVersion) return;
+
+                        const rows = response.data || [];
+
+                        if (start === 0 && rows.length === 0) {
+                            setStatus(mobileCardOpts.emptyText);
+                            finished = true;
+                            return;
+                        }
+
+                        rows.forEach(row => {
+                            $list.append(mobileCardOpts.renderCard(row));
+                        });
+
+                        $cards.trigger('jp-mobile-cards:draw');
+
+                        start += rows.length;
+                        finished = rows.length < mobileCardOpts.pageLength || start >= (response.recordsFiltered ?? start);
+                        setStatus('', false);
+                    },
+                    error: function (xhr, textStatus) {
+                        if (version !== requestVersion || textStatus === 'abort') return;
+
+                        setStatus('Unable to load records. Please reload.');
+                        finished = true;
+                    },
+                    complete: function () {
+                        if (version === requestVersion) {
+                            loading = false;
+                            currentRequest = null;
+
+                            if (active && !finished && pageNeedsMoreContent()) {
+                                setTimeout(() => loadNextPage(true), 0);
+                            }
+                        }
+                    }
+                });
+            }
+
+            function reload() {
+                requestVersion++;
+                if (currentRequest) {
+                    currentRequest.abort();
+                    currentRequest = null;
+                }
+                start = 0;
+                draw = 1;
+                loading = false;
+                finished = false;
+                lastLoadScrollY = null;
+                nextUserLoadAt = 0;
+                userLoadLocked = false;
+                userLoadUnlockY = 0;
+                $list.empty();
+
+                if (active) {
+                    loadNextPage(true);
+                }
+            }
+
+            function syncMode() {
+                active = mediaQuery.matches;
+                $wrapper.toggleClass('d-none', active);
+                $cards.toggleClass('d-none', !active);
+
+                if (active && !$list.children().length) {
+                    reload();
+                }
+            }
+
+            const observer = new IntersectionObserver((entries) => {
+                if (entries.some(entry => entry.isIntersecting)) {
+                    requestUserLoad();
+                }
+            }, {
+                rootMargin: '160px'
+            });
+
+            observer.observe($sentinel[0]);
+            window.addEventListener('scroll', requestUserLoad, {passive: true});
+
+            if (typeof mediaQuery.addEventListener === 'function') {
+                mediaQuery.addEventListener('change', syncMode);
+            } else {
+                mediaQuery.addListener(syncMode);
+            }
+
+            tableInstance.on('draw', function () {
+                if (active) {
+                    reload();
+                }
+            });
+
+            setTimeout(syncMode, 0);
+
+            return {
+                reload,
+                isActive: () => active
+            };
+        }
+
         // ----------------------------
         // Bulk actions implementation
         // ----------------------------
@@ -576,10 +870,20 @@ $.fn.jpDataTable = function (options = {}) {
             // selected ids set
             const selected = new Set();
 
+            function getMobileCardsContainer() {
+                const $wrapper = $el.closest('.dt-container, .dataTables_wrapper');
+
+                return $wrapper.length ? $wrapper.next('.jp-mobile-cards') : $();
+            }
+
             // utility: read ids from currently checked row selectors (only visible rows)
             function collectVisibleSelectedIds() {
                 const ids = [];
-                $el.find('tbody').find(bulkOpts.rowSelector).each(function () {
+                const $mobileCards = getMobileCardsContainer();
+
+                $el.find('tbody').find(bulkOpts.rowSelector)
+                    .add($mobileCards.find(bulkOpts.rowSelector))
+                    .each(function () {
                     const $cb = $(this);
                     if ($cb.is(':checked')) {
                         const id = $cb.val() ?? $cb.data('id') ?? $cb.attr('value');
@@ -622,6 +926,16 @@ $.fn.jpDataTable = function (options = {}) {
                 // unbind first to avoid duplicate handlers
                 $el.find('tbody').off('change.jpRowSelect', bulkOpts.rowSelector);
                 $el.find('tbody').on('change.jpRowSelect', bulkOpts.rowSelector, function () {
+                    const $cb = $(this);
+                    const id = $cb.val() ?? $cb.data('id') ?? $cb.attr('value');
+                    if ($cb.is(':checked')) selected.add(String(id));
+                    else selected.delete(String(id));
+                    refreshBulkUI();
+                });
+
+                const $mobileCards = getMobileCardsContainer();
+                $mobileCards.off('change.jpRowSelect', bulkOpts.rowSelector);
+                $mobileCards.on('change.jpRowSelect', bulkOpts.rowSelector, function () {
                     const $cb = $(this);
                     const id = $cb.val() ?? $cb.data('id') ?? $cb.attr('value');
                     if ($cb.is(':checked')) selected.add(String(id));
@@ -698,6 +1012,11 @@ $.fn.jpDataTable = function (options = {}) {
 
             // Rebind on table draw (paging/search/ordering)
             tableInstance.on('draw', function () {
+                bindRowCheckboxes();
+                refreshBulkUI();
+            });
+
+            getMobileCardsContainer().on('jp-mobile-cards:draw', function () {
                 bindRowCheckboxes();
                 refreshBulkUI();
             });

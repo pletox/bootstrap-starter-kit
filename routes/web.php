@@ -15,13 +15,24 @@ Route::redirect('/', 'home');
 Route::group(['middleware' => ['auth:web']], function () {
 
     Route::get('/home', function () {
-        return view('home');
+        $categoryStats = [
+            'total' => \App\Models\Category::count(),
+            'active' => \App\Models\Category::where('active', 1)->count(),
+            'inactive' => \App\Models\Category::where('active', 0)->count(),
+        ];
+
+        $recentCategories = \App\Models\Category::latest()
+            ->take(5)
+            ->get(['id', 'name', 'active', 'created_at']);
+
+        return view('home', compact('categoryStats', 'recentCategories'));
     })->name('home');
 
     Route::get('categories', [CategoriesController::class, 'index'])->name('categories.index');
     Route::post('categories', [CategoriesController::class, 'storeOrUpdate'])->name('categories.storeOrUpdate');
     Route::post('categories/bulk-action', [CategoriesController::class, 'bulkAction'])->name('categories.bulk-action');
     Route::post('categories/export', [CategoriesController::class, 'export'])->name('categories.export');
+    Route::get('categories/options', [CategoriesController::class, 'options'])->name('categories.options');
     Route::get('categories/{category}', [CategoriesController::class, 'edit'])->name('categories.edit');
     Route::delete('categories/{category}', [CategoriesController::class, 'destroy'])->name('categories.delete');
 

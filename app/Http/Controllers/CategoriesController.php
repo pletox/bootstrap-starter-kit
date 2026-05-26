@@ -18,8 +18,12 @@ class CategoriesController extends Controller
             $sortDir = null;
 
             if($request->has('order') && $request->get('order')) {
-                $sortCol = $request->get('order')[0]['name'];
-                $sortDir = $request->get('order')[0]['dir'];
+                $order = $request->input('order.0', []);
+                $columnIndex = $order['column'] ?? null;
+                $sortCol = $order['name']
+                    ?? data_get($request->input('columns', []), "{$columnIndex}.name")
+                    ?? data_get($request->input('columns', []), "{$columnIndex}.data");
+                $sortDir = $order['dir'] ?? 'asc';
 
                 if($sortCol == 'DT_RowIndex') {
                     $sortCol = null;
@@ -27,7 +31,7 @@ class CategoriesController extends Controller
                 }
             }
 
-            if($sortCol) {
+            if($sortCol && in_array($sortCol, ['id', 'name', 'description', 'created_at', 'updated_at'])) {
                 $categories = $categories->orderBy($sortCol, $sortDir ?? 'asc');
             }
 
@@ -38,6 +42,9 @@ class CategoriesController extends Controller
                 ->take($request->length ?? 10);
 
             $categories = $categories->get();
+
+            $request->query->remove('order');
+            $request->request->remove('order');
 
             return DataTables::of($categories)
                 ->with([
@@ -81,6 +88,29 @@ class CategoriesController extends Controller
     public function edit(Request $request, Category $category)
     {
         return response()->json($category);
+    }
+
+    public function options(Request $request)
+    {
+        $categories = Category::query()
+            ->when($request->filled('q'), function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->q . '%');
+            })
+            ->when($request->filled('id'), function ($query) use ($request) {
+                $query->whereIn('id', (array) $request->id);
+            })
+            ->orderBy('name')
+            ->paginate(10);
+
+        return response()->json([
+            'results' => $categories->getCollection()->map(fn ($category) => [
+                'id' => $category->id,
+                'text' => $category->name,
+            ]),
+            'pagination' => [
+                'more' => $categories->hasMorePages(),
+            ],
+        ]);
     }
 
     public function destroy(Request $request, Category $category)
