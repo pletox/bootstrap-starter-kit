@@ -86,6 +86,47 @@ it('returns category datatable rows for mobile card requests with sparse orderin
         ->assertJsonPath('data.0.name', 'Hardware');
 });
 
+it('filters category datatable rows', function () {
+    $user = User::factory()->create();
+
+    Category::factory()->create([
+        'name' => 'Hardware',
+        'description' => 'Physical inventory',
+        'active' => 1,
+        'created_at' => now()->subDays(2),
+    ]);
+
+    Category::factory()->create([
+        'name' => 'Software',
+        'description' => 'Digital licenses',
+        'active' => 0,
+        'created_at' => now()->subDays(10),
+    ]);
+
+    $this->actingAs($user)
+        ->withHeader('X-Requested-With', 'XMLHttpRequest')
+        ->getJson(route('categories.index', [
+            'draw' => 1,
+            'start' => 0,
+            'length' => 10,
+            'q' => 'Hard',
+            'active' => 1,
+            'created_from' => now()->subDays(3)->toDateString(),
+            'created_to' => now()->toDateString(),
+            'columns' => [
+                ['data' => 'select', 'name' => 'select', 'orderable' => 'false', 'searchable' => 'false'],
+                ['data' => 'DT_RowIndex', 'name' => 'DT_RowIndex', 'orderable' => 'true', 'searchable' => 'true'],
+                ['data' => 'name', 'name' => 'name', 'orderable' => 'true', 'searchable' => 'true'],
+            ],
+            'order' => [
+                ['column' => null, 'dir' => 'desc'],
+            ],
+        ]))
+        ->assertOk()
+        ->assertJsonPath('recordsFiltered', 1)
+        ->assertJsonPath('data.0.name', 'Hardware');
+});
+
 it('returns categories as select2 api options', function () {
     $user = User::factory()->create();
     Category::factory()->create(['name' => 'Hardware']);

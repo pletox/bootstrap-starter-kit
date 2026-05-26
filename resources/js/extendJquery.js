@@ -530,9 +530,16 @@ $.fn.jpDataTable = function (options = {}) {
             scrollX: true,
             autoWidth: false,
             stateSave: true,
+            layout: {
+                topStart: 'search',
+                topEnd: 'pageLength',
+                bottomStart: 'info',
+                bottomEnd: 'paging'
+            },
             language: {
                 search: "_INPUT_",
-                searchPlaceholder: "Search..."
+                searchPlaceholder: "Search...",
+                lengthMenu: "_MENU_"
             },
             columnDefs: [
                 {
@@ -1413,5 +1420,6 @@ $(document).on('click', '[data-toggle-block]', function (e) {
 
 
 window.onPageNavigated = function (callback) {
+    $(callback);
     document.addEventListener('livewire:navigated', callback);
 };

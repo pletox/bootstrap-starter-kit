@@ -3,12 +3,12 @@
         <x-modal.body class="space-y-3">
             <input type="hidden" name="id" />
             <x-input  name="name" label="Name" placeholder="Enter name"/>
-            <x-textarea id="description" name="description" label="Description" placeholder="Enter description"/>
+            <x-richtext id="description" name="description" label="Description" placeholder="Enter description"/>
 
-            <x-select id="status" name="active" label="Status" placeholder="Select Status">
+            <x-select2 id="status" name="active" label="Status" placeholder="Select Status">
                 <option value="1">Active</option>
                 <option value="0">In Active</option>
-            </x-select>
+            </x-select2>
         </x-modal.body>
 
         <x-modal.footer>
@@ -17,13 +17,3 @@
         </x-modal.footer>
     </x-form>
 </x-modal>
-
-<script type="module">
-    onPageNavigated(() => {
-        $('#status').jpSelect2();
-
-        $('#description').jpEditor({
-            placeholder: "Write your blog post..."
-        });
-    });
-</script>

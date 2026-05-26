@@ -75,10 +75,3 @@
         }
     });
 </script>
-
-<style>
-    .flatpickr-wrapper {
-        position: relative;
-        display: block;
-    }
-</style>

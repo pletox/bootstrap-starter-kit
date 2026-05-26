@@ -1,9 +1,8 @@
 <?php
 
 use App\Http\Controllers\CategoriesController;
-use App\Http\Controllers\CustomersController;
-use App\Http\Controllers\Products\ProductsController;
-use App\Http\Controllers\Products\ProductStatusToggleController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\QuickLinksController;
 use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -11,22 +10,16 @@ include '_utilities.php';
 
 Route::redirect('/', 'home');
 
-
 Route::group(['middleware' => ['auth:web']], function () {
 
-    Route::get('/home', function () {
-        $categoryStats = [
-            'total' => \App\Models\Category::count(),
-            'active' => \App\Models\Category::where('active', 1)->count(),
-            'inactive' => \App\Models\Category::where('active', 0)->count(),
-        ];
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::post('/home/counters', [HomeController::class, 'counters'])->name('home.counters');
+    Route::post('/home/recent-categories', [HomeController::class, 'recentCategories'])->name('home.recent-categories');
 
-        $recentCategories = \App\Models\Category::latest()
-            ->take(5)
-            ->get(['id', 'name', 'active', 'created_at']);
-
-        return view('home', compact('categoryStats', 'recentCategories'));
-    })->name('home');
+    Route::post('quick-links/list', [QuickLinksController::class, 'index'])->name('quick-links.index');
+    Route::post('quick-links', [QuickLinksController::class, 'storeOrUpdate'])->name('quick-links.storeOrUpdate');
+    Route::get('quick-links/{quickLink}', [QuickLinksController::class, 'edit'])->name('quick-links.edit');
+    Route::delete('quick-links/{quickLink}', [QuickLinksController::class, 'destroy'])->name('quick-links.delete');
 
     Route::get('categories', [CategoriesController::class, 'index'])->name('categories.index');
     Route::post('categories', [CategoriesController::class, 'storeOrUpdate'])->name('categories.storeOrUpdate');
@@ -42,7 +35,6 @@ Route::group(['middleware' => ['auth:web']], function () {
         Route::get('profile/password-update', [ProfileController::class, 'passwordUpdate'])->name('settings.profile.password-update');
         Route::get('profile/appearance', [ProfileController::class, 'appearance'])->name('settings.profile.appearance');
     });
-
 
     /* EXAMPLE CODE CAN BE DELETED ONCE REFERRED */
     Route::view('ui-kit', 'uikit')->name('ui-kit');

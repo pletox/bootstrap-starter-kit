@@ -19,6 +19,10 @@ import "./easyAjax.js"
 import "./easyDelete.js"
 import "./extendJquery.js"
 
+window.escapeHtml = function (value) {
+    return $('<div>').text(value ?? '').html();
+};
+
 import {createIcons, icons} from "lucide";
 
 document.addEventListener('livewire:navigating', function () {

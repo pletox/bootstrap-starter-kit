@@ -13,10 +13,23 @@
                 </x-text>
             </div>
 
-            <x-button data-bs-toggle="#categoryModal" id="add-category-btn" color="dark">
-                <x-lucide-plus class="w-4 h-4"/>
-                <span class="d-none d-sm-inline-block">Add Category</span>
-            </x-button>
+            <div class="d-flex flex-wrap gap-2">
+                <x-button
+                    color="light"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#categoryFilters"
+                    aria-expanded="true"
+                    aria-controls="categoryFilters"
+                >
+                    <x-lucide-sliders-horizontal class="w-4 h-4"/>
+                    <span class="d-none d-sm-inline-block">Filters</span>
+                </x-button>
+
+                <x-button data-bs-toggle="#categoryModal" id="add-category-btn" color="dark">
+                    <x-lucide-plus class="w-4 h-4"/>
+                    <span class="d-none d-sm-inline-block">Add Category</span>
+                </x-button>
+            </div>
         </div>
 
         <x-card class="mt-2" id="bulk-actions" style="display:none">
@@ -24,15 +37,64 @@
             <div>You have selected <span class="fw-bold" id="selected-count"></span> entries</div>
 
             <div class="mt-1 d-flex flex-wrap gap-2">
-                <button data-action="delete" class="btn btn-sm btn-danger">Delete Selected</button>
+                <x-button data-action="delete" color="danger" size="sm">
+                    <x-lucide-trash-2 class="w-4 h-4"/>
+                    <span>Delete Selected</span>
+                </x-button>
 
-                <button data-action="activate" class="btn btn-sm btn-success">Mark Active</button>
+                <x-button data-action="activate" color="success" size="sm">
+                    <x-lucide-check class="w-4 h-4"/>
+                    <span>Mark Active</span>
+                </x-button>
 
-                <button data-action="deactivate" class="btn btn-sm btn-warning">Mark Inactive</button>
+                <x-button data-action="deactivate" color="warning" size="sm">
+                    <x-lucide-pause class="w-4 h-4"/>
+                    <span>Mark Inactive</span>
+                </x-button>
 
-                <button data-action="export" class="btn btn-sm btn-secondary">Export CSV</button>
+                <x-button data-action="export" color="secondary" size="sm">
+                    <x-lucide-download class="w-4 h-4"/>
+                    <span>Export CSV</span>
+                </x-button>
             </div>
         </x-card>
+
+        <div id="categoryFilters" class="collapse">
+            <x-card class="mt-3">
+                <div class="row g-3 align-items-end">
+                    <div class="col-12 col-lg-4">
+                        <x-input id="categorySearch" name="q" label="Search" placeholder="Search name or description"/>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <x-select2 id="categoryStatusFilter" name="active" label="Status" placeholder="All statuses">
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </x-select2>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <x-datepicker id="categoryCreatedFrom" name="created_from" label="Created from" format="Y-m-d"/>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <x-datepicker id="categoryCreatedTo" name="created_to" label="Created to" format="Y-m-d"/>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-2">
+                        <div class="d-flex gap-2">
+                            <x-button id="applyCategoryFilters" type="button" color="dark" class="flex-fill">
+                                <x-lucide-search class="w-4 h-4"/>
+                                <span>Apply</span>
+                            </x-button>
+                            <x-button id="resetCategoryFilters" type="button" color="light">
+                                <x-lucide-rotate-ccw class="w-4 h-4"/>
+                            </x-button>
+                        </div>
+                    </div>
+                </div>
+            </x-card>
+        </div>
 
         <x-card class="mt-3" body-class="px-0 pt-0 pb-1">
             <div class="table-responsive">
@@ -42,6 +104,7 @@
                         <x-table.header><input type="checkbox" id="select-all"></x-table.header>
                         <x-table.header>#</x-table.header>
                         <x-table.header>Name</x-table.header>
+                        <x-table.header>Status</x-table.header>
                         <x-table.header>Description</x-table.header>
                         <x-table.header>Actions</x-table.header>
                     </x-table.row>
@@ -72,9 +135,11 @@
                     {data: 'select', name: 'select', orderable: false, searchable: false},
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'name', name: 'name'},
+                    {data: 'status', name: 'active'},
                     {data: 'description', name: 'description'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
                 ],
+                filters: ['#categorySearch', '#categoryStatusFilter', '#categoryCreatedFrom', '#categoryCreatedTo'],
                 mobileCards: {
                     enabled: true,
                     breakpoint: 768,
@@ -86,7 +151,10 @@
                                     <div class="d-flex align-items-start gap-2 min-w-0">
                                         <input type="checkbox" class="form-check-input row-select mt-1" value="${row.id}">
                                         <div class="min-w-0">
-                                            <div class="fw-semibold text-truncate">${row.name}</div>
+                                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                                <div class="fw-semibold text-truncate">${row.name}</div>
+                                                ${row.status}
+                                            </div>
                                             <div class="text-muted text-sm mt-1">${row.description || '<span class="fst-italic">No description</span>'}</div>
                                         </div>
                                     </div>
@@ -135,6 +203,23 @@
                     }
                 }
             })
+
+            $('#applyCategoryFilters').on('click', function () {
+                table.draw();
+            });
+
+            $('#categorySearch').on('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    table.draw();
+                }
+            });
+
+            $('#resetCategoryFilters').on('click', function () {
+                $('#categorySearch, #categoryCreatedFrom, #categoryCreatedTo').val('');
+                $('#categoryStatusFilter').val(null).trigger('change');
+                table.draw();
+            });
 
             function runBulkAction(action, ids, done) {
                 axios.post(route('categories.bulk-action'), {

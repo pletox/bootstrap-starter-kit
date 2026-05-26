@@ -12,7 +12,22 @@ class CategoriesController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $categories = Category::query();
+            $categories = Category::query()
+                ->when($request->filled('q'), function ($query) use ($request) {
+                    $query->where(function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->q . '%')
+                            ->orWhere('description', 'like', '%' . $request->q . '%');
+                    });
+                })
+                ->when($request->filled('active'), function ($query) use ($request) {
+                    $query->where('active', $request->integer('active'));
+                })
+                ->when($request->filled('created_from'), function ($query) use ($request) {
+                    $query->whereDate('created_at', '>=', $request->date('created_from'));
+                })
+                ->when($request->filled('created_to'), function ($query) use ($request) {
+                    $query->whereDate('created_at', '<=', $request->date('created_to'));
+                });
 
             $sortCol = null;
             $sortDir = null;
@@ -31,7 +46,7 @@ class CategoriesController extends Controller
                 }
             }
 
-            if($sortCol && in_array($sortCol, ['id', 'name', 'description', 'created_at', 'updated_at'])) {
+            if($sortCol && in_array($sortCol, ['id', 'name', 'description', 'active', 'created_at', 'updated_at'])) {
                 $categories = $categories->orderBy($sortCol, $sortDir ?? 'asc');
             }
 
@@ -59,10 +74,13 @@ class CategoriesController extends Controller
                 ->editColumn('description', function ($row) {
                     return view('categories.columns._description', ['category' => $row])->render();
                 })
+                ->addColumn('status', function ($row) {
+                    return view('categories.columns._status', ['category' => $row])->render();
+                })
                 ->addColumn('action', function ($row) {
                     return view('categories.columns._actions', ['category' => $row])->render();
                 })
-                ->rawColumns(['action', 'select', 'description'])
+                ->rawColumns(['action', 'select', 'description', 'status'])
                 ->make(true);
         }
 

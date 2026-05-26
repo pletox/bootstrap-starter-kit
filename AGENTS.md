@@ -14,13 +14,14 @@ This starter kit is a Laravel + Bootstrap application with Blade components and 
 
 - Use Blade components from `resources/views/components` for common UI.
 - Keep page markup clean; put reusable behavior in the component or shared JS helper.
-- Use Bootstrap 5 conventions and existing utility classes.
+- Use Bootstrap 5 conventions and utility classes as the default for layout, spacing, borders, typography, flex, overflow, and responsive behavior.
 - Use Lucide icons through existing Blade icon components where available.
-- Avoid page-specific CSS when the behavior can be expressed with generic classes.
+- Avoid custom modular CSS classes for one-off UI. Add custom CSS only when Bootstrap utilities cannot express the behavior or visual treatment cleanly.
 - For mobile behavior, prefer responsive CSS and shared helper options over duplicate markup.
 
 ## JavaScript Helpers
 
+- Keep page behavior jQuery-based as much as possible. Prefer jQuery selectors, events, DOM updates, and helpers over vanilla DOM code unless there is a clear reason not to.
 - Shared jQuery helpers live in `resources/js/extendJquery.js`.
 - `useForm()` should be used for CRUD form submit flows where possible:
 
@@ -40,6 +41,7 @@ form.post(route('example.store'), {
 ## Select2 Component
 
 - Use `<x-select2>` for Select2 fields.
+- Do not initialize Select2 manually in page scripts with `jpSelect2()` for form fields. Put the field behind the reusable Select2 Blade component so init, `wire:navigate`, `form.fill()`, and `x-model` behavior stay component-level.
 - The component supports static options and API-backed options.
 - API endpoints should return Select2-compatible JSON:
 
@@ -67,6 +69,11 @@ form.post(route('example.store'), {
 ```
 
 - For `form.fill()` and `x-model`, the component should hydrate missing selected options by fetching `id` from the API, append the option, select it, and dispatch native events.
+
+## Rich Text Component
+
+- Use `<x-richtext>` for Quill editor fields.
+- Do not initialize editors manually in page scripts with `jpEditor()` for form fields. Keep editor init inside the reusable Blade component so `wire:navigate` and `form.fill()` behavior stays consistent.
 
 ## DataTables
 
@@ -116,7 +123,7 @@ $('#categories-table').jpDataTable({
 
 - Main Sass is in `resources/sass/app.scss`.
 - Fonts are served from `public/fonts` and referenced by `_fonts.scss`.
-- Keep component styles generic and reusable.
+- Keep component styles generic and reusable. Prefer Bootstrap utilities in Blade before adding Sass.
 - Avoid nesting cards inside cards for layout.
 - Mobile UI should feel app-like: clean touch targets, minimal desktop framing, and predictable spacing.
 

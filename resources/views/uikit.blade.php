@@ -139,11 +139,11 @@
                                 <x-input name="admin_email" type="email" label="Admin email" placeholder="admin@example.com"/>
                             </div>
                             <div class="col-12 col-md-6">
-                                <x-select id="uikitStatus" name="status" label="Status" placeholder="Choose status">
+                                <x-select2 id="uikitStatus" name="status" label="Status" placeholder="Choose status">
                                     <option value="draft">Draft</option>
                                     <option value="active">Active</option>
                                     <option value="paused">Paused</option>
-                                </x-select>
+                                </x-select2>
                             </div>
                             <div class="col-12 col-md-6">
                                 <x-select2
@@ -275,7 +275,11 @@
 
             <div class="col-12 col-xl-6">
                 <x-card title="Rich Text" subtitle="Quill-powered editor wrapper for long-form fields.">
-                    <textarea id="uikitRichEditor" name="content" class="form-control" rows="5"><p><strong>Write notes</strong>, upload images, and format content here.</p></textarea>
+                    <x-richtext
+                        id="uikitRichEditor"
+                        name="content"
+                        placeholder="Write starter kit documentation..."
+                    ><p><strong>Write notes</strong>, upload images, and format content here.</p></x-richtext>
                 </x-card>
             </div>
         </div>
@@ -295,7 +299,6 @@
 @push('js')
     <script type="module">
         onPageNavigated(() => {
-            $('#uikitStatus').jpSelect2();
             let uikitForm = useForm('#uikitForm');
 
             $('#fillApiCategory').off('click.uikitSelect2').on('click.uikitSelect2', function () {
@@ -308,10 +311,6 @@
                         });
                     }
                 });
-            });
-
-            $('#uikitRichEditor').jpEditor({
-                placeholder: 'Write starter kit documentation...'
             });
 
             $('#uikitTabs').jpTabs({
