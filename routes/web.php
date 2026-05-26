@@ -37,13 +37,39 @@ Route::group(['middleware' => ['auth:web']], function () {
     });
 
     /* EXAMPLE CODE CAN BE DELETED ONCE REFERRED */
-    Route::view('ui-kit', 'uikit')->name('ui-kit');
+    Route::get('ui-kit', function () {
+        abort_unless(app()->isLocal(), 404);
+
+        return view('uikit');
+    })->name('ui-kit');
+    Route::get('developer-docs/{page?}', function (?string $page = null) {
+        abort_unless(app()->isLocal(), 404);
+
+        $page = $page ?: 'index';
+        $views = [
+            'index' => 'developer-docs.index',
+            'components' => 'developer-docs.components',
+            'forms' => 'developer-docs.forms',
+            'datatables' => 'developer-docs.datatables',
+            'infinite-scroll' => 'developer-docs.infinite-scroll',
+            'backend' => 'developer-docs.backend',
+            'testing' => 'developer-docs.testing',
+        ];
+
+        abort_unless(isset($views[$page]), 404);
+
+        return view($views[$page], ['page' => $page]);
+    })->name('developer-docs');
 
     Route::get('tabs/profile', function () {
+        abort_unless(app()->isLocal(), 404);
+
         return '<p>Profile From Ajax</p>';
     })->name('tabs.profile');
 
     Route::get('tabs/contact', function () {
+        abort_unless(app()->isLocal(), 404);
+
         return '<p>Contact In Ajax</p>';
     })->name('tabs.contact');
 

@@ -15,6 +15,12 @@
                     <x-lucide-house class="w-4 h-4"/>
                     <span>Dashboard</span>
                 </x-button>
+                @if(app()->isLocal())
+                    <x-button color="primary" link="{{ route('developer-docs') }}">
+                        <x-lucide-book-open class="w-4 h-4"/>
+                        <span>Developer Docs</span>
+                    </x-button>
+                @endif
                 <x-button color="light" data-bs-toggle="modal" data-bs-target="#uikitPreviewModal">
                     <x-lucide-eye class="w-4 h-4"/>
                     <span>Preview Modal</span>
