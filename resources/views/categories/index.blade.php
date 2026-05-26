@@ -23,14 +23,14 @@
 
             <div>You have selected <span class="fw-bold" id="selected-count"></span> entries</div>
 
-            <div class="mt-1">
-                <!-- Uses global ajaxUrl -->
+            <div class="mt-1 d-flex flex-wrap gap-2">
                 <button data-action="delete" class="btn btn-sm btn-danger">Delete Selected</button>
 
-                <!-- Custom url for this button -->
-                <button data-action="export" data-url="/api/items/export" class="btn btn-sm btn-secondary">
-                    Export Selected
-                </button>
+                <button data-action="activate" class="btn btn-sm btn-success">Mark Active</button>
+
+                <button data-action="deactivate" class="btn btn-sm btn-warning">Mark Inactive</button>
+
+                <button data-action="export" class="btn btn-sm btn-secondary">Export CSV</button>
             </div>
         </x-card>
 
@@ -80,14 +80,71 @@
                     rowSelector: '.row-select',
                     masterSelector: '#select-all',
                     actionsSelector: '#bulk-actions',
-                    ajaxUrl: '/api/items/bulk-action', // fallback url
                     paramName: 'ids',
-                    // 👇 called every time selection changes
                     onSelectionChange: function (ids, count) {
-                        $('#selected-count').text(count); // example badge update
+                        $('#selected-count').text(count);
+                    },
+                    onBulkAction: function (action, ids, done) {
+                        if (action === 'export') {
+                            exportSelectedCategories(ids);
+                            return;
+                        }
+
+                        if (action === 'delete') {
+                            Swal.fire({
+                                title: 'Delete selected categories?',
+                                text: 'This action cannot be undone.',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#dc3545',
+                                confirmButtonText: 'Yes, delete them'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    runBulkAction(action, ids, done);
+                                }
+                            });
+                            return;
+                        }
+
+                        runBulkAction(action, ids, done);
                     }
                 }
             })
+
+            function runBulkAction(action, ids, done) {
+                axios.post(route('categories.bulk-action'), {
+                    action: action,
+                    ids: ids
+                }).then((response) => {
+                    toast.success(response.data.message);
+                    $('#select-all').prop('checked', false).prop('indeterminate', false);
+                    done();
+                }).catch(() => {
+                    toast.error('Bulk action failed. Please reload and try again.');
+                });
+            }
+
+            function exportSelectedCategories(ids) {
+                axios.post(route('categories.export'), {
+                    ids: ids
+                }, {
+                    responseType: 'blob'
+                }).then((response) => {
+                    const url = window.URL.createObjectURL(new Blob([response.data]));
+                    const link = document.createElement('a');
+
+                    link.href = url;
+                    link.download = 'categories.csv';
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    window.URL.revokeObjectURL(url);
+
+                    toast.success('Selected categories exported.');
+                }).catch(() => {
+                    toast.error('Export failed. Please reload and try again.');
+                });
+            }
 
             $('#add-category-btn').click(function () {
                 form.reset();

@@ -20,6 +20,8 @@ Route::group(['middleware' => ['auth:web']], function () {
 
     Route::get('categories', [CategoriesController::class, 'index'])->name('categories.index');
     Route::post('categories', [CategoriesController::class, 'storeOrUpdate'])->name('categories.storeOrUpdate');
+    Route::post('categories/bulk-action', [CategoriesController::class, 'bulkAction'])->name('categories.bulk-action');
+    Route::post('categories/export', [CategoriesController::class, 'export'])->name('categories.export');
     Route::get('categories/{category}', [CategoriesController::class, 'edit'])->name('categories.edit');
     Route::delete('categories/{category}', [CategoriesController::class, 'destroy'])->name('categories.delete');
 

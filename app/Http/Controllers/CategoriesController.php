@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Yajra\DataTables\Facades\DataTables;
 
 class CategoriesController extends Controller
@@ -87,5 +88,63 @@ class CategoriesController extends Controller
         $category->delete();
 
         return response()->json(['message' => 'Category Deleted Successfully!']);
+    }
+
+    public function bulkAction(Request $request)
+    {
+        $validated = $request->validate([
+            'action' => 'required|in:delete,activate,deactivate',
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:categories,id',
+        ]);
+
+        $query = Category::whereIn('id', $validated['ids']);
+        $count = $query->count();
+
+        match ($validated['action']) {
+            'delete' => $query->delete(),
+            'activate' => $query->update(['active' => 1]),
+            'deactivate' => $query->update(['active' => 0]),
+        };
+
+        $message = match ($validated['action']) {
+            'delete' => "{$count} categories deleted successfully.",
+            'activate' => "{$count} categories marked active.",
+            'deactivate' => "{$count} categories marked inactive.",
+        };
+
+        return response()->json(['message' => $message]);
+    }
+
+    public function export(Request $request): StreamedResponse
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|exists:categories,id',
+        ]);
+
+        $categories = Category::whereIn('id', $validated['ids'])
+            ->orderBy('name')
+            ->get(['id', 'name', 'description', 'active', 'created_at']);
+
+        return response()->streamDownload(function () use ($categories) {
+            $handle = fopen('php://output', 'w');
+
+            fputcsv($handle, ['ID', 'Name', 'Description', 'Status', 'Created At']);
+
+            foreach ($categories as $category) {
+                fputcsv($handle, [
+                    $category->id,
+                    $category->name,
+                    $category->description,
+                    $category->active ? 'Active' : 'Inactive',
+                    $category->created_at?->toDateTimeString(),
+                ]);
+            }
+
+            fclose($handle);
+        }, 'categories.csv', [
+            'Content-Type' => 'text/csv',
+        ]);
     }
 }

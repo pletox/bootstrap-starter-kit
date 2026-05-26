@@ -90,7 +90,7 @@
                     blockUI: true,
                     data: data,
                     onComplete: () => {
-                        toastr.success('Profile Updated!', '', {timeOut: 3000})
+                        toast.success('Profile Updated!')
                     }
                 })
             });

@@ -45,7 +45,7 @@ $.easyDelete = (options) => {
                 }).then((response) => {
 
 
-                    toastr.success(response.data.message, '', {timeOut: 3000})
+                    toast.success(response.data.message)
 
 
                     if (opt.onComplete && typeof opt.onComplete === "function") {
@@ -61,7 +61,7 @@ $.easyDelete = (options) => {
                         console.log('error...');
                         //emit failed event etc...
 
-                        toastr.error('Something went wrong! Please reload', '', {timeOut: 3000})
+                        toast.error('Something went wrong! Please reload')
 
 
                         if (opt.disableButton !== false) {
@@ -87,7 +87,7 @@ $.easyDelete = (options) => {
 
             }
         }).then((response) => {
-            toastr.success(response.data.message, '', {timeOut: 3000})
+            toast.success(response.data.message)
 
             if (opt.onComplete && typeof opt.onComplete === "function") {
                 opt.onComplete(response);
@@ -102,7 +102,7 @@ $.easyDelete = (options) => {
                 console.log('error...');
                 //emit failed event etc...
 
-                toastr.error('Something went wrong! Please reload', '', {timeOut: 3000})
+                toast.error('Something went wrong! Please reload')
 
 
                 if (opt.disableButton !== false) {

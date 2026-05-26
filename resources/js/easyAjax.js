@@ -6,7 +6,7 @@ $.easyAjax = (options) => {
         disableButton: true,
         buttonSelector: "[type='submit']",
         dataType: "json",
-        messagePosition: "toastr",
+        messagePosition: "toast",
         errorPosition: "field",
         hideElements: false,
         redirect: true,
@@ -45,7 +45,7 @@ $.easyAjax = (options) => {
     }).then((response) => {
 
         if (response.data.message !== '' && response.data.message !== undefined)
-            toastr.success(response.data.message, '', {timeOut: 3000})
+            toast.success(response.data.message)
 
 
         if (opt.onComplete && typeof opt.onComplete === "function") {
@@ -111,7 +111,7 @@ $.easyAjax = (options) => {
                 showErrorModal(response.data || "An unexpected error occurred!");
 
 
-                toastr.error('Something went wrong! Please reload', '', {timeOut: 3000})
+                toast.error('Something went wrong! Please reload')
             }
 
             if (opt.disableButton !== false) {

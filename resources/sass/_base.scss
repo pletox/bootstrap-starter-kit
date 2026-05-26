@@ -312,6 +312,35 @@ html[data-bs-theme="light"] .theme-toggle .bi-sun {
     background-color: #ebebeb; /* Slightly darker on hover */
 }
 
+.btn-warning {
+    background-color: #e0a82e;
+    border-color: #e0a82e;
+    color: #fff;
+    font-weight: 500;
+}
+
+.btn-warning:hover,
+.btn-warning:focus {
+    background-color: #cf9823;
+    border-color: #cf9823;
+    color: #fff;
+}
+
+.btn-warning:active,
+.btn-warning.active,
+.btn-warning.show {
+    background-color: #bd881b !important;
+    border-color: #bd881b !important;
+    color: #fff !important;
+}
+
+.btn-warning:disabled,
+.btn-warning.disabled {
+    background-color: #e7c06b;
+    border-color: #e7c06b;
+    color: #fff;
+}
+
 /* Small button */
 .btn-sm {
     padding: 0.25rem 0.5rem;   /* Smaller padding */
