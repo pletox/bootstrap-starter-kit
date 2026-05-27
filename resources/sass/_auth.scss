@@ -1,9 +1,14 @@
 .min-h-full {
-    height: 100% !important;
+    min-height: 100svh !important;
 }
 
 .auth-bg {
     background-color: #fff;
+}
+
+.auth-shell {
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+    padding-top: calc(1.5rem + env(safe-area-inset-top));
 }
 
 .auth-container{
@@ -47,29 +52,34 @@
     width: 1.75rem;
 }
 
-.pwa-install-benefits {
-    border: 1px solid var(--bs-border-color);
-    border-radius: 0.75rem;
-    display: grid;
-    gap: 1rem;
-    padding: 1rem;
-}
-
-.pwa-install-benefit-icon {
+.pwa-install-inline-icon {
     align-items: center;
-    background-color: var(--bs-light);
-    border: 1px solid var(--bs-border-color);
-    border-radius: 0.75rem;
-    color: var(--bs-dark);
-    display: inline-flex;
-    flex: 0 0 auto;
-    height: 2.25rem;
+    background-color: var(--bs-info-bg-subtle);
+    border: 1px solid var(--bs-info-border-subtle);
+    border-radius: 0.45rem;
+    color: var(--bs-info-text-emphasis);
+    display: inline-flex !important;
+    height: 1.65rem;
     justify-content: center;
-    width: 2.25rem;
+    margin: 0 0.2rem;
+    vertical-align: -0.4rem;
+    width: 1.65rem;
 }
 
 @media (max-width:768px) {
+    .auth-shell {
+        justify-content: flex-start !important;
+    }
+
     .auth-container{
         width: 100%;
+    }
+
+    .auth-container > .d-flex:first-child {
+        margin-bottom: 0.75rem !important;
+    }
+
+    .pwa-install-content {
+        gap: 0.85rem !important;
     }
 }

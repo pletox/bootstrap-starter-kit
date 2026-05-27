@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
     <title>@yield('title') - {{ config('app.name') }}</title>
     @include('layouts.partials._pwa')
 
@@ -13,8 +13,8 @@
 
 <body class="h-100 auth-bg">
 
-<div class="d-flex min-h-full flex-column justify-content-center">
-    <div class="mt-10 mx-auto auth-container @yield('auth-container-class') px-4">
+<div class="auth-shell d-flex min-h-full flex-column justify-content-center">
+    <div class="mx-auto auth-container @yield('auth-container-class') px-4">
         <div class="d-flex align-items-center justify-content-center mb-3">
             <a href="/">
                <x-application-logo />

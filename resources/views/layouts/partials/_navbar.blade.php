@@ -1,9 +1,12 @@
-<nav class="navbar navbar-expand py-1 px-3 border-bottom">
-    <button class="btn p-2 py-1 border-0" id="sidebar-toggle" type="button">
+<nav class="navbar navbar-expand py-1 px-3 border-bottom sticky-top app-navbar">
+    <button class="btn btn-light p-2 py-1" id="sidebar-toggle" type="button" aria-label="Toggle sidebar">
         <x-lucide-panel-left class="w-4 h-4 text-slate-600"/>
     </button>
     <div class="navbar-collapse navbar py-1">
-        <p class="mb-0 ms-2">Dashboard</p>
+        <div class="ms-3">
+            <p class="mb-0 fw-semibold">@yield('title', 'Dashboard')</p>
+            <p class="mb-0 text-muted text-xs d-none d-sm-block">{{ config('app.name') }}</p>
+        </div>
         <ul class="navbar-nav">
 
             <li class="nav-item dropdown">

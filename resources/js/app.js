@@ -66,6 +66,29 @@ window.promptPwaInstall = async function () {
     return choice;
 };
 
+function triggerTouchHaptic() {
+    if (!('vibrate' in navigator)) {
+        return;
+    }
+
+    navigator.vibrate(8);
+}
+
+function isMobileViewport() {
+    return window.matchMedia('(max-width: 767.98px)').matches;
+}
+
+function initBottomBarInteractions() {
+    document.querySelectorAll('.bottom-bar-item').forEach((item) => {
+        if (item.dataset.mobileInteractionReady === 'true') {
+            return;
+        }
+
+        item.dataset.mobileInteractionReady = 'true';
+        item.addEventListener('pointerdown', triggerTouchHaptic, {passive: true});
+    });
+}
+
 let developerDocsHighlighterPromise = null;
 
 function loadDeveloperDocsHighlighter() {
@@ -184,17 +207,33 @@ async function initDeveloperDocsCodeBlocks() {
 
 document.addEventListener('DOMContentLoaded', function () {
     window.refreshLucideIcons();
+    initBottomBarInteractions();
     initDeveloperDocsCodeBlocks();
 });
 
 document.addEventListener('livewire:navigating', function () {
+    if (isMobileViewport()) {
+        document.documentElement.classList.add('mobile-navigating');
+        document.documentElement.classList.remove('mobile-navigated');
+    }
+
     $.fn.dataTable.tables({visible: true, api: true}).destroy();
     $('[data-jp-editor]').jpEditorDestroy();
 });
 
 document.addEventListener('livewire:navigated', function () {
     window.refreshLucideIcons();
+    initBottomBarInteractions();
     initDeveloperDocsCodeBlocks();
+
+    if (isMobileViewport()) {
+        document.documentElement.classList.remove('mobile-navigating');
+        document.documentElement.classList.add('mobile-navigated');
+
+        window.setTimeout(() => {
+            document.documentElement.classList.remove('mobile-navigated');
+        }, 260);
+    }
 
     const sidebarToggle = document.querySelector("#sidebar-toggle");
     if (sidebarToggle) {

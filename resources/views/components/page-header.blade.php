@@ -18,7 +18,7 @@
             <p class="text-muted text-sm mb-1">{{ $eyebrow }}</p>
         @endif
 
-        <x-heading>{{ $title }}</x-heading>
+        <x-heading class="page-header-title">{{ $title }}</x-heading>
 
         @if($subtitle)
             <x-text class="mb-0">{{ $subtitle }}</x-text>

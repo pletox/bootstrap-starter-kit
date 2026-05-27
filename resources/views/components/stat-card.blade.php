@@ -8,7 +8,7 @@
     'loading' => false,
 ])
 
-<x-card {{ $attributes->merge(['class' => 'h-100']) }}>
+<x-card {{ $attributes->merge(['class' => 'h-100 jp-stat-card']) }}>
     <div class="d-flex align-items-center justify-content-between">
         <div>
             <p class="text-muted text-sm mb-1">{{ $label }}</p>
@@ -22,7 +22,7 @@
         </div>
 
         @if($icon)
-            <div class="d-flex align-items-center justify-content-center rounded {{ $iconBg }} w-10 h-10">
+            <div class="d-flex align-items-center justify-content-center rounded {{ $iconBg }} w-10 h-10 jp-stat-card-icon">
                 <x-dynamic-component :component="$icon" class="{{ $iconClass }}"/>
             </div>
         @endif

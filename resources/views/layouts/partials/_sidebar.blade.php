@@ -11,13 +11,13 @@
         </div>
 
         <ul class="sidebar-nav">
-            <li class="sidebar-nav-heading mx-4 mb-2 text-xs text-gray-500">Platform</li>
+            <li class="sidebar-nav-heading mx-4 mb-2 text-xs text-gray-500 text-uppercase fw-semibold">Platform</li>
 
             <li class="sidebar-item">
                 <a href="{{ route('home') }}" wire:navigate
                    class="sidebar-link text-gray-600 font-bold {{ request()->routeIs('home') ? 'active' : '' }}">
                     <x-lucide-house class="w-4 h-4 text-slate-600"/>
-                    <span class="ps-2">Dashboard</span>
+                    <span>Dashboard</span>
                 </a>
             </li>
 
@@ -25,7 +25,15 @@
                 <a href="{{ route('categories.index') }}" wire:navigate
                    class="sidebar-link text-gray-600 font-bold {{ request()->routeIs('categories.index') ? 'active' : '' }}">
                     <x-lucide-layout-grid class="w-4 h-4 text-slate-600"/>
-                    <span class="ps-2">Categories</span>
+                    <span>Categories</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item">
+                <a href="{{ route('install-app') }}"
+                   class="sidebar-link text-gray-600 font-bold {{ request()->routeIs('install-app') ? 'active' : '' }}">
+                    <x-lucide-smartphone class="w-4 h-4 text-slate-600"/>
+                    <span>Install App</span>
                 </a>
             </li>
 

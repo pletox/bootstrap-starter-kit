@@ -38,7 +38,7 @@ it('renders the install app page', function () {
         ->assertSee('Checking install support')
         ->assertSee('Add to Home Screen')
         ->assertSee('No app store needed')
-        ->assertSee('Works better on weak internet');
+        ->assertSee('Share button');
 });
 
 it('hides the ui kit outside local environments', function () {

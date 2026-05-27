@@ -4,7 +4,7 @@
 
 @section('content')
     <x-card title="Install {{ config('app.name') }}" subtitle="Open the app from your home screen, just like a regular app.">
-        <div class="d-grid gap-3">
+        <div class="d-grid gap-3 pwa-install-content">
             <div class="text-center">
                 <img
                     src="{{ asset('pwa/icons/icon-192x192.png') }}"
@@ -26,39 +26,19 @@
             </x-button>
 
             <div class="pwa-install-ios d-none" data-ios-instructions>
-                <div class="d-flex gap-3">
+                <div class="d-flex gap-3 align-items-start">
                     <span class="pwa-install-step">1</span>
-                    <p class="mb-0">Open this page in Safari.</p>
+                    <p class="mb-0">
+                        Tap the
+                        <span class="pwa-install-inline-icon">
+                            <x-lucide-share class="w-4 h-4"/>
+                        </span>
+                        Share button in the browser toolbar.
+                    </p>
                 </div>
-                <div class="d-flex gap-3">
+                <div class="d-flex gap-3 align-items-start">
                     <span class="pwa-install-step">2</span>
-                    <p class="mb-0">Tap the Share button in the bottom toolbar.</p>
-                </div>
-                <div class="d-flex gap-3">
-                    <span class="pwa-install-step">3</span>
                     <p class="mb-0">Choose <strong>Add to Home Screen</strong>, then tap <strong>Add</strong>.</p>
-                </div>
-            </div>
-
-            <div class="pwa-install-benefits">
-                <div class="d-flex gap-3">
-                    <span class="pwa-install-benefit-icon">
-                        <x-lucide-rocket class="w-4 h-4"/>
-                    </span>
-                    <div>
-                        <p class="fw-medium mb-1">Faster access</p>
-                        <p class="text-muted mb-0 text-sm">Launch it from your home screen without typing the website address.</p>
-                    </div>
-                </div>
-
-                <div class="d-flex gap-3">
-                    <span class="pwa-install-benefit-icon">
-                        <x-lucide-wifi-off class="w-4 h-4"/>
-                    </span>
-                    <div>
-                        <p class="fw-medium mb-1">Works better on weak internet</p>
-                        <p class="text-muted mb-0 text-sm">The app keeps its basic screen ready and reconnects when the network is back.</p>
-                    </div>
                 </div>
             </div>
 
@@ -92,7 +72,7 @@
             }
 
             if (isIos) {
-                installStatus.textContent = 'iOS installs apps from Safari using Add to Home Screen.';
+                installStatus.textContent = 'Use the Share button, then add this app to your Home Screen.';
                 iosInstructions.classList.remove('d-none');
                 installButton.classList.add('d-none');
                 return;
