@@ -43,6 +43,7 @@ class ManageTenancy extends Command
         $this->ensureDirectory(app_path('Models/Concerns'));
         $this->ensureDirectory(app_path('Support'));
         $this->ensureDirectory(resource_path('views/tenants'));
+        $this->ensureDirectory(base_path('stubs'));
 
         $this->writeGeneratedFile(app_path('Models/Tenant.php'), $this->tenantModel());
         $this->writeGeneratedFile(app_path('Models/Concerns/BelongsToTenant.php'), $this->belongsToTenantTrait());
@@ -50,6 +51,8 @@ class ManageTenancy extends Command
         $this->writeGeneratedFile(app_path('Http/Controllers/TenantsController.php'), $this->tenantsController());
         $this->writeGeneratedFile(resource_path('views/tenants/_workspace_dropdown.blade.php'), $this->workspaceDropdownView());
         $this->writeGeneratedFile(resource_path('views/tenants/_form.blade.php'), $this->tenantFormView());
+        $this->writeGeneratedFile(base_path('stubs/model.stub'), $this->tenantModelStub());
+        $this->writeGeneratedFile(base_path('stubs/migration.create.stub'), $this->tenantMigrationCreateStub());
         $this->writeMigration('create_tenancy_tables', $this->tenancyMigration(), Carbon::now());
         $this->writeMigration('add_tenant_id_to_workspace_tables', $this->tenantColumnsMigration($tables), Carbon::now()->addSecond());
 
@@ -93,6 +96,8 @@ class ManageTenancy extends Command
         $this->deleteIfExists(app_path('Http/Controllers/TenantsController.php'));
         $this->deleteIfExists(resource_path('views/tenants/_workspace_dropdown.blade.php'));
         $this->deleteIfExists(resource_path('views/tenants/_form.blade.php'));
+        $this->deleteGeneratedStub(base_path('stubs/model.stub'), $this->tenantModelStub());
+        $this->deleteGeneratedStub(base_path('stubs/migration.create.stub'), $this->tenantMigrationCreateStub());
         $this->deleteMigration('create_tenancy_tables');
         $this->deleteMigration('add_tenant_id_to_workspace_tables');
 
@@ -176,6 +181,22 @@ class ManageTenancy extends Command
             $this->files->delete($path);
             $this->components->task("Deleted {$path}");
         }
+    }
+
+    private function deleteGeneratedStub(string $path, string $expectedContents): void
+    {
+        if (! $this->files->exists($path)) {
+            return;
+        }
+
+        if (trim($this->files->get($path)) !== trim($expectedContents)) {
+            $this->components->warn("Skipped custom stub: {$path}");
+
+            return;
+        }
+
+        $this->files->delete($path);
+        $this->components->task("Deleted {$path}");
     }
 
     private function deleteMigration(string $name): void
@@ -752,6 +773,61 @@ BLADE;
     </x-form>
 </x-modal>
 BLADE;
+    }
+
+    private function tenantModelStub(): string
+    {
+        return <<<'PHP'
+<?php
+
+namespace {{ namespace }};
+
+use App\Models\Concerns\BelongsToTenant;
+{{ factoryImport }}
+use Illuminate\Database\Eloquent\Model;
+
+class {{ class }} extends Model
+{
+    {{ factory }}
+    use BelongsToTenant;
+
+    protected $guarded = ['id'];
+}
+PHP;
+    }
+
+    private function tenantMigrationCreateStub(): string
+    {
+        return <<<'PHP'
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('{{ table }}', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('tenant_id')->after('id')->constrained()->cascadeOnDelete();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('{{ table }}');
+    }
+};
+PHP;
     }
 
     private function tenancyMigration(): string

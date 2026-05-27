@@ -86,6 +86,7 @@ php artisan migrate</code></pre>
                                 <li><code>Tenant</code> model and <code>tenant_user</code> pivot.</li>
                                 <li><code>current_tenant_id</code> on users.</li>
                                 <li><code>BelongsToTenant</code> model concern.</li>
+                                <li>Tenant-aware model and create-migration stubs.</li>
                                 <li>Create and switch tenant routes.</li>
                             </ul>
                         </div>
@@ -105,7 +106,7 @@ php artisan migrate</code></pre>
 
                 <div>
                     <h3 class="h6 mb-2">Remove</h3>
-                    <p class="text-muted mb-2">Before reversing, roll back the generated migrations or create a new migration that removes the tenancy database changes. The command asks you to confirm this first.</p>
+                    <p class="text-muted mb-2">Before reversing, roll back the generated migrations or create a new migration that removes the tenancy database changes. The command asks you to confirm this first, then removes generated files, Blade integration blocks, and starter-kit-owned stubs.</p>
                     <pre class="bg-dark text-white rounded p-3 mb-0"><code>php artisan starter-kit:tenancy remove</code></pre>
                 </div>
             </div>
