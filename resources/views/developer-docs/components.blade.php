@@ -17,7 +17,7 @@
                     <tbody>
                     <tr>
                         <td>Action buttons</td>
-                        <td><code>&lt;x-button color="dark"&gt;</code></td>
+                        <td><code>&lt;x-button color="primary"&gt;</code></td>
                         <td>Raw <code>&lt;button class="btn..."&gt;</code> in pages.</td>
                     </tr>
                     <tr>
@@ -70,7 +70,7 @@
             &lt;x-lucide-sliders-horizontal class="w-4 h-4"/&gt;
             &lt;span&gt;Filters&lt;/span&gt;
         &lt;/x-button&gt;
-        &lt;x-button color="dark" id="add-record-btn"&gt;
+        &lt;x-button color="primary" id="add-record-btn"&gt;
             &lt;x-lucide-plus class="w-4 h-4"/&gt;
             &lt;span&gt;Add Record&lt;/span&gt;
         &lt;/x-button&gt;
@@ -112,7 +112,7 @@
 
     &lt;div class="d-flex justify-content-end gap-2"&gt;
         &lt;x-button color="light" type="reset"&gt;Reset&lt;/x-button&gt;
-        &lt;x-button color="dark" type="submit"&gt;Save&lt;/x-button&gt;
+        &lt;x-button color="primary" type="submit"&gt;Save&lt;/x-button&gt;
     &lt;/div&gt;
 &lt;/x-form&gt;</code></pre>
                 </div>
@@ -132,7 +132,7 @@
 
         &lt;x-modal.footer&gt;
             &lt;x-button color="light" data-bs-dismiss="modal"&gt;Cancel&lt;/x-button&gt;
-            &lt;x-button color="dark" type="submit"&gt;Save&lt;/x-button&gt;
+            &lt;x-button color="primary" type="submit"&gt;Save&lt;/x-button&gt;
         &lt;/x-modal.footer&gt;
     &lt;/x-form&gt;
 &lt;/x-modal&gt;</code></pre>

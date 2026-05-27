@@ -9,7 +9,7 @@
             subtitle="A practical home base for building authenticated Bootstrap admin panels."
         >
             <x-slot:actions>
-                <x-button color="dark" link="{{ route('categories.index') }}" wire:navigate>
+                <x-button color="primary" link="{{ route('categories.index') }}" wire:navigate>
                     <x-lucide-layout-grid class="w-4 h-4"/>
                     <span>Manage Categories</span>
                 </x-button>

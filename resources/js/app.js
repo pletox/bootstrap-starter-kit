@@ -303,6 +303,110 @@ function initPwaPushCards() {
     refreshPwaPushCards();
 }
 
+async function getBrowserPermissionState(permission) {
+    if (!('permissions' in navigator) || typeof navigator.permissions.query !== 'function') {
+        return 'prompt';
+    }
+
+    try {
+        const status = await navigator.permissions.query({name: permission});
+
+        return status.state;
+    } catch (error) {
+        return 'prompt';
+    }
+}
+
+async function requestBrowserPermission(permission) {
+    if (permission === 'geolocation') {
+        if (!('geolocation' in navigator)) {
+            throw new Error('Location permission is not supported in this browser.');
+        }
+
+        await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+                enableHighAccuracy: false,
+                maximumAge: 60000,
+                timeout: 10000,
+            });
+        });
+
+        return;
+    }
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error('Media permissions are not supported in this browser.');
+    }
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+        video: permission === 'camera',
+        audio: permission === 'microphone',
+    });
+
+    stream.getTracks().forEach((track) => track.stop());
+}
+
+async function refreshBrowserPermissionCards() {
+    const cards = document.querySelectorAll('[data-browser-permission-card]');
+
+    await Promise.all(Array.from(cards).map(async (card) => {
+        const permission = card.dataset.browserPermission;
+        const statusEl = card.querySelector('[data-browser-permission-status]');
+        const requestButton = card.querySelector('[data-browser-permission-request]');
+        const state = await getBrowserPermissionState(permission);
+
+        requestButton?.removeAttribute('disabled');
+
+        if (state === 'granted') {
+            statusEl.textContent = 'Allowed on this device.';
+            requestButton?.classList.add('d-none');
+            return;
+        }
+
+        requestButton?.classList.remove('d-none');
+
+        if (state === 'denied') {
+            statusEl.textContent = 'Blocked in your browser settings.';
+            requestButton?.setAttribute('disabled', 'disabled');
+            return;
+        }
+
+        statusEl.textContent = 'Ask when this app needs access.';
+    }));
+}
+
+function initBrowserPermissionCards() {
+    document.querySelectorAll('[data-browser-permission-card]').forEach((card) => {
+        if (card.dataset.browserPermissionReady === 'true') {
+            return;
+        }
+
+        card.dataset.browserPermissionReady = 'true';
+        const permission = card.dataset.browserPermission;
+        const statusEl = card.querySelector('[data-browser-permission-status]');
+        const requestButton = card.querySelector('[data-browser-permission-request]');
+
+        requestButton?.addEventListener('click', async () => {
+            requestButton.setAttribute('disabled', 'disabled');
+            statusEl.textContent = 'Waiting for browser permission...';
+
+            try {
+                await requestBrowserPermission(permission);
+                toast.success('Permission allowed on this device.');
+            } catch (error) {
+                toast.error(error.message || 'Unable to request permission.');
+            } finally {
+                requestButton.removeAttribute('disabled');
+                refreshBrowserPermissionCards();
+            }
+        });
+
+        card.querySelector('[data-browser-permission-check]')?.addEventListener('click', refreshBrowserPermissionCards);
+    });
+
+    refreshBrowserPermissionCards();
+}
+
 function triggerTouchHaptic() {
     if (!('vibrate' in navigator)) {
         return;
@@ -446,6 +550,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.refreshLucideIcons();
     initBottomBarInteractions();
     initPwaPushCards();
+    initBrowserPermissionCards();
     initDeveloperDocsCodeBlocks();
 });
 
@@ -463,6 +568,7 @@ document.addEventListener('livewire:navigated', function () {
     window.refreshLucideIcons();
     initBottomBarInteractions();
     initPwaPushCards();
+    initBrowserPermissionCards();
     initDeveloperDocsCodeBlocks();
 
     if (isMobileViewport()) {

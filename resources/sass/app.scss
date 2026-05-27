@@ -1,3 +1,7 @@
+@import 'bootstrap/scss/functions';
+
+$primary: #a6192e;
+
 @import 'bootstrap/scss/bootstrap';
 @import 'extended-bootstrap';
 @import "bootstrap-icons/font/bootstrap-icons.css";
@@ -222,14 +226,14 @@ table.dataTable.table-borderless tbody > tr {
 //**** Sidebar ****//
 
 .sidebar-link:hover, .sidebar-link:focus, .sidebar-link.active {
-    border-radius: 7px;
+    border-radius: 0.45rem;
     margin: 0 15px 5px 15px;
 }
 
 a.sidebar-link {
-    padding: 6px;
+    font-weight: 550;
     margin: 0 15px 5px 15px;
-    font-weight: 500;
+    padding: 6px;
 }
 
 .sidebar-logo:hover {
@@ -315,12 +319,13 @@ a.sidebar-link {
 }
 
 .bottom-bar .bottom-bar-item.active {
-    background: #111827;
+    background: var(--bs-primary);
+    box-shadow: 0 0.65rem 1.35rem rgba(var(--bs-primary-rgb), 0.24);
     color: #fff !important;
 }
 
 .bottom-bar .bottom-bar-item.active .bottom-bar-icon {
-    background: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.18);
 }
 
 @media (max-width: 767.98px) {
@@ -639,7 +644,7 @@ input.hasDatepicker::placeholder,
 
 .developer-docs-brand-mark {
     align-items: center;
-    background: var(--bs-dark);
+    background: var(--bs-primary);
     border-radius: 0.5rem;
     color: var(--bs-white);
     display: inline-flex;
@@ -841,7 +846,7 @@ input.hasDatepicker::placeholder,
 
 .developer-docs-step-number {
     align-items: center;
-    background: var(--bs-dark);
+    background: var(--bs-primary);
     border-radius: 0.5rem;
     color: var(--bs-white);
     display: inline-flex;
@@ -1125,12 +1130,12 @@ input.hasDatepicker::placeholder,
 .nav-tabs .nav-link.active {
     background: #fff; /* white active bg */
     border: 1px solid #e5e7eb; /* subtle border */
-    color: #111827;
+    color: var(--bs-primary);
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
 /* Hover state */
 .nav-tabs .nav-link:hover:not(.active) {
     background: #f3f4f6; /* slightly darker gray */
-    color: #111827;
+    color: var(--bs-primary);
 }

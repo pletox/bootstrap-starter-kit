@@ -8,6 +8,7 @@
         'forms' => ['label' => 'Forms & CRUD', 'icon' => 'lucide-list-checks'],
         'datatables' => ['label' => 'DataTables', 'icon' => 'lucide-table-properties'],
         'infinite-scroll' => ['label' => 'Infinite Scroll', 'icon' => 'lucide-list-end'],
+        'pwa' => ['label' => 'PWA & Push', 'icon' => 'lucide-smartphone'],
         'backend' => ['label' => 'Backend', 'icon' => 'lucide-server'],
         'testing' => ['label' => 'Testing', 'icon' => 'lucide-flask-conical'],
     ];
@@ -86,7 +87,7 @@
                         <x-lucide-component class="w-4 h-4"/>
                         <span>UI Kit</span>
                     </x-button>
-                    <x-button color="dark" link="{{ route('home') }}">
+                    <x-button color="primary" link="{{ route('home') }}">
                         <x-lucide-house class="w-4 h-4"/>
                         <span>Dashboard</span>
                     </x-button>

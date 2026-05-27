@@ -21,7 +21,7 @@
                     <span class="d-none d-sm-inline-block">Filters</span>
                 </x-button>
 
-                <x-button data-bs-toggle="#categoryModal" id="add-category-btn" color="dark">
+                <x-button data-bs-toggle="#categoryModal" id="add-category-btn" color="primary">
                     <x-lucide-plus class="w-4 h-4"/>
                     <span class="d-none d-sm-inline-block">Add Category</span>
                 </x-button>
@@ -79,7 +79,7 @@
 
                     <div class="col-12 col-sm-6 col-lg-2">
                         <div class="d-flex gap-2">
-                            <x-button id="applyCategoryFilters" type="button" color="dark" class="flex-fill">
+                            <x-button id="applyCategoryFilters" type="button" color="primary" class="flex-fill">
                                 <x-lucide-search class="w-4 h-4"/>
                                 <span>Apply</span>
                             </x-button>

@@ -13,7 +13,7 @@
             <x-input name="password_confirmation" type="password" id="password_confirmation"
                      label="Confirm password" placeholder="Confirm password" autocomplete="off"/>
 
-            <x-button color="dark" type="submit">Save Password</x-button>
+            <x-button color="primary" type="submit">Save Password</x-button>
         </x-form>
     </section>
 @endsection

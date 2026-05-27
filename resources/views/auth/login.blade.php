@@ -21,7 +21,7 @@
                     password?</a>
             </div>
 
-            <x-button type="submit" color="dark" class="w-100 mt-3">Log In</x-button>
+            <x-button type="submit" color="primary" class="w-100 mt-3">Log In</x-button>
 
             <div class="text-center text-sm text-muted mt-4 authentication"> Don't have an account?
                 <a wire:navigate class="text-decoration-underline text-gray-800" href="{{ route('register') }}">

@@ -15,7 +15,8 @@
     --bs-dark-bg-subtle: #f6f7f9;
     --bs-bg-sidebar: #ffffff;
     --bs-sidebar-link-color: #1e293b;
-    --bs-sidebar-hover: #f3f4f6;
+    --bs-sidebar-hover: rgba(var(--bs-primary-rgb), 0.08);
+    --bs-sidebar-active-bg: rgba(var(--bs-primary-rgb), 0.1);
     --bs-table-head: #f8fafc;
     --bs-dropdown-link-active-bg: --bs-dropdown-link-hover-bg;
     --bs-dropdown-link-active-color: --bs-dropdown-link-hover-color;
@@ -175,11 +176,22 @@ a.sidebar-link {
 
 .sidebar-link:hover, .sidebar-link:focus, .sidebar-link.active {
     background-color: var(--bs-sidebar-hover);
+    color: var(--bs-primary) !important;
 }
 
 .sidebar-link.active {
-    color: #111827;
-    font-weight: 700;
+    background-color: var(--bs-sidebar-active-bg);
+    color: var(--bs-primary) !important;
+}
+
+.sidebar-link:hover span,
+.sidebar-link:focus span,
+.sidebar-link.active span,
+.sidebar-link:hover svg,
+.sidebar-link:focus svg,
+.sidebar-link.active svg {
+    color: var(--bs-primary) !important;
+    stroke: currentColor;
 }
 
 .sidebar-link[data-bs-toggle="collapse"]::after {
@@ -283,6 +295,82 @@ a.sidebar-link {
     .content {
         padding: 0.9rem 0.9rem calc(1rem + var(--app-safe-bottom)) !important;
     }
+
+    .settings-shell {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .settings-header {
+        display: none;
+        padding-left: 0.9rem;
+        padding-right: 0.9rem;
+    }
+
+    .settings-layout {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .settings-nav-col,
+    .settings-content-col {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .settings-tabs {
+        background: var(--app-surface);
+        border-bottom: 1px solid var(--app-border-soft);
+        margin: -0.9rem -0.9rem 1.1rem;
+        padding: 0 0.9rem;
+        position: sticky;
+        top: var(--app-navbar-height);
+        z-index: 1020;
+    }
+
+    .settings-tabs-list {
+        display: flex;
+        gap: 1.35rem;
+        max-height: none;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 0;
+        scroll-padding-inline: 0.9rem;
+        white-space: nowrap;
+    }
+
+    .settings-tabs-list:hover {
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .settings-tabs-list .sidebar-item {
+        flex: 0 0 auto;
+    }
+
+    .settings-tabs-list a.sidebar-link {
+        background: transparent;
+        border-bottom: 0.1875rem solid transparent;
+        border-radius: 0;
+        color: #64748b !important;
+        margin: 0;
+        min-height: 3rem;
+        padding: 0.9rem 0 0.7rem;
+    }
+
+    .settings-tabs-list a.sidebar-link:hover,
+    .settings-tabs-list a.sidebar-link:focus,
+    .settings-tabs-list a.sidebar-link.active {
+        background: transparent;
+        border-bottom-color: var(--bs-primary);
+        color: var(--bs-primary) !important;
+        margin: 0;
+    }
+
+    .settings-content-col {
+        padding-left: 0.9rem;
+        padding-right: 0.9rem;
+    }
 }
 
 /* Theme Toggler */
@@ -385,11 +473,33 @@ nav.app-navbar .dropdown-menu {
 }
 
 .card-header {
-    padding: 1rem 1.1rem;
+    padding: 1rem 1.15rem 0.9rem;
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 650;
+    letter-spacing: 0;
+    line-height: 1.25;
+}
+
+.card-subtitle {
+    display: block;
+    font-size: 0.875rem;
+    line-height: 1.35;
+    margin-top: 0.2rem;
 }
 
 .card-body {
-    padding: 1.1rem;
+    padding: 1.1rem 1.15rem;
+}
+
+.settings-tabs-list {
+    scrollbar-width: none;
+}
+
+.settings-tabs-list::-webkit-scrollbar {
+    display: none;
 }
 
 .page-header-title {

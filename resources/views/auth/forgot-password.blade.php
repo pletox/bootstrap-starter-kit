@@ -16,7 +16,7 @@
         <x-form class="space-y-4" method="POST" action="{{ route('password.email') }}">
             <x-input label="Email Address" type="email" placeholder="email@example.com" name="email" id="email"/>
 
-            <x-button type="submit" color="dark" class="w-100">Email password reset link</x-button>
+            <x-button type="submit" color="primary" class="w-100">Email password reset link</x-button>
 
             <div class="text-center text-sm text-muted mt-4 authentication">Or, return to
                 <a wire:navigate class="text-decoration-underline text-gray-800" href="{{ route('login') }}">

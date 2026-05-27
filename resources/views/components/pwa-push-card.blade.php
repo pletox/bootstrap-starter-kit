@@ -2,7 +2,7 @@
     'url' => route('home'),
 ])
 
-<div {{ $attributes->merge(['class' => 'border rounded-3 p-3 d-grid gap-3']) }} data-pwa-push-card data-pwa-push-url="{{ $url }}">
+<div {{ $attributes->merge(['class' => 'bg-white border rounded-3 p-3 d-grid gap-3']) }} data-pwa-push-card data-pwa-push-url="{{ $url }}">
     <div class="d-flex gap-3 align-items-start">
         <span class="pwa-install-inline-icon">
             <x-lucide-bell-ring class="w-4 h-4"/>
@@ -14,7 +14,7 @@
     </div>
 
     <div class="d-flex gap-2 flex-wrap">
-        <x-button color="dark" type="button" data-pwa-push-enable>
+        <x-button color="primary" type="button" data-pwa-push-enable>
             <x-lucide-bell class="w-4 h-4"/>
             <span>Enable</span>
         </x-button>

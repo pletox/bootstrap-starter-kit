@@ -21,7 +21,7 @@
                      name="password_confirmation" id="password_confirmation"/>
 
 
-            <x-button type="submit" color="dark" class="w-100 mt-4">Create Account</x-button>
+            <x-button type="submit" color="primary" class="w-100 mt-4">Create Account</x-button>
 
 
             <div class="text-center text-sm text-muted mt-4 authentication"> Already have an account?

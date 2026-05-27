@@ -27,7 +27,7 @@ it('serves the web app manifest', function () {
         ->assertOk()
         ->assertHeader('content-type', 'application/manifest+json')
         ->assertJsonPath('display', 'standalone')
-        ->assertJsonPath('theme_color', '#212529')
+        ->assertJsonPath('theme_color', '#a6192e')
         ->assertJsonPath('icons.0.sizes', '192x192')
         ->assertJsonPath('icons.2.purpose', 'maskable');
 });
@@ -64,6 +64,7 @@ it('renders developer docs locally', function () {
         ->assertSee('Developer Docs')
         ->assertSee('How To Build In This Kit')
         ->assertSee('Infinite Scroll')
+        ->assertSee('PWA &amp; Push', false)
         ->assertSee('Recommended Build Order');
 });
 
@@ -91,6 +92,7 @@ it('renders developer docs sub pages locally', function (string $page, string $e
     ['forms', 'AJAX CRUD Pattern'],
     ['datatables', 'Standard DataTable'],
     ['infinite-scroll', 'jQuery Infinite Scroll Script'],
+    ['pwa', 'Production Push Setup'],
     ['backend', 'Backend Patterns'],
     ['testing', 'Testing And Verification'],
 ]);

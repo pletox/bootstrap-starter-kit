@@ -11,7 +11,7 @@
         <x-lucide-eye class="w-4 h-4"/>
         <span>Preview Modal</span>
     </x-button>
-    <x-button color="dark" link="{{ route('home') }}">
+    <x-button color="primary" link="{{ route('home') }}">
         <x-lucide-house class="w-4 h-4"/>
         <span>Dashboard</span>
     </x-button>
@@ -41,7 +41,7 @@
             <div class="col-12 col-xl-7">
                 <x-card title="Buttons" subtitle="Filled, soft, light, icon, dropdown, and destructive actions." class="h-100">
                     <div class="d-flex flex-wrap gap-2 mb-3">
-                        <x-button color="dark"><x-lucide-plus class="w-4 h-4"/><span>Create</span></x-button>
+                        <x-button color="primary"><x-lucide-plus class="w-4 h-4"/><span>Create</span></x-button>
                         <x-button color="primary"><x-lucide-save class="w-4 h-4"/><span>Save</span></x-button>
                         <x-button color="success"><x-lucide-check class="w-4 h-4"/><span>Approve</span></x-button>
                         <x-button color="warning"><x-lucide-pause class="w-4 h-4"/><span>Hold</span></x-button>
@@ -50,9 +50,9 @@
                     </div>
 
                     <div class="d-flex flex-wrap align-items-center gap-2">
-                        <x-button color="dark" size="sm">Small</x-button>
-                        <x-button color="dark">Default</x-button>
-                        <x-button color="dark" size="lg">Large</x-button>
+                        <x-button color="primary" size="sm">Small</x-button>
+                        <x-button color="primary">Default</x-button>
+                        <x-button color="primary" size="lg">Large</x-button>
 
                         <x-dropdown align="end" color="light" icon="lucide-more-horizontal" text="Actions">
                             <x-dropdown.header>Record actions</x-dropdown.header>
@@ -76,7 +76,7 @@
                     </div>
 
                     <div class="d-flex align-items-center gap-3">
-                        <x-avatar letters="AW" color="dark"/>
+                        <x-avatar letters="AW" color="primary"/>
                         <x-avatar letters="BS" color="primary"/>
                         <x-avatar letters="JP" color="success" shape="semi"/>
                         <x-avatar letters="UX" color="warning" shape="square"/>
@@ -196,7 +196,7 @@
                             </div>
                             <div class="col-12">
                                 <div class="d-flex flex-wrap align-items-center gap-2">
-                                    <x-button type="submit" color="dark">
+                                    <x-button type="submit" color="primary">
                                         <x-lucide-send class="w-4 h-4"/>
                                         <span>Send Push Test</span>
                                     </x-button>
@@ -294,7 +294,7 @@
             </x-modal.body>
             <x-modal.footer>
                 <x-button color="light" data-bs-dismiss="modal">Cancel</x-button>
-                <x-button color="dark" data-bs-dismiss="modal">Looks good</x-button>
+                <x-button color="primary" data-bs-dismiss="modal">Looks good</x-button>
             </x-modal.footer>
         </x-modal>
     </div>

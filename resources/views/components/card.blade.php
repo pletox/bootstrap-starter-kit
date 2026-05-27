@@ -25,7 +25,7 @@
         <div class="card-header">
             <h5 class="card-title mb-0">{{ $title }}</h5>
             @if($subtitle)
-                <small class="text-muted">{{ $subtitle }}</small>
+                <p class="card-subtitle text-muted mb-0">{{ $subtitle }}</p>
             @endif
         </div>
     @endif

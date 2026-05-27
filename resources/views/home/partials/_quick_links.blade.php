@@ -31,7 +31,7 @@
 
         <x-modal.footer>
             <x-button color="light" data-bs-dismiss="modal">Cancel</x-button>
-            <x-button color="dark" type="submit">Save Link</x-button>
+            <x-button color="primary" type="submit">Save Link</x-button>
         </x-modal.footer>
     </x-form>
 </x-modal>

@@ -12,7 +12,7 @@
                          value="{{ auth()->user()->name }}"/>
                 <x-input name="email" id="email" label="Email address" placeholder="Enter Email"
                          value="{{ auth()->user()->email }}"/>
-                <x-button color="dark" type="submit">Save</x-button>
+                <x-button color="primary" type="submit">Save</x-button>
             </x-form>
         </section>
 

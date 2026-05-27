@@ -20,7 +20,7 @@
                 Checking install support...
             </div>
 
-            <x-button color="dark" class="w-100 justify-content-center" type="button" data-install-button disabled>
+            <x-button color="primary" class="w-100 justify-content-center" type="button" data-install-button disabled>
                 <x-lucide-download class="w-4 h-4"/>
                 <span>Install app</span>
             </x-button>

@@ -24,7 +24,7 @@
             <x-input label="Confirm New Password" placeholder="Confirm New Password" type="password"
                      name="password_confirmation" id="password_confirmation"/>
 
-            <x-button type="submit" color="dark" class="w-100">Reset Password</x-button>
+            <x-button type="submit" color="primary" class="w-100">Reset Password</x-button>
 
         </x-form>
     </div>

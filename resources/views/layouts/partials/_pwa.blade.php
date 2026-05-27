@@ -1,6 +1,6 @@
     @php
     $appName = config('app.name', 'PletoxStarter');
-    $themeColor = '#212529';
+    $themeColor = '#a6192e';
 @endphp
 
 <meta name="theme-color" content="{{ $themeColor }}">

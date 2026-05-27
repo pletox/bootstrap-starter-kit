@@ -20,7 +20,7 @@ Route::get('manifest.webmanifest', function () {
         'scope' => url('/'),
         'display' => 'standalone',
         'background_color' => '#f8f9fa',
-        'theme_color' => '#212529',
+        'theme_color' => '#a6192e',
         'icons' => [
             [
                 'src' => asset('pwa/icons/icon-192x192.png'),
@@ -82,6 +82,7 @@ Route::group(['middleware' => ['auth:web']], function () {
         Route::post('profile/delete', [ProfileController::class, 'destroy'])->name('settings.profile.delete');
         Route::get('profile/password-update', [ProfileController::class, 'passwordUpdate'])->name('settings.profile.password-update');
         Route::get('profile/appearance', [ProfileController::class, 'appearance'])->name('settings.profile.appearance');
+        Route::get('profile/permissions', [ProfileController::class, 'permissions'])->name('settings.profile.permissions');
     });
 
     /* EXAMPLE CODE CAN BE DELETED ONCE REFERRED */
@@ -101,6 +102,7 @@ Route::group(['middleware' => ['auth:web']], function () {
             'forms' => 'developer-docs.forms',
             'datatables' => 'developer-docs.datatables',
             'infinite-scroll' => 'developer-docs.infinite-scroll',
+            'pwa' => 'developer-docs.pwa',
             'backend' => 'developer-docs.backend',
             'testing' => 'developer-docs.testing',
         ];
