@@ -21,7 +21,7 @@
                 <div class="col-12 col-md-6">
                     <div class="border rounded p-3 h-100">
                         <h2 class="h6 mb-2">Components own widgets</h2>
-                        <p class="text-muted mb-0">Use Blade components for Select2, rich text, date pickers, buttons, cards, tables, modals, and form controls. Do not initialize form widgets directly in page scripts.</p>
+                        <p class="text-muted mb-0">Use Blade components for Select2, rich text, date pickers, page headers, async lists, buttons, cards, tables, modals, and form controls. Do not initialize form widgets directly in page scripts.</p>
                     </div>
                 </div>
                 <div class="col-12 col-md-6">
@@ -30,35 +30,47 @@
                         <p class="text-muted mb-0">Categories is the CRUD reference. Dashboard is the AJAX partial/list reference. UI Kit is the component reference. Keep these examples realistic and production-shaped.</p>
                     </div>
                 </div>
+                <div class="col-12 col-md-6">
+                    <div class="border rounded p-3 h-100">
+                        <h2 class="h6 mb-2">Patch instead of reset</h2>
+                        <p class="text-muted mb-0">Use <code>useAsyncList()</code>, <code>table.upsertRow()</code>, and <code>table.removeRow()</code> when a create/update/delete should preserve mobile scroll position.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="border rounded p-3 h-100">
+                        <h2 class="h6 mb-2">Small utilities are welcome</h2>
+                        <p class="text-muted mb-0">Use helpers like <code>downloadBlob()</code> when page code is only repeating browser mechanics, not product behavior.</p>
+                    </div>
+                </div>
             </div>
         </x-card>
 
         <x-card title="Recommended Build Order" subtitle="Use this sequence when adding a new resource module.">
             <div class="list-group list-group-flush">
-                <div class="list-group-item px-0 d-flex gap-3">
-                    <x-badge color="dark">1</x-badge>
-                    <div>
+                <div class="list-group-item px-0 developer-docs-step">
+                    <span class="developer-docs-step-number">1</span>
+                    <div class="developer-docs-step-copy">
                         <p class="fw-medium mb-1">Create backend pieces</p>
                         <p class="text-muted mb-0">Migration, model, factory, controller, routes, validation, and tests. Keep controller writes limited to validated data.</p>
                     </div>
                 </div>
-                <div class="list-group-item px-0 d-flex gap-3">
-                    <x-badge color="dark">2</x-badge>
-                    <div>
+                <div class="list-group-item px-0 developer-docs-step">
+                    <span class="developer-docs-step-number">2</span>
+                    <div class="developer-docs-step-copy">
                         <p class="fw-medium mb-1">Build the Blade surface</p>
-                        <p class="text-muted mb-0">Use <code>x-card</code>, <code>x-button</code>, <code>x-form</code>, <code>x-input</code>, <code>x-select2</code>, and <code>x-modal</code>.</p>
+                        <p class="text-muted mb-0">Use <code>x-page-header</code>, <code>x-card</code>, <code>x-button</code>, <code>x-form</code>, <code>x-input</code>, <code>x-select2</code>, <code>x-async-list</code>, and <code>x-modal</code>.</p>
                     </div>
                 </div>
-                <div class="list-group-item px-0 d-flex gap-3">
-                    <x-badge color="dark">3</x-badge>
-                    <div>
+                <div class="list-group-item px-0 developer-docs-step">
+                    <span class="developer-docs-step-number">3</span>
+                    <div class="developer-docs-step-copy">
                         <p class="fw-medium mb-1">Wire jQuery behavior</p>
-                        <p class="text-muted mb-0">Use <code>useForm()</code>, <code>useModal()</code>, <code>jpDataTable()</code>, delegated events, and shared helpers.</p>
+                        <p class="text-muted mb-0">Use <code>useForm()</code>, <code>useModal()</code>, <code>useAsyncList()</code>, <code>useDataTable()</code>, delegated events, and shared helpers.</p>
                     </div>
                 </div>
-                <div class="list-group-item px-0 d-flex gap-3">
-                    <x-badge color="dark">4</x-badge>
-                    <div>
+                <div class="list-group-item px-0 developer-docs-step">
+                    <span class="developer-docs-step-number">4</span>
+                    <div class="developer-docs-step-copy">
                         <p class="fw-medium mb-1">Verify the flow</p>
                         <p class="text-muted mb-0">Run focused Pest tests and <code>npm run build</code>. Add UI Kit examples for new reusable component behavior.</p>
                     </div>

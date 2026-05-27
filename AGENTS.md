@@ -77,12 +77,12 @@ form.post(route('example.store'), {
 
 ## DataTables
 
-- Use `$('#table').jpDataTable(...)` for DataTables.
+- Use `useDataTable('#table', ...)` for DataTables.
 - Tables should scroll horizontally on desktop instead of collapsing columns.
 - Mobile card mode is configured with the reusable `mobileCards` option:
 
 ```js
-$('#categories-table').jpDataTable({
+useDataTable('#categories-table', {
     url: route('categories.index'),
     columns: [
         { data: 'name', name: 'name' }
@@ -96,7 +96,7 @@ $('#categories-table').jpDataTable({
 });
 ```
 
-- Mobile card behavior should remain generic in `jpDataTable`, not tied to a specific page.
+- Mobile card behavior should remain generic in `useDataTable`, not tied to a specific page.
 - Infinite scroll should load predictably, one page per meaningful scroll gesture.
 - Bulk action behavior should work for both table rows and mobile cards.
 

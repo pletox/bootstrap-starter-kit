@@ -6,8 +6,7 @@
     <div>
         <!-- Update User Profile -->
         <section>
-            <h4 class="mb-1 text-base font-medium text-gray-700">Profile Information</h4>
-            <p class="text-sm text-muted">Update your name and email address</p>
+            <x-section-header title="Profile Information" subtitle="Update your name and email address"/>
             <x-form id="profileForm" class="space-y-4">
                 <x-input name="name" id="name" label="Name" placeholder="Enter Name"
                          value="{{ auth()->user()->name }}"/>
@@ -19,8 +18,7 @@
 
         <!-- Delete User Account -->
         <section>
-            <h4 class="mb-1 text-base font-medium text-gray-700 mt-5">Delete Account</h4>
-            <p class="text-sm text-muted">Delete your account and all of its resources</p>
+            <x-section-header title="Delete Account" subtitle="Delete your account and all of its resources" class="mt-5"/>
             <div class="alert alert-danger bg-red-50" role="alert" style="border-color: #ffd9d9;">
                 <h6 class="alert-heading text-red-600 mb-1">Warning</h6>
                 <p class="text-red-600">Please proceed with caution, this cannot be undone.</p>

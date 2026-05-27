@@ -5,15 +5,11 @@
 @section('content')
 
     <div class="px-2">
-        <div class="d-flex align-items-center justify-content-between">
-            <div>
-                <x-heading>Manage Categories</x-heading>
-                <x-text>This is the standard text component for body copy and general content throughout your
-                    application.
-                </x-text>
-            </div>
-
-            <div class="d-flex flex-wrap gap-2">
+        <x-page-header
+            title="Manage Categories"
+            subtitle="This is the standard text component for body copy and general content throughout your application."
+        >
+            <x-slot:actions>
                 <x-button
                     color="light"
                     data-bs-toggle="collapse"
@@ -29,8 +25,8 @@
                     <x-lucide-plus class="w-4 h-4"/>
                     <span class="d-none d-sm-inline-block">Add Category</span>
                 </x-button>
-            </div>
-        </div>
+            </x-slot:actions>
+        </x-page-header>
 
         <x-card class="mt-2" id="bulk-actions" style="display:none">
 
@@ -116,7 +112,6 @@
             </div>
         </x-card>
 
-
         @include('categories._form')
 
     </div>
@@ -129,7 +124,7 @@
             let form = useForm('#categoryForm');
             let modal = useModal('#categoryModal');
 
-            let table = $('#categories-table').jpDataTable({
+            let table = useDataTable('#categories-table', {
                 url: route('categories.index'),
                 columns: [
                     {data: 'select', name: 'select', orderable: false, searchable: false},
@@ -146,7 +141,7 @@
                     pageLength: 8,
                     renderCard: function (row) {
                         return `
-                            <div class="jp-mobile-card">
+                            <div class="jp-mobile-card" data-row-id="${row.id}">
                                 <div class="d-flex align-items-start justify-content-between gap-3">
                                     <div class="d-flex align-items-start gap-2 min-w-0">
                                         <input type="checkbox" class="form-check-input row-select mt-1" value="${row.id}">
@@ -240,16 +235,7 @@
                 }, {
                     responseType: 'blob'
                 }).then((response) => {
-                    const url = window.URL.createObjectURL(new Blob([response.data]));
-                    const link = document.createElement('a');
-
-                    link.href = url;
-                    link.download = 'categories.csv';
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
-                    window.URL.revokeObjectURL(url);
-
+                    downloadBlob(response.data, 'categories.csv');
                     toast.success('Selected categories exported.');
                 }).catch(() => {
                     toast.error('Export failed. Please reload and try again.');
@@ -265,10 +251,10 @@
                 e.preventDefault();
 
                 form.post("{{ route('categories.storeOrUpdate') }}", {
-                    onComplete: () => {
+                    onComplete: (response) => {
                         modal.close();
                         form.reset();
-                        table.draw(false);
+                        table.upsertRow(response.data.item, {mode: 'prepend'});
                     }
                 });
 
@@ -290,7 +276,7 @@
                     url: route('categories.delete', {category: id}),
                     confirmationMessage: 'Do you really want to delete this category?',
                     onComplete: () => {
-                        table.draw(false);
+                        table.removeRow(id);
                     }
                 })
             });

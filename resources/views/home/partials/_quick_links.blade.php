@@ -10,18 +10,15 @@
         </div>
     </x-slot:header>
 
-    <div class="overflow-auto" style="max-height: 18rem;" data-quick-link-list data-url="{{ route('quick-links.index') }}" data-page="1" aria-busy="true">
-        <div data-quick-link-items></div>
+    <x-async-list max-height="18rem" :url="route('quick-links.index')" data-quick-link-list>
+        <x-async-list.items data-quick-link-items/>
 
-        <div class="d-none text-center text-muted py-5" data-quick-link-empty>
-            <x-lucide-link class="w-5 h-5 text-muted"/>
-            <p class="mb-0 mt-2">No quick links yet.</p>
-        </div>
+        <x-async-list.empty icon="lucide-link" data-quick-link-empty>
+            No quick links yet.
+        </x-async-list.empty>
 
-        <div class="p-3" data-quick-link-loader>
-            <div class="line-loader"></div>
-        </div>
-    </div>
+        <x-async-list.loader data-quick-link-loader/>
+    </x-async-list>
 </x-card>
 
 <x-modal id="quickLinkModal" title="Add Quick Link">
@@ -62,59 +59,17 @@
 
 <script type="module">
     $(function () {
-        const $quickLinkList = $('[data-quick-link-list]');
-        const quickLinkItemTemplate = Handlebars.compile($('#quickLinkItemTemplate').html());
+        const quickLinks = useAsyncList('[data-quick-link-list]', {
+            itemTemplate: '#quickLinkItemTemplate',
+            onError: () => {
+                toast.error('Quick links could not be loaded.');
+            }
+        });
         const quickLinkForm = useForm('#quickLinkForm');
         const quickLinkModal = useModal('#quickLinkModal');
 
-        const loadQuickLinks = function () {
-            if (!$quickLinkList.length || $quickLinkList.data('loading') === true || $quickLinkList.data('has-more') === false) {
-                return;
-            }
-
-            const page = Number($quickLinkList.data('page') || 1);
-            const $items = $quickLinkList.find('[data-quick-link-items]');
-            const $loader = $quickLinkList.find('[data-quick-link-loader]');
-            const $empty = $quickLinkList.find('[data-quick-link-empty]');
-
-            $quickLinkList.data('loading', true).attr('aria-busy', 'true');
-            $loader.removeClass('d-none');
-
-            axios.post($quickLinkList.data('url'), {page})
-                .then((response) => {
-                    const items = response.data.items || [];
-                    const pagination = response.data.pagination || {};
-
-                    items.forEach((item) => {
-                        $items.append(quickLinkItemTemplate(item));
-                    });
-
-                    $empty.toggleClass('d-none', $items.children().length > 0);
-                    $quickLinkList
-                        .data('page', pagination.next_page || page)
-                        .data('has-more', pagination.has_more === true)
-                        .attr('data-page', pagination.next_page || page)
-                        .attr('data-has-more', pagination.has_more === true ? 'true' : 'false');
-                })
-                .catch(() => {
-                    toast.error('Quick links could not be loaded.');
-                })
-                .finally(() => {
-                    $quickLinkList.data('loading', false).attr('aria-busy', 'false');
-                    $loader.addClass('d-none');
-                });
-        };
-
-        loadQuickLinks();
-
-        $quickLinkList.on('scroll', function () {
-            const element = this;
-            const isNearBottom = element.scrollTop + element.clientHeight >= element.scrollHeight - 40;
-
-            if (isNearBottom) {
-                loadQuickLinks();
-            }
-        });
+        quickLinks.load();
+        quickLinks.bindInfiniteScroll();
 
         $('[data-quick-link-add]').on('click', function () {
             quickLinkForm.reset();
@@ -127,17 +82,11 @@
             quickLinkForm.post(route('quick-links.storeOrUpdate'), {
                 onComplete: (response) => {
                     const item = response.data.item;
-                    const $items = $quickLinkList.find('[data-quick-link-items]');
-                    const $existingItem = $items.find(`[data-quick-link-id="${item.id}"]`);
-                    const renderedItem = quickLinkItemTemplate(item);
 
-                    if ($existingItem.length) {
-                        $existingItem.replaceWith(renderedItem);
-                    } else {
-                        $items.prepend(renderedItem);
-                    }
+                    quickLinks.upsert(item, {
+                        selector: (item) => `[data-quick-link-id="${item.id}"]`,
+                    });
 
-                    $quickLinkList.find('[data-quick-link-empty]').addClass('d-none');
                     quickLinkModal.close();
                     quickLinkForm.reset();
                 },
@@ -160,10 +109,7 @@
                 url: route('quick-links.delete', {quickLink: id}),
                 confirmationMessage: 'Do you really want to delete this quick link?',
                 onComplete: () => {
-                    $quickLinkList.find(`[data-quick-link-id="${id}"]`).remove();
-                    $quickLinkList
-                        .find('[data-quick-link-empty]')
-                        .toggleClass('d-none', $quickLinkList.find('[data-quick-link-items]').children().length > 0);
+                    quickLinks.remove(`[data-quick-link-id="${id}"]`);
                 },
             });
         });

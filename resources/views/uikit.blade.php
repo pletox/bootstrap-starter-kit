@@ -1,88 +1,39 @@
-@extends('layouts.app')
+@extends('layouts.developer-docs')
 
 @section('title', 'UI Kit')
 
+@section('actions')
+    <x-button color="light" link="{{ route('developer-docs') }}">
+        <x-lucide-book-open class="w-4 h-4"/>
+        <span>Docs</span>
+    </x-button>
+    <x-button color="light" data-bs-toggle="modal" data-bs-target="#uikitPreviewModal">
+        <x-lucide-eye class="w-4 h-4"/>
+        <span>Preview Modal</span>
+    </x-button>
+    <x-button color="dark" link="{{ route('home') }}">
+        <x-lucide-house class="w-4 h-4"/>
+        <span>Dashboard</span>
+    </x-button>
+@endsection
+
 @section('content')
-    <div class="container-fluid px-2">
-        <div class="d-flex flex-column flex-xl-row align-items-xl-center justify-content-between gap-3 mb-3">
-            <div>
-                <x-heading>UI Kit</x-heading>
-                <x-text class="mb-0">Reusable Bootstrap and Blade patterns included with this starter kit.</x-text>
-            </div>
-
-            <div class="d-flex flex-wrap gap-2">
-                <x-button color="dark" link="{{ route('home') }}">
-                    <x-lucide-house class="w-4 h-4"/>
-                    <span>Dashboard</span>
-                </x-button>
-                @if(app()->isLocal())
-                    <x-button color="primary" link="{{ route('developer-docs') }}">
-                        <x-lucide-book-open class="w-4 h-4"/>
-                        <span>Developer Docs</span>
-                    </x-button>
-                @endif
-                <x-button color="light" data-bs-toggle="modal" data-bs-target="#uikitPreviewModal">
-                    <x-lucide-eye class="w-4 h-4"/>
-                    <span>Preview Modal</span>
-                </x-button>
-            </div>
-        </div>
-
+    <div class="d-grid gap-3">
         <div class="row g-3 mb-3">
             <div class="col-12 col-md-6 col-xl-3">
-                <x-card class="h-100">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <p class="text-muted text-sm mb-1">Foundation</p>
-                            <h4 class="mb-0">Bootstrap 5</h4>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center rounded bg-blue-100 w-10 h-10">
-                            <x-lucide-layers class="w-5 h-5 text-blue-700"/>
-                        </div>
-                    </div>
-                </x-card>
+                <x-stat-card label="Foundation" value="Bootstrap 5" icon="lucide-layers" icon-bg="bg-blue-100" icon-class="w-5 h-5 text-blue-700"/>
             </div>
 
             <div class="col-12 col-md-6 col-xl-3">
-                <x-card class="h-100">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <p class="text-muted text-sm mb-1">Components</p>
-                            <h4 class="mb-0">Blade-first</h4>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center rounded bg-green-100 w-10 h-10">
-                            <x-lucide-component class="w-5 h-5 text-green-700"/>
-                        </div>
-                    </div>
-                </x-card>
+                <x-stat-card label="Components" value="Blade-first" icon="lucide-component" icon-bg="bg-green-100" icon-class="w-5 h-5 text-green-700"/>
             </div>
 
             <div class="col-12 col-md-6 col-xl-3">
-                <x-card class="h-100">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <p class="text-muted text-sm mb-1">Interactions</p>
-                            <h4 class="mb-0">AJAX-ready</h4>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center rounded bg-yellow-100 w-10 h-10">
-                            <x-lucide-zap class="w-5 h-5 text-yellow-700"/>
-                        </div>
-                    </div>
-                </x-card>
+                <x-stat-card label="Interactions" value="AJAX-ready" icon="lucide-zap" icon-bg="bg-yellow-100" icon-class="w-5 h-5 text-yellow-700"/>
             </div>
 
             <div class="col-12 col-md-6 col-xl-3">
-                <x-card class="h-100">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <p class="text-muted text-sm mb-1">Icons</p>
-                            <h4 class="mb-0">Lucide</h4>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center rounded bg-gray-100 w-10 h-10">
-                            <x-lucide-sparkles class="w-5 h-5 text-slate-700"/>
-                        </div>
-                    </div>
-                </x-card>
+                <x-stat-card label="Icons" value="Lucide" icon="lucide-sparkles" icon-bg="bg-gray-100" icon-class="w-5 h-5 text-slate-700"/>
             </div>
         </div>
 
@@ -145,10 +96,17 @@
                                 <x-input name="admin_email" type="email" label="Admin email" placeholder="admin@example.com"/>
                             </div>
                             <div class="col-12 col-md-6">
-                                <x-select2 id="uikitStatus" name="status" label="Status" placeholder="Choose status">
-                                    <option value="draft">Draft</option>
-                                    <option value="active">Active</option>
-                                    <option value="paused">Paused</option>
+                                <x-select2 id="uikitStatus" name="status" label="Status" placeholder="Choose status" media>
+                                    <option value="draft" data-icon="lucide-file-text" data-subtitle="Not visible to users">Draft</option>
+                                    <option value="active" data-icon="lucide-circle-check" data-subtitle="Published and available">Active</option>
+                                    <option value="paused" data-icon="lucide-circle-pause" data-subtitle="Temporarily unavailable">Paused</option>
+                                </x-select2>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <x-select2 id="uikitOwner" name="owner" label="Owner" placeholder="Choose owner" media>
+                                    <option value="aw" data-avatar="AW" data-subtitle="Product owner" selected>Abhishek Wani</option>
+                                    <option value="jp" data-avatar="JP" data-subtitle="Backend engineer">Jordan Patel</option>
+                                    <option value="ux" data-avatar="UX" data-subtitle="Design lead">Uma Xavier</option>
                                 </x-select2>
                             </div>
                             <div class="col-12 col-md-6">

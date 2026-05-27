@@ -40,7 +40,7 @@ Route::group(['middleware' => ['auth:web']], function () {
     Route::get('ui-kit', function () {
         abort_unless(app()->isLocal(), 404);
 
-        return view('uikit');
+        return view('uikit', ['page' => 'ui-kit']);
     })->name('ui-kit');
     Route::get('developer-docs/{page?}', function (?string $page = null) {
         abort_unless(app()->isLocal(), 404);

@@ -221,6 +221,135 @@ window.useForm = function (formSelector) {
     };
 };
 
+window.useAsyncList = function (listSelector, options = {}) {
+    const $list = $(listSelector);
+    const settings = {
+        method: 'POST',
+        nearBottom: 40,
+        itemsSelector: '[data-async-list-items]',
+        emptySelector: '[data-async-list-empty]',
+        loaderSelector: '[data-async-list-loader]',
+        itemTemplate: null,
+        renderItem: null,
+        getItems: response => response.data.items || [],
+        getPagination: response => response.data.pagination || {},
+        data: ({page}) => ({page}),
+        onError: null,
+        ...options
+    };
+
+    const $items = () => $list.find(settings.itemsSelector);
+    const $empty = () => $list.find(settings.emptySelector);
+    const $loader = () => $list.find(settings.loaderSelector);
+    const template = settings.itemTemplate ? Handlebars.compile($(settings.itemTemplate).html()) : null;
+
+    const renderItem = function (item) {
+        if (typeof settings.renderItem === 'function') {
+            return settings.renderItem(item);
+        }
+
+        return template ? template(item) : '';
+    };
+
+    const refreshEmpty = function () {
+        $empty().toggleClass('d-none', $items().children().length > 0);
+    };
+
+    const setLoading = function (loading) {
+        $list.data('loading', loading).attr('aria-busy', loading ? 'true' : 'false');
+        $loader().toggleClass('d-none', !loading);
+    };
+
+    const api = {
+        load() {
+            if (!$list.length || $list.data('loading') === true || $list.data('has-more') === false) {
+                return;
+            }
+
+            const page = Number($list.data('page') || 1);
+            const payload = typeof settings.data === 'function' ? settings.data({page, list: $list}) : settings.data;
+
+            setLoading(true);
+
+            axios({
+                url: $list.data('url'),
+                method: settings.method,
+                data: payload
+            }).then((response) => {
+                const items = settings.getItems(response);
+                const pagination = settings.getPagination(response);
+                const nextPage = pagination.next_page || page;
+                const hasMore = pagination.has_more === true;
+
+                items.forEach((item) => {
+                    $items().append(renderItem(item));
+                });
+
+                refreshEmpty();
+                $list
+                    .data('page', nextPage)
+                    .data('has-more', hasMore)
+                    .attr('data-page', nextPage)
+                    .attr('data-has-more', hasMore ? 'true' : 'false');
+            }).catch((error) => {
+                if (typeof settings.onError === 'function') {
+                    settings.onError(error);
+                }
+            }).finally(() => {
+                setLoading(false);
+            });
+        },
+        bindInfiniteScroll() {
+            $list.off('scroll.jpAsyncList').on('scroll.jpAsyncList', function () {
+                const element = this;
+                const isNearBottom = element.scrollTop + element.clientHeight >= element.scrollHeight - settings.nearBottom;
+
+                if (isNearBottom) {
+                    api.load();
+                }
+            });
+        },
+        upsert(item, options = {}) {
+            const selector = typeof options.selector === 'function' ? options.selector(item) : options.selector;
+            const $existingItem = selector ? $items().find(selector) : $();
+            const renderedItem = renderItem(item);
+
+            if ($existingItem.length) {
+                $existingItem.replaceWith(renderedItem);
+            } else if (options.mode === 'append') {
+                $items().append(renderedItem);
+            } else {
+                $items().prepend(renderedItem);
+            }
+
+            refreshEmpty();
+        },
+        remove(selector) {
+            $items().find(selector).remove();
+            refreshEmpty();
+        },
+        refreshEmpty,
+        el() {
+            return $list;
+        }
+    };
+
+    return api;
+};
+
+window.downloadBlob = function (data, filename, options = {}) {
+    const blob = data instanceof Blob ? data : new Blob([data], options);
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+};
+
 window.getInputFieldVal = function (inputField) {
     const $input = $(inputField);
 
@@ -485,7 +614,7 @@ window.jpLoadSelect2Values = function (id, rawValues, callback = null) {
     });
 };
 
-$.fn.jpDataTable = function (options = {}) {
+$.fn.useDataTable = function (options = {}) {
     let tableInstance = null;
 
     this.each(function () {
@@ -519,6 +648,7 @@ $.fn.jpDataTable = function (options = {}) {
             breakpoint: 768,
             pageLength: 10,
             renderCard: null,
+            rowId: 'id',
             emptyText: 'No records found.',
             loadingText: 'Loading more records...'
         }, options.mobileCards || {});
@@ -577,24 +707,40 @@ $.fn.jpDataTable = function (options = {}) {
 
         let mobileCardsApi = null;
 
+        tableInstance.upsertRow = function (row, options = {}) {
+            if (mobileCardsApi?.isActive()) {
+                return mobileCardsApi.upsert(row, options);
+            }
+
+            tableInstance.draw(false);
+            return true;
+        };
+
+        tableInstance.removeRow = function (rowOrSelector) {
+            if (mobileCardsApi?.isActive()) {
+                return mobileCardsApi.remove(rowOrSelector);
+            }
+
+            tableInstance.draw(false);
+            return true;
+        };
+
         filterSelectors.forEach(selector => {
             $(selector.trim()).on('change', function () {
                 console.log('here');
                 tableInstance.draw();
-                if (mobileCardsApi) {
-                    mobileCardsApi.reload();
-                }
                 if (options.onFiltersChange)
                     options.onFiltersChange();
             });
         });
 
         // Store instance on the element for later access if needed
-        $el.data('jp-datatable-instance', tableInstance);
+        $el.data('datatable-instance', tableInstance);
 
         if (mobileCardOpts.enabled && typeof mobileCardOpts.renderCard === 'function') {
             mobileCardsApi = initMobileCards();
             $el.data('jp-mobile-cards-instance', mobileCardsApi);
+            tableInstance.mobileCards = mobileCardsApi;
             interceptMobileDraws();
         }
 
@@ -829,6 +975,85 @@ $.fn.jpDataTable = function (options = {}) {
                 }
             }
 
+            function findCard(rowOrSelector) {
+                if (typeof rowOrSelector === 'string') {
+                    if (/^[.#\[]/.test(rowOrSelector)) {
+                        return $list.find(rowOrSelector).closest('.jp-mobile-card').add($list.find(rowOrSelector).filter('.jp-mobile-card')).first();
+                    }
+
+                    return $list
+                        .find(`[value="${rowOrSelector}"], [data-id="${rowOrSelector}"], [data-row-id="${rowOrSelector}"]`)
+                        .closest('.jp-mobile-card')
+                        .first();
+                }
+
+                const id = rowOrSelector?.[mobileCardOpts.rowId] ?? rowOrSelector?.id ?? rowOrSelector;
+
+                if (id === null || id === undefined || id === '') {
+                    return $();
+                }
+
+                return $list
+                    .find(`[value="${id}"], [data-id="${id}"], [data-row-id="${id}"]`)
+                    .closest('.jp-mobile-card')
+                    .first();
+            }
+
+            function refreshEmptyState() {
+                if ($list.children().length === 0) {
+                    setStatus(mobileCardOpts.emptyText);
+                    finished = true;
+                } else {
+                    setStatus('', false);
+                }
+            }
+
+            function upsert(row, options = {}) {
+                if (!active || !row) {
+                    return false;
+                }
+
+                const $existingCard = typeof options.selector === 'function'
+                    ? findCard(options.selector(row))
+                    : findCard(row);
+                const renderedCard = mobileCardOpts.renderCard(row);
+
+                if ($existingCard.length) {
+                    $existingCard.replaceWith(renderedCard);
+                } else if (options.mode === 'append') {
+                    $list.append(renderedCard);
+                    start += 1;
+                } else {
+                    $list.prepend(renderedCard);
+                    start += 1;
+                }
+
+                finished = false;
+                refreshEmptyState();
+                $cards.trigger('jp-mobile-cards:draw');
+
+                return true;
+            }
+
+            function remove(rowOrSelector) {
+                if (!active) {
+                    return false;
+                }
+
+                const $card = findCard(rowOrSelector);
+
+                if (!$card.length) {
+                    return false;
+                }
+
+                $card.remove();
+                start = Math.max(0, start - 1);
+                refreshEmptyState();
+                $cards.trigger('jp-mobile-cards:draw');
+
+                return true;
+            }
+
             function syncMode() {
                 active = mediaQuery.matches;
                 $wrapper.toggleClass('d-none', active);
@@ -866,6 +1091,8 @@ $.fn.jpDataTable = function (options = {}) {
 
             return {
                 reload,
+                upsert,
+                remove,
                 isActive: () => active
             };
         }
@@ -1037,6 +1264,10 @@ $.fn.jpDataTable = function (options = {}) {
     });
 
     return tableInstance;
+};
+
+window.useDataTable = function (tableSelector, options = {}) {
+    return $(tableSelector).useDataTable(options);
 };
 
 

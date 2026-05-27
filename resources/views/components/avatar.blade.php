@@ -2,7 +2,7 @@
     'src' => null,           // Image URL
     'letters' => null,       // Fallback initials/letters
     'size' => 'md',          // sm | md | lg
-    'shape' => 'rounded',    // rounded | semi | square
+    'shape' => 'semi',       // rounded | semi | square
     'color' => 'secondary',  // bootstrap color
     'soft' => false          // soft color mode
 ])
@@ -31,7 +31,7 @@
         $colorClass = "bg-$color text-muted";
 
     // Final classes
-    $classes = ($sizes[$size] ?? $sizes['md']) . ' ' . ($shapes[$shape] ?? $shapes['rounded']);
+    $classes = ($sizes[$size] ?? $sizes['md']) . ' ' . ($shapes[$shape] ?? $shapes['semi']);
 @endphp
 
 @if ($src)

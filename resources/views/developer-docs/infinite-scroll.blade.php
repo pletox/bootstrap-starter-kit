@@ -21,24 +21,20 @@
             </div>
         </x-card>
 
-        <x-card title="Blade Markup" subtitle="Keep the partial self-contained with list, empty, loader, modal, template, and script.">
-            <pre class="bg-dark text-white rounded p-3 mb-0"><code>&lt;div class="overflow-auto" style="max-height: 18rem;"
-     data-resource-list
-     data-url="&#123;&#123; route('resources.index') &#125;&#125;"
-     data-page="1"
-     aria-busy="true"&gt;
-    &lt;div data-resource-items&gt;&lt;/div&gt;
+        <x-card title="Async List Component" subtitle="Use the component shell so scroll state, empty state, and loader hooks stay consistent across pages.">
+            <pre class="bg-dark text-white rounded p-3 mb-0"><code>&lt;x-async-list max-height="18rem" :url="route('resources.index')" data-resource-list&gt;
+    &lt;x-async-list.items data-resource-items/&gt;
 
-    &lt;div class="d-none text-center text-muted py-5" data-resource-empty&gt;
+    &lt;x-async-list.empty icon="lucide-link" data-resource-empty&gt;
         No records yet.
-    &lt;/div&gt;
+    &lt;/x-async-list.empty&gt;
 
-    &lt;div class="p-3" data-resource-loader&gt;
-        &lt;div class="line-loader"&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
+    &lt;x-async-list.loader data-resource-loader/&gt;
+&lt;/x-async-list&gt;</code></pre>
+        </x-card>
 
-&lt;script type="text/x-handlebars-template" id="resourceItemTemplate"&gt;
+        <x-card title="Item Template" subtitle="Keep only the repeated item markup in the page. The list shell belongs to x-async-list.">
+            <pre class="bg-dark text-white rounded p-3 mb-0"><code>&lt;script type="text/x-handlebars-template" id="resourceItemTemplate"&gt;
     &lt;div class="d-flex justify-content-between gap-3 border-bottom p-3" data-resource-id="@{{ id }}"&gt;
         &lt;div class="min-w-0"&gt;
             &lt;p class="fw-medium mb-1"&gt;@{{ title }}&lt;/p&gt;
@@ -48,76 +44,37 @@
 &lt;/script&gt;</code></pre>
         </x-card>
 
-        <x-card title="jQuery Infinite Scroll Script" subtitle="Throttle with loading and has-more flags, then append Handlebars rows.">
+        <x-card title="jQuery Infinite Scroll Script" subtitle="Use useAsyncList for loading, empty state, pagination state, and scroll binding.">
             <pre class="bg-dark text-white rounded p-3 mb-0"><code>$(function () {
-    const $list = $('[data-resource-list]');
-    const template = Handlebars.compile($('#resourceItemTemplate').html());
-
-    const loadItems = function () {
-        if (!$list.length || $list.data('loading') === true || $list.data('has-more') === false) {
-            return;
-        }
-
-        const page = Number($list.data('page') || 1);
-        const $items = $list.find('[data-resource-items]');
-        const $loader = $list.find('[data-resource-loader]');
-        const $empty = $list.find('[data-resource-empty]');
-
-        $list.data('loading', true).attr('aria-busy', 'true');
-        $loader.removeClass('d-none');
-
-        axios.post($list.data('url'), {page})
-            .then((response) =&gt; {
-                const items = response.data.items || [];
-                const pagination = response.data.pagination || {};
-
-                items.forEach((item) =&gt; {
-                    $items.append(template(item));
-                });
-
-                $empty.toggleClass('d-none', $items.children().length &gt; 0);
-                $list
-                    .data('page', pagination.next_page || page)
-                    .data('has-more', pagination.has_more === true);
-            })
-            .catch(() =&gt; {
-                toast.error('Records could not be loaded.');
-            })
-            .finally(() =&gt; {
-                $list.data('loading', false).attr('aria-busy', 'false');
-                $loader.addClass('d-none');
-            });
-    };
-
-    loadItems();
-
-    $list.on('scroll', function () {
-        const nearBottom = this.scrollTop + this.clientHeight &gt;= this.scrollHeight - 40;
-
-        if (nearBottom) {
-            loadItems();
+    const resources = useAsyncList('[data-resource-list]', {
+        itemTemplate: '#resourceItemTemplate',
+        onError: () =&gt; {
+            toast.error('Records could not be loaded.');
         }
     });
+
+    resources.load();
+    resources.bindInfiniteScroll();
 });</code></pre>
         </x-card>
 
         <x-card title="Create Or Update Without Resetting The List" subtitle="Return the item from the backend and patch the current DOM.">
             <pre class="bg-dark text-white rounded p-3 mb-0"><code>form.post(route('resources.storeOrUpdate'), {
     onComplete: (response) =&gt; {
-        const item = response.data.item;
-        const rendered = template(item);
-        const $items = $list.find('[data-resource-items]');
-        const $existing = $items.find(`[data-resource-id="${item.id}"]`);
+        resources.upsert(response.data.item, {
+            selector: (item) =&gt; `[data-resource-id="${item.id}"]`,
+            mode: 'prepend',
+        });
 
-        if ($existing.length) {
-            $existing.replaceWith(rendered);
-        } else {
-            $items.prepend(rendered);
-        }
-
-        $list.find('[data-resource-empty]').addClass('d-none');
         modal.close();
         form.reset();
+    }
+});
+
+$.easyDelete({
+    url: route('resources.delete', {resource: id}),
+    onComplete: () =&gt; {
+        resources.remove(`[data-resource-id="${id}"]`);
     }
 });</code></pre>
         </x-card>

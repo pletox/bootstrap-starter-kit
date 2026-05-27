@@ -8,7 +8,7 @@
             <pre class="bg-dark text-white rounded p-3 mb-3"><code>$(function () {
     const form = useForm('#resourceForm');
     const modal = useModal('#resourceModal');
-    const table = $('#resource-table').data('jp-datatable-instance');
+    const table = $('#resource-table').data('datatable-instance');
 
     $('#add-resource-btn').on('click', function () {
         form.reset();
@@ -22,7 +22,7 @@
             onComplete: (response) => {
                 toast.success(response.data.message);
                 modal.close();
-                table.draw(false);
+                table.upsertRow(response.data.item, {mode: 'prepend'});
             }
         });
     });
@@ -36,7 +36,7 @@
     });
 });</code></pre>
 
-            <p class="text-muted mb-0">For list UIs that should preserve scroll position, return the saved item from the backend and update the item in place instead of resetting the full list.</p>
+            <p class="text-muted mb-0">For DataTables with mobile cards, return a rendered row payload and use <code>table.upsertRow()</code> or <code>table.removeRow()</code> so mobile scroll position is preserved while desktop tables redraw normally.</p>
         </x-card>
 
         <x-card title="Select2 API Fields" subtitle="API-backed Select2 fields hydrate missing values for form.fill and x-model.">
@@ -64,6 +64,50 @@
 }</code></pre>
                 </div>
             </div>
+        </x-card>
+
+        <x-card title="Select2 Media Options" subtitle="Use media mode for option icons, avatars, and short subtitles.">
+            <div class="row g-3">
+                <div class="col-12 col-lg-6">
+                    <h2 class="h6">Static Options</h2>
+                    <pre class="bg-dark text-white rounded p-3 mb-0"><code>&lt;x-select2 id="owner" name="owner" label="Owner" media&gt;
+    &lt;option value="aw" data-avatar="AW" data-subtitle="Product owner" selected&gt;
+        Abhishek Wani
+    &lt;/option&gt;
+    &lt;option value="jp" data-avatar="JP" data-subtitle="Backend engineer"&gt;
+        Jordan Patel
+    &lt;/option&gt;
+&lt;/x-select2&gt;</code></pre>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <h2 class="h6">API Options</h2>
+                    <pre class="bg-dark text-white rounded p-3 mb-0"><code>{
+  "results": [
+    {
+      "id": "active",
+      "text": "Active",
+      "icon": "lucide-circle-check",
+      "subtitle": "Published and available"
+    },
+    {
+      "id": "aw",
+      "text": "Abhishek Wani",
+      "avatar": "AW",
+      "subtitle": "Product owner"
+    }
+  ]
+}</code></pre>
+                </div>
+            </div>
+        </x-card>
+
+        <x-card title="Blob Downloads" subtitle="Use downloadBlob for generated files returned by Axios.">
+            <pre class="bg-dark text-white rounded p-3 mb-0"><code>axios.post(route('categories.export'), {ids}, {
+    responseType: 'blob'
+}).then((response) =&gt; {
+    downloadBlob(response.data, 'categories.csv');
+    toast.success('Selected categories exported.');
+});</code></pre>
         </x-card>
 
         <x-card title="Controller Validation" subtitle="Write only validated data.">

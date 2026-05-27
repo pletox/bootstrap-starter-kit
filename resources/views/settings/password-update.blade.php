@@ -4,8 +4,7 @@
 
 @section('settings.content')
     <section>
-        <h4 class="mb-1 text-base font-medium text-gray-700">Update password</h4>
-        <p class="text-sm text-muted">Ensure your account is using a long, random password to stay secure</p>
+        <x-section-header title="Update password" subtitle="Ensure your account is using a long, random password to stay secure"/>
         <x-form id="profilePasswordForm" class="space-y-4">
             <x-input name="current_password" type="password" id="current_password" label="Current password"
                      placeholder="Current password" autocomplete="off"/>

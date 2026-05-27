@@ -12,6 +12,7 @@
     'minimumInputLength' => 0,
     'allowClear' => true,
     'selectedOptions' => [],
+    'media' => false,
 ])
 
 @php
@@ -30,12 +31,20 @@
             return [
                 'id' => $label['id'] ?? $value,
                 'text' => $label['text'] ?? $label['name'] ?? $label['label'] ?? $label['id'] ?? $value,
+                'icon' => $label['icon'] ?? null,
+                'avatar' => $label['avatar'] ?? $label['initials'] ?? null,
+                'avatar_url' => $label['avatar_url'] ?? $label['avatarUrl'] ?? null,
+                'subtitle' => $label['subtitle'] ?? $label['description'] ?? null,
             ];
         }
 
         return [
             'id' => $value,
             'text' => $label,
+            'icon' => null,
+            'avatar' => null,
+            'avatar_url' => null,
+            'subtitle' => null,
         ];
     });
 @endphp
@@ -55,7 +64,14 @@
     >
         <option></option>
         @foreach($selectedOptions as $option)
-            <option value="{{ $option['id'] }}" selected>{{ $option['text'] }}</option>
+            <option
+                value="{{ $option['id'] }}"
+                @if($option['icon']) data-icon="{{ $option['icon'] }}" @endif
+                @if($option['avatar']) data-avatar="{{ $option['avatar'] }}" @endif
+                @if($option['avatar_url']) data-avatar-src="{{ $option['avatar_url'] }}" @endif
+                @if($option['subtitle']) data-subtitle="{{ $option['subtitle'] }}" @endif
+                selected
+            >{{ $option['text'] }}</option>
         @endforeach
         {{ $slot }}
     </select>
@@ -84,6 +100,77 @@
             width: '100%'
         };
 
+        function optionDataset(option) {
+            let element = option.element;
+            let dataset = element?.dataset || {};
+
+            return {
+                icon: option.icon || option.icon_class || dataset.icon || null,
+                avatar: option.avatar || option.avatar_initials || option.initials || dataset.avatar || null,
+                avatarSrc: option.avatar_url || option.avatarUrl || dataset.avatarSrc || null,
+                subtitle: option.subtitle || option.description || dataset.subtitle || null,
+            };
+        }
+
+        function renderIcon(icon) {
+            if (!icon) return '';
+
+            if (String(icon).startsWith('lucide-')) {
+                return `<span class="jp-select2-media-icon"><i data-lucide="${escapeHtml(String(icon).replace('lucide-', ''))}" class="w-4 h-4"></i></span>`;
+            }
+
+            return `<span class="jp-select2-media-icon"><i class="${escapeHtml(icon)}"></i></span>`;
+        }
+
+        function renderAvatar(data) {
+            if (data.avatarSrc) {
+                return `<img src="${escapeHtml(data.avatarSrc)}" alt="" class="jp-select2-media-avatar">`;
+            }
+
+            if (data.avatar) {
+                return `<span class="jp-select2-media-avatar">${escapeHtml(String(data.avatar).slice(0, 2).toUpperCase())}</span>`;
+            }
+
+            return '';
+        }
+
+        function renderMediaOption(option, compact = false) {
+            if (!option.id) return escapeHtml(option.text || '');
+
+            let data = optionDataset(option);
+            let media = renderAvatar(data) || renderIcon(data.icon);
+
+            if (!media && !data.subtitle) {
+                return escapeHtml(option.text || '');
+            }
+
+            let html = `
+                <div class="jp-select2-media-option ${compact ? 'is-compact' : ''}">
+                    ${media}
+                    <span class="jp-select2-media-copy">
+                        <span class="jp-select2-media-title">${escapeHtml(option.text)}</span>
+                        ${!compact && data.subtitle ? `<small class="jp-select2-media-subtitle">${escapeHtml(data.subtitle)}</small>` : ''}
+                    </span>
+                </div>
+            `;
+
+            setTimeout(() => window.refreshLucideIcons?.(), 0);
+
+            return $(html);
+        }
+
+        @if($media)
+            config.templateResult = function (option) {
+                return renderMediaOption(option);
+            };
+            config.templateSelection = function (option) {
+                return renderMediaOption(option, true);
+            };
+            config.escapeMarkup = function (markup) {
+                return markup;
+            };
+        @endif
+
         @if($ajaxUrl)
             config.ajax = {
                 url: @json($ajaxUrl),
@@ -103,7 +190,11 @@
                             return {
                                 id: item.id,
                                 text: item.text || item.name || item.label,
-                                disabled: item.disabled || item.is_disabled === true
+                                disabled: item.disabled || item.is_disabled === true,
+                                icon: item.icon || item.icon_class || null,
+                                avatar: item.avatar || item.avatar_initials || item.initials || null,
+                                avatar_url: item.avatar_url || item.avatarUrl || null,
+                                subtitle: item.subtitle || item.description || null
                             };
                         }),
                         pagination: {
@@ -124,7 +215,11 @@
                 return {
                     id: item.id,
                     text: item.text || item.name || item.label || item.id,
-                    disabled: item.disabled || item.is_disabled === true
+                    disabled: item.disabled || item.is_disabled === true,
+                    icon: item.icon || item.icon_class || null,
+                    avatar: item.avatar || item.avatar_initials || item.initials || null,
+                    avatar_url: item.avatar_url || item.avatarUrl || null,
+                    subtitle: item.subtitle || item.description || null
                 };
             });
         }
@@ -179,6 +274,10 @@
                             if (!select.find('option[value="' + item.id + '"]').length) {
                                 let option = new Option(item.text, item.id, values.includes(String(item.id)) || values.includes(item.id), values.includes(String(item.id)) || values.includes(item.id));
                                 option.disabled = item.disabled === true;
+                                if (item.icon) option.dataset.icon = item.icon;
+                                if (item.avatar) option.dataset.avatar = item.avatar;
+                                if (item.avatar_url) option.dataset.avatarSrc = item.avatar_url;
+                                if (item.subtitle) option.dataset.subtitle = item.subtitle;
                                 select.append(option);
                             }
                         });

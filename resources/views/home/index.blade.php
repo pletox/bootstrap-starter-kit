@@ -4,13 +4,11 @@
 
 @section('content')
     <div class="container-fluid px-2">
-        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-3">
-            <div>
-                <x-heading>Starter Dashboard</x-heading>
-                <x-text class="mb-0">A practical home base for building authenticated Bootstrap admin panels.</x-text>
-            </div>
-
-            <div class="d-flex flex-wrap gap-2">
+        <x-page-header
+            title="Starter Dashboard"
+            subtitle="A practical home base for building authenticated Bootstrap admin panels."
+        >
+            <x-slot:actions>
                 <x-button color="dark" link="{{ route('categories.index') }}" wire:navigate>
                     <x-lucide-layout-grid class="w-4 h-4"/>
                     <span>Manage Categories</span>
@@ -22,8 +20,8 @@
                         <span>UI Kit</span>
                     </x-button>
                 @endif
-            </div>
-        </div>
+            </x-slot:actions>
+        </x-page-header>
 
         @include('home.partials._counters')
 

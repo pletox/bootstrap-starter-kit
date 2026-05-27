@@ -127,6 +127,39 @@ it('filters category datatable rows', function () {
         ->assertJsonPath('data.0.name', 'Hardware');
 });
 
+it('returns a rendered category row after create and update', function () {
+    $user = User::factory()->create();
+
+    $createResponse = $this->actingAs($user)
+        ->postJson(route('categories.storeOrUpdate'), [
+            'name' => 'Hardware',
+            'description' => 'Physical inventory',
+            'active' => 1,
+        ])
+        ->assertOk()
+        ->assertJsonPath('message', 'Category Created Successfully!')
+        ->assertJsonPath('item.name', 'Hardware');
+
+    expect($createResponse->json('item.status'))->toContain('Active');
+    expect($createResponse->json('item.description'))->toContain('Physical inventory');
+
+    $category = Category::where('name', 'Hardware')->firstOrFail();
+
+    $updateResponse = $this->actingAs($user)
+        ->postJson(route('categories.storeOrUpdate'), [
+            'id' => $category->id,
+            'name' => 'Hardware Updated',
+            'description' => 'Updated inventory',
+            'active' => 0,
+        ])
+        ->assertOk()
+        ->assertJsonPath('message', 'Category Updated Successfully!')
+        ->assertJsonPath('item.id', $category->id)
+        ->assertJsonPath('item.name', 'Hardware Updated');
+
+    expect($updateResponse->json('item.status'))->toContain('Inactive');
+});
+
 it('returns categories as select2 api options', function () {
     $user = User::factory()->create();
     Category::factory()->create(['name' => 'Hardware']);

@@ -1,16 +1,13 @@
 <x-card title="Recent Categories" subtitle="The sample CRUD module used by this starter kit." class="h-100" body-class="px-0 pb-0">
-    <div class="overflow-auto" style="max-height: 22rem;" data-home-category-list data-url="{{ route('home.recent-categories') }}" data-page="1" aria-busy="true">
-        <div class="d-grid" data-category-items></div>
+    <x-async-list max-height="22rem" :url="route('home.recent-categories')" data-home-category-list>
+        <x-async-list.items class="d-grid" data-category-items/>
 
-        <div class="d-none text-center text-muted py-5" data-category-empty>
-            <x-lucide-folder-open class="w-5 h-5 text-muted"/>
-            <p class="mb-0 mt-2">No categories yet.</p>
-        </div>
+        <x-async-list.empty icon="lucide-folder-open" data-category-empty>
+            No categories yet.
+        </x-async-list.empty>
 
-        <div class="p-3" data-category-loader>
-            <div class="line-loader"></div>
-        </div>
-    </div>
+        <x-async-list.loader data-category-loader/>
+    </x-async-list>
 
     <script type="text/x-handlebars-template" id="homeCategoryItemTemplate">
         <div class="border-bottom p-3">
@@ -34,56 +31,14 @@
 
 <script type="module">
     $(function () {
-        const $categoryList = $('[data-home-category-list]');
-        const categoryItemTemplate = Handlebars.compile($('#homeCategoryItemTemplate').html());
-
-        const loadRecentCategories = function () {
-            if (!$categoryList.length || $categoryList.data('loading') === true || $categoryList.data('has-more') === false) {
-                return;
-            }
-
-            const page = Number($categoryList.data('page') || 1);
-            const $items = $categoryList.find('[data-category-items]');
-            const $loader = $categoryList.find('[data-category-loader]');
-            const $empty = $categoryList.find('[data-category-empty]');
-
-            $categoryList.data('loading', true).attr('aria-busy', 'true');
-            $loader.removeClass('d-none');
-
-            axios.post($categoryList.data('url'), {page})
-                .then((response) => {
-                    const items = response.data.items || [];
-                    const pagination = response.data.pagination || {};
-
-                    items.forEach((item) => {
-                        $items.append(categoryItemTemplate(item));
-                    });
-
-                    $empty.toggleClass('d-none', $items.children().length > 0);
-                    $categoryList
-                        .data('page', pagination.next_page || page)
-                        .data('has-more', pagination.has_more === true)
-                        .attr('data-page', pagination.next_page || page)
-                        .attr('data-has-more', pagination.has_more === true ? 'true' : 'false');
-                })
-                .catch(() => {
-                    toast.error('Recent categories could not be loaded.');
-                })
-                .finally(() => {
-                    $categoryList.data('loading', false).attr('aria-busy', 'false');
-                    $loader.addClass('d-none');
-                });
-        };
-
-        loadRecentCategories();
-
-        $categoryList.on('scroll', function () {
-            const element = this;
-            const isNearBottom = element.scrollTop + element.clientHeight >= element.scrollHeight - 40;
-
-            if (isNearBottom) {
-                loadRecentCategories();
+        const recentCategories = useAsyncList('[data-home-category-list]', {
+            itemTemplate: '#homeCategoryItemTemplate',
+            onError: () => {
+                toast.error('Recent categories could not be loaded.');
             }
         });
+
+        recentCategories.load();
+        recentCategories.bindInfiniteScroll();
     });
 </script>

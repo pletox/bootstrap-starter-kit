@@ -15,8 +15,8 @@ class CategoriesController extends Controller
             $categories = Category::query()
                 ->when($request->filled('q'), function ($query) use ($request) {
                     $query->where(function ($query) use ($request) {
-                        $query->where('name', 'like', '%' . $request->q . '%')
-                            ->orWhere('description', 'like', '%' . $request->q . '%');
+                        $query->where('name', 'like', '%'.$request->q.'%')
+                            ->orWhere('description', 'like', '%'.$request->q.'%');
                     });
                 })
                 ->when($request->filled('active'), function ($query) use ($request) {
@@ -32,7 +32,7 @@ class CategoriesController extends Controller
             $sortCol = null;
             $sortDir = null;
 
-            if($request->has('order') && $request->get('order')) {
+            if ($request->has('order') && $request->get('order')) {
                 $order = $request->input('order.0', []);
                 $columnIndex = $order['column'] ?? null;
                 $sortCol = $order['name']
@@ -40,13 +40,13 @@ class CategoriesController extends Controller
                     ?? data_get($request->input('columns', []), "{$columnIndex}.data");
                 $sortDir = $order['dir'] ?? 'asc';
 
-                if($sortCol == 'DT_RowIndex') {
+                if ($sortCol == 'DT_RowIndex') {
                     $sortCol = null;
                     $sortDir = null;
                 }
             }
 
-            if($sortCol && in_array($sortCol, ['id', 'name', 'description', 'active', 'created_at', 'updated_at'])) {
+            if ($sortCol && in_array($sortCol, ['id', 'name', 'description', 'active', 'created_at', 'updated_at'])) {
                 $categories = $categories->orderBy($sortCol, $sortDir ?? 'asc');
             }
 
@@ -63,8 +63,8 @@ class CategoriesController extends Controller
 
             return DataTables::of($categories)
                 ->with([
-                    "recordsTotal" => $totalCount,
-                    "recordsFiltered" => $filterCount,
+                    'recordsTotal' => $totalCount,
+                    'recordsFiltered' => $filterCount,
                 ])
                 ->skipPaging()
                 ->addIndexColumn()
@@ -90,16 +90,20 @@ class CategoriesController extends Controller
     public function storeOrUpdate(Request $request)
     {
         $request->validate([
-            'name' => 'required|min:2'
+            'name' => 'required|min:2',
         ]);
 
         if ($request->id) {
-            Category::find($request->id)->update($request->all());
+            $category = Category::find($request->id);
+            $category->update($request->all());
         } else {
-            Category::create($request->all());
+            $category = Category::create($request->all());
         }
 
-        return response()->json(['message' => 'Category Created Successfully!']);
+        return response()->json([
+            'message' => $request->id ? 'Category Updated Successfully!' : 'Category Created Successfully!',
+            'item' => $this->datatableRow($category->fresh()),
+        ]);
 
     }
 
@@ -112,7 +116,7 @@ class CategoriesController extends Controller
     {
         $categories = Category::query()
             ->when($request->filled('q'), function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request->q . '%');
+                $query->where('name', 'like', '%'.$request->q.'%');
             })
             ->when($request->filled('id'), function ($query) use ($request) {
                 $query->whereIn('id', (array) $request->id);
@@ -194,5 +198,16 @@ class CategoriesController extends Controller
         }, 'categories.csv', [
             'Content-Type' => 'text/csv',
         ]);
+    }
+
+    private function datatableRow(Category $category): array
+    {
+        return [
+            'id' => $category->id,
+            'name' => $category->name,
+            'description' => view('categories.columns._description', ['category' => $category])->render(),
+            'status' => view('categories.columns._status', ['category' => $category])->render(),
+            'action' => view('categories.columns._actions', ['category' => $category])->render(),
+        ];
     }
 }

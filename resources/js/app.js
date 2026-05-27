@@ -25,13 +25,139 @@ window.escapeHtml = function (value) {
 
 import {createIcons, icons} from "lucide";
 
+window.refreshLucideIcons = function () {
+    createIcons({icons});
+};
+
+let developerDocsHighlighterPromise = null;
+
+function loadDeveloperDocsHighlighter() {
+    if (!developerDocsHighlighterPromise) {
+        developerDocsHighlighterPromise = Promise.all([
+            import('highlight.js/lib/common'),
+            import('highlight.js/styles/github.css'),
+        ]).then(([module]) => module.default);
+    }
+
+    return developerDocsHighlighterPromise;
+}
+
+function detectDocsCodeLanguage(code) {
+    const value = code.trim();
+
+    if (!value) {
+        return null;
+    }
+
+    if (value.startsWith('<') || value.includes('<x-') || value.includes('</x-')) {
+        return 'xml';
+    }
+
+    if (value.startsWith('{') || value.startsWith('[')) {
+        return 'json';
+    }
+
+    if (value.includes('<?php') || value.includes('public function') || value.includes('Route::') || value.includes('Category::')) {
+        return 'php';
+    }
+
+    if (value.startsWith('php artisan') || value.startsWith('npm run')) {
+        return 'bash';
+    }
+
+    if (value.includes('$(function') || value.includes('axios.') || value.includes('const ') || value.includes('let ')) {
+        return 'javascript';
+    }
+
+    return null;
+}
+
+async function copyTextToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return;
+    }
+
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    textarea.remove();
+}
+
+async function initDeveloperDocsCodeBlocks() {
+    const codeBlocks = document.querySelectorAll('.developer-docs-article pre > code');
+
+    if (!codeBlocks.length) {
+        return;
+    }
+
+    const hljs = await loadDeveloperDocsHighlighter();
+
+    codeBlocks.forEach((code) => {
+        const pre = code.parentElement;
+
+        if (!pre || pre.dataset.docsCodeReady === 'true') {
+            return;
+        }
+
+        const rawCode = code.textContent;
+        const language = detectDocsCodeLanguage(rawCode);
+
+        if (language && hljs.getLanguage(language)) {
+            code.innerHTML = hljs.highlight(rawCode, {language}).value;
+            code.classList.add('hljs', `language-${language}`);
+        } else {
+            code.innerHTML = hljs.highlightAuto(rawCode).value;
+            code.classList.add('hljs');
+        }
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'developer-docs-code-block';
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(pre);
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'developer-docs-code-copy';
+        button.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i><span>Copy</span>';
+        button.addEventListener('click', async () => {
+            await copyTextToClipboard(rawCode);
+
+            button.classList.add('copied');
+            button.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i><span>Copied</span>';
+            window.refreshLucideIcons();
+
+            setTimeout(() => {
+                button.classList.remove('copied');
+                button.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i><span>Copy</span>';
+                window.refreshLucideIcons();
+            }, 1600);
+        });
+
+        wrapper.appendChild(button);
+        pre.dataset.docsCodeReady = 'true';
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    window.refreshLucideIcons();
+    initDeveloperDocsCodeBlocks();
+});
+
 document.addEventListener('livewire:navigating', function () {
     $.fn.dataTable.tables({visible: true, api: true}).destroy();
     $('[data-jp-editor]').jpEditorDestroy();
 });
 
 document.addEventListener('livewire:navigated', function () {
-    createIcons({icons});
+    window.refreshLucideIcons();
+    initDeveloperDocsCodeBlocks();
 
     const sidebarToggle = document.querySelector("#sidebar-toggle");
     if (sidebarToggle) {

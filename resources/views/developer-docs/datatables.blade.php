@@ -4,8 +4,8 @@
 
 @section('content')
     <div class="d-grid gap-3">
-        <x-card title="Standard DataTable" subtitle="Use jpDataTable for server-side tables, filters, mobile cards, and bulk actions.">
-            <pre class="bg-dark text-white rounded p-3 mb-0"><code>let table = $('#categories-table').jpDataTable({
+        <x-card title="Standard DataTable" subtitle="Use useDataTable for server-side tables, filters, mobile cards, and bulk actions.">
+            <pre class="bg-dark text-white rounded p-3 mb-0"><code>let table = useDataTable('#categories-table', {
     url: route('categories.index'),
     columns: [
         {data: 'select', name: 'select', orderable: false, searchable: false},
@@ -45,7 +45,7 @@ $('#resetCategoryFilters').on('click', function () {
     pageLength: 8,
     renderCard: function (row) {
         return `
-            &lt;div class="jp-mobile-card"&gt;
+            &lt;div class="jp-mobile-card" data-row-id="${row.id}"&gt;
                 &lt;div class="d-flex align-items-start justify-content-between gap-3"&gt;
                     &lt;div class="d-flex align-items-start gap-2 min-w-0"&gt;
                         &lt;input type="checkbox" class="form-check-input row-select mt-1" value="${row.id}"&gt;
@@ -59,6 +59,59 @@ $('#resetCategoryFilters').on('click', function () {
             &lt;/div&gt;
         `;
     }
+}</code></pre>
+        </x-card>
+
+        <x-card title="Patch Mobile Rows After CRUD" subtitle="Use table helpers so mobile cards update in place and desktop tables redraw normally.">
+            <pre class="bg-dark text-white rounded p-3 mb-3"><code>form.post(route('categories.storeOrUpdate'), {
+    onComplete: (response) =&gt; {
+        modal.close();
+        form.reset();
+        table.upsertRow(response.data.item, {mode: 'prepend'});
+    }
+});
+
+$.easyDelete({
+    url: route('categories.delete', {category: id}),
+    onComplete: () =&gt; {
+        table.removeRow(id);
+    }
+});</code></pre>
+
+            <h2 class="h6">Create/Edit Save Response</h2>
+            <pre class="bg-dark text-white rounded p-3 mb-0"><code>public function storeOrUpdate(Request $request): JsonResponse
+{
+    $validated = $request-&gt;validate([
+        'id' =&gt; ['nullable', 'integer', 'exists:categories,id'],
+        'name' =&gt; ['required', 'string', 'min:2', 'max:120'],
+        'description' =&gt; ['nullable', 'string'],
+        'active' =&gt; ['required', 'boolean'],
+    ]);
+
+    if ($request-&gt;filled('id')) {
+        $category = Category::findOrFail($validated['id']);
+        $category-&gt;update(Arr::except($validated, ['id']));
+    } else {
+        $category = Category::create(Arr::except($validated, ['id']));
+    }
+
+    return response()-&gt;json([
+        'message' =&gt; $request-&gt;filled('id')
+            ? 'Category updated successfully.'
+            : 'Category created successfully.',
+        'item' =&gt; $this-&gt;datatableRow($category-&gt;fresh()),
+    ]);
+}
+
+private function datatableRow(Category $category): array
+{
+    return [
+        'id' =&gt; $category-&gt;id,
+        'name' =&gt; $category-&gt;name,
+        'description' =&gt; view('categories.columns._description', ['category' =&gt; $category])-&gt;render(),
+        'status' =&gt; view('categories.columns._status', ['category' =&gt; $category])-&gt;render(),
+        'action' =&gt; view('categories.columns._actions', ['category' =&gt; $category])-&gt;render(),
+    ];
 }</code></pre>
         </x-card>
 
