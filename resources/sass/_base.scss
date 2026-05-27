@@ -353,11 +353,18 @@ html[data-bs-theme="light"] .theme-toggle .bi-sun {
 }
 
 nav.app-navbar {
+    align-items: stretch;
     background: rgba(255, 255, 255, 0.86);
     backdrop-filter: blur(14px);
-    min-height: var(--app-navbar-height);
-    padding-top: max(0.25rem, var(--app-safe-top));
+    height: var(--app-navbar-height);
+    min-height: 0;
+    padding-bottom: 0 !important;
+    padding-top: var(--app-safe-top) !important;
     z-index: 1030;
+}
+
+nav.app-navbar .app-navbar-row {
+    height: 100%;
 }
 
 nav.app-navbar .dropdown-menu {
