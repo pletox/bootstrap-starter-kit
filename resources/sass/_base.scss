@@ -87,15 +87,17 @@ h4, .h4 {
 
 #sidebar {
     position: fixed;
-    top: var(--app-safe-top);
-    left: var(--app-safe-left);
-    height: calc(100vh - var(--app-safe-top) - var(--app-safe-bottom));
-    height: calc(100dvh - var(--app-safe-top) - var(--app-safe-bottom));
-    max-width: 264px;
-    min-width: 264px;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    height: 100dvh;
+    max-width: calc(264px + var(--app-safe-left));
+    min-width: calc(264px + var(--app-safe-left));
     background: var(--bs-bg-sidebar);
     border-right: 1px solid var(--bs-border-color);
     transition: all 0.35s ease-in-out;
+    padding-top: var(--app-safe-top);
+    padding-left: var(--app-safe-left);
     padding-bottom: calc(20px + var(--app-safe-bottom));
     overflow: hidden;
     z-index: 1045;
@@ -258,7 +260,7 @@ a.sidebar-link {
 /* Sidebar Toggle */
 
 #sidebar.collapsed {
-    margin-left: -264px;
+    margin-left: calc(-264px - var(--app-safe-left));
 }
 
 /* Footer and Nav */
@@ -478,44 +480,50 @@ nav.app-navbar .dropdown-menu {
 }
 
 @media (max-width: 767.98px) {
-    .modal .modal-dialog {
+    .modal:not(.modal-mobile-sheet) .modal-dialog {
+        margin: var(--app-modal-safe-margin-top) var(--app-modal-safe-margin-right) var(--app-modal-safe-margin-bottom) var(--app-modal-safe-margin-left);
+    }
+
+    .modal-mobile-sheet .modal-dialog {
         align-items: flex-end;
         display: flex;
         margin: 0;
         max-width: none;
         min-height: 100%;
-        padding: max(1rem, var(--app-safe-top)) var(--app-safe-right) var(--app-safe-bottom) var(--app-safe-left);
+        padding: max(1rem, var(--app-safe-top)) 0 0;
         width: 100%;
     }
 
-    .modal.fade .modal-dialog {
+    .modal-mobile-sheet.fade .modal-dialog {
         transform: translate3d(0, 100%, 0);
     }
 
-    .modal.show .modal-dialog {
+    .modal-mobile-sheet.show .modal-dialog {
         transform: none;
     }
 
-    .modal .modal-dialog.is-dragging {
+    .modal-mobile-sheet .modal-dialog.is-dragging {
         transition: none !important;
     }
 
-    .modal .modal-content {
+    .modal-mobile-sheet .modal-content {
         border-radius: 1.15rem 1.15rem 0 0;
         box-shadow: 0 -1rem 3rem rgba(15, 23, 42, 0.18);
         max-height: calc(100vh - max(1rem, var(--app-safe-top)));
         max-height: calc(100dvh - max(1rem, var(--app-safe-top)));
+        padding-left: var(--app-safe-left);
+        padding-right: var(--app-safe-right);
         width: 100%;
     }
 
-    .modal .modal-header {
+    .modal-mobile-sheet .modal-header {
         cursor: grab;
         position: relative;
         touch-action: none;
         user-select: none;
     }
 
-    .modal .modal-header::before {
+    .modal-mobile-sheet .modal-header::before {
         background: var(--bs-border-color);
         border-radius: 999px;
         content: "";
@@ -527,11 +535,11 @@ nav.app-navbar .dropdown-menu {
         width: 2.5rem;
     }
 
-    .modal .modal-header.py-2 {
+    .modal-mobile-sheet .modal-header.py-2 {
         padding-top: 1.55rem !important;
     }
 
-    .modal .modal-footer {
+    .modal-mobile-sheet .modal-footer {
         padding-bottom: max(0.5rem, calc(0.5rem + var(--app-safe-bottom)));
     }
 }

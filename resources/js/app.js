@@ -420,14 +420,92 @@ function isMobileViewport() {
 }
 
 function initBottomBarInteractions() {
-    document.querySelectorAll('.bottom-bar-item').forEach((item) => {
-        if (item.dataset.mobileInteractionReady === 'true') {
+    $('.bottom-bar-item').each(function () {
+        const $item = $(this);
+
+        if ($item.data('mobileInteractionReady') === true) {
             return;
         }
 
-        item.dataset.mobileInteractionReady = 'true';
-        item.addEventListener('pointerdown', triggerTouchHaptic, {passive: true});
+        $item.data('mobileInteractionReady', true);
+        $item.on('pointerdown', function () {
+            triggerTouchHaptic();
+
+            if (!isMobileViewport()) {
+                return;
+            }
+
+            $('.bottom-bar-item').removeClass('active');
+            $item.addClass('active');
+        });
     });
+}
+
+function ensureMobilePageSkeleton() {
+    let $skeleton = $('[data-mobile-page-skeleton]');
+
+    if ($skeleton.length) {
+        return $skeleton;
+    }
+
+    $skeleton = $(`
+        <div class="mobile-page-skeleton" data-mobile-page-skeleton aria-hidden="true">
+            <div class="d-grid gap-3">
+                <div class="d-grid gap-2">
+                    <span class="mobile-page-skeleton-line w-50"></span>
+                    <span class="mobile-page-skeleton-line w-75"></span>
+                </div>
+                <div class="d-flex gap-2">
+                    <span class="mobile-page-skeleton-button"></span>
+                    <span class="mobile-page-skeleton-button mobile-page-skeleton-button-primary"></span>
+                </div>
+                <div class="d-grid gap-3">
+                    <div class="mobile-page-skeleton-card">
+                        <span class="mobile-page-skeleton-line w-50"></span>
+                        <span class="mobile-page-skeleton-line w-25"></span>
+                    </div>
+                    <div class="mobile-page-skeleton-card">
+                        <span class="mobile-page-skeleton-line w-75"></span>
+                        <span class="mobile-page-skeleton-line w-50"></span>
+                    </div>
+                    <div class="mobile-page-skeleton-card">
+                        <span class="mobile-page-skeleton-line w-75"></span>
+                        <span class="mobile-page-skeleton-line w-25"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `);
+
+    $('body').append($skeleton);
+
+    return $skeleton;
+}
+
+function showMobilePageSkeleton() {
+    if (!isMobileViewport()) {
+        return;
+    }
+
+    ensureMobilePageSkeleton();
+    document.documentElement.classList.add('mobile-navigating');
+    document.documentElement.classList.remove('mobile-navigated');
+}
+
+function hideMobilePageSkeleton() {
+    document.documentElement.classList.remove('mobile-navigating');
+
+    if (!isMobileViewport()) {
+        $('[data-mobile-page-skeleton]').remove();
+        return;
+    }
+
+    document.documentElement.classList.add('mobile-navigated');
+
+    window.setTimeout(() => {
+        document.documentElement.classList.remove('mobile-navigated');
+        $('[data-mobile-page-skeleton]').remove();
+    }, 260);
 }
 
 function initMobileModalSheets() {
@@ -435,7 +513,7 @@ function initMobileModalSheets() {
 
     $(document)
         .off('.mobileModalSheet')
-        .on('pointerdown.mobileModalSheet', '.modal .modal-header', function (event) {
+        .on('pointerdown.mobileModalSheet', '.modal-mobile-sheet .modal-header', function (event) {
             if (!isMobileViewport() || event.originalEvent.button > 0) {
                 return;
             }
@@ -618,10 +696,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('livewire:navigating', function () {
-    if (isMobileViewport()) {
-        document.documentElement.classList.add('mobile-navigating');
-        document.documentElement.classList.remove('mobile-navigated');
-    }
+    showMobilePageSkeleton();
 
     $.fn.dataTable.tables({visible: true, api: true}).destroy();
     $('[data-jp-editor]').jpEditorDestroy();
@@ -635,14 +710,7 @@ document.addEventListener('livewire:navigated', function () {
     initBrowserPermissionCards();
     initDeveloperDocsCodeBlocks();
 
-    if (isMobileViewport()) {
-        document.documentElement.classList.remove('mobile-navigating');
-        document.documentElement.classList.add('mobile-navigated');
-
-        window.setTimeout(() => {
-            document.documentElement.classList.remove('mobile-navigated');
-        }, 260);
-    }
+    hideMobilePageSkeleton();
 
     const sidebarToggle = document.querySelector("#sidebar-toggle");
     if (sidebarToggle) {

@@ -3,6 +3,7 @@
     'title' => null,
     'size' => 'md', // sm, md, lg
     'headerHidden' => false,
+    'mobileSheet' => true,
 ])
 
 @php
@@ -15,7 +16,7 @@
 @endphp
 
     <!-- Bootstrap Modal -->
-<div class="modal fade" id="{{ $id }}" tabindex="-1" aria-hidden="true">
+<div @class(['modal fade', 'modal-mobile-sheet' => $mobileSheet]) id="{{ $id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog {{ $modalSizeClass }}">
         <div class="modal-content">
 

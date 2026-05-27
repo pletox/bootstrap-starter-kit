@@ -336,12 +336,72 @@ a.sidebar-link {
     }
 
     html.mobile-navigating .content {
-        opacity: 0.45;
-        transform: translateY(0.35rem) scale(0.992);
+        opacity: 0;
+        transform: translateY(0.25rem) scale(0.992);
     }
 
     html.mobile-navigated .content {
         animation: mobile-page-enter 0.22s ease both;
+    }
+
+    .mobile-page-skeleton {
+        background: var(--bs-dark-bg-subtle);
+        bottom: calc(5.35rem + var(--app-safe-bottom));
+        left: var(--app-safe-left);
+        opacity: 0;
+        padding: 0.9rem;
+        pointer-events: none;
+        position: fixed;
+        right: var(--app-safe-right);
+        top: var(--app-navbar-height);
+        transform: translateY(0.35rem) scale(0.992);
+        transform-origin: center top;
+        transition: opacity 0.18s ease, transform 0.18s ease;
+        z-index: 1025;
+    }
+
+    html.mobile-navigating .mobile-page-skeleton {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    html.mobile-navigated .mobile-page-skeleton {
+        opacity: 0;
+        transform: translateY(-0.2rem) scale(0.998);
+    }
+
+    .mobile-page-skeleton-line,
+    .mobile-page-skeleton-button,
+    .mobile-page-skeleton-card {
+        animation: placeholder-glow 1.35s ease-in-out infinite;
+        background-color: var(--bs-gray-200);
+    }
+
+    .mobile-page-skeleton-line {
+        border-radius: 999px;
+        display: block;
+        height: 0.8rem;
+    }
+
+    .mobile-page-skeleton-button {
+        border-radius: 0.75rem;
+        display: block;
+        height: 3rem;
+        width: 5.5rem;
+    }
+
+    .mobile-page-skeleton-button-primary {
+        background-color: rgba(var(--bs-primary-rgb), 0.22);
+        width: 6.25rem;
+    }
+
+    .mobile-page-skeleton-card {
+        border: 1px solid var(--app-border-soft);
+        border-radius: 1rem;
+        box-shadow: var(--app-shadow-sm);
+        display: grid;
+        gap: 0.9rem;
+        padding: 1.1rem;
     }
 
     body.modal-open .content {
@@ -349,6 +409,10 @@ a.sidebar-link {
         opacity: 1 !important;
         transform: none !important;
         transition: none !important;
+    }
+
+    body.modal-open .mobile-page-skeleton {
+        display: none;
     }
 }
 
@@ -366,11 +430,18 @@ a.sidebar-link {
 
 @media (prefers-reduced-motion: reduce) {
     .bottom-bar .bottom-bar-item,
-    .content {
+    .content,
+    .mobile-page-skeleton {
         transition: none !important;
     }
 
     html.mobile-navigated .content {
+        animation: none !important;
+    }
+
+    .mobile-page-skeleton-line,
+    .mobile-page-skeleton-button,
+    .mobile-page-skeleton-card {
         animation: none !important;
     }
 }
