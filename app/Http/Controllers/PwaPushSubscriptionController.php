@@ -62,7 +62,9 @@ class PwaPushSubscriptionController extends Controller
             'title' => $data['title'] ?? config('app.name'),
             'body' => $data['body'] ?? 'This is a test push notification.',
             'url' => $this->deepLinkUrl($data['url'] ?? route('home')),
-            'tag' => 'pwa-test-notification',
+            'icon' => $this->assetUrl($data['icon'] ?? asset('pwa/icons/icon-192x192.png'), asset('pwa/icons/icon-192x192.png')),
+            'badge' => $this->assetUrl($data['badge'] ?? asset('pwa/icons/icon-96x96.png'), asset('pwa/icons/icon-96x96.png')),
+            'tag' => $data['tag'] ?? 'pwa-test-notification',
         ]);
 
         $sent = $webPushService->sendToUser($request->user(), $notification);
@@ -87,5 +89,22 @@ class PwaPushSubscriptionController extends Controller
         }
 
         return route('home');
+    }
+
+    private function assetUrl(string $url, string $fallback): string
+    {
+        if (Str::startsWith($url, ['https://', 'http://'])) {
+            return $url;
+        }
+
+        if (Str::startsWith($url, url('/'))) {
+            return $url;
+        }
+
+        if (Str::startsWith($url, '/')) {
+            return url($url);
+        }
+
+        return $fallback;
     }
 }

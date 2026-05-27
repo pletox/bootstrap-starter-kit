@@ -173,6 +173,46 @@
             </div>
 
             <div class="col-12">
+                <x-card title="Push Notification Tester" subtitle="Send a custom PWA push payload and preview the same notification on this device.">
+                    <x-form id="uikitPushForm">
+                        <div class="row g-3">
+                            <div class="col-12 col-lg-4">
+                                <x-input name="title" label="Title" value="{{ config('app.name') }}" placeholder="Notification title"/>
+                            </div>
+                            <div class="col-12 col-lg-8">
+                                <x-input name="body" label="Body" value="This is a test push notification." placeholder="Short message shown in the notification"/>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <x-input name="url" label="Deep link" value="{{ route('home') }}" placeholder="/home or {{ route('categories.index') }}"/>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <x-input name="tag" label="Tag" value="uikit-push-test" placeholder="Used to replace duplicate notifications"/>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <x-input name="icon" label="Icon URL" value="{{ asset('pwa/icons/icon-192x192.png') }}" placeholder="/pwa/icons/icon-192x192.png"/>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <x-input name="badge" label="Badge URL" value="{{ asset('pwa/icons/icon-96x96.png') }}" placeholder="/pwa/icons/icon-96x96.png"/>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex flex-wrap align-items-center gap-2">
+                                    <x-button type="submit" color="dark">
+                                        <x-lucide-send class="w-4 h-4"/>
+                                        <span>Send Push Test</span>
+                                    </x-button>
+                                    <x-button type="button" color="light" data-push-fill-categories>
+                                        <x-lucide-link class="w-4 h-4"/>
+                                        <span>Use Categories Link</span>
+                                    </x-button>
+                                    <span class="text-muted text-sm" data-push-test-status>Requires notifications to be enabled for this browser.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </x-form>
+                </x-card>
+            </div>
+
+            <div class="col-12">
                 <x-card title="Tables" subtitle="Dense, scannable table patterns with horizontal overflow support." body-class="px-0 pb-0">
                     <div class="table-responsive">
                         <x-table class="table-hover mb-0">
@@ -281,6 +321,49 @@
                 ajax: {
                     'profile-tab': route('tabs.profile'),
                     'contact-tab': route('tabs.contact')
+                }
+            });
+
+            $('[data-push-fill-categories]').off('click.uikitPush').on('click.uikitPush', function () {
+                $('#uikitPushForm [name="url"]').val(route('categories.index'));
+            });
+
+            $('#uikitPushForm').off('submit.uikitPush').on('submit.uikitPush', async function (event) {
+                event.preventDefault();
+
+                const $form = $(this);
+                const submitButton = event.originalEvent?.submitter;
+                const payload = Object.fromEntries(
+                    $form.serializeArray()
+                        .filter((field) => field.value !== '')
+                        .map((field) => [field.name, field.value])
+                );
+
+                $form.find('[type="submit"]').prop('disabled', true);
+                $('[data-push-test-status]').text('Sending test notification...');
+
+                try {
+                    const response = await window.pwaPush.sendTest(payload);
+                    await window.pwaPush.showNotification(response.notification || payload);
+
+                    $('[data-push-test-status]').text(`Server accepted ${response.sent} subscription(s).`);
+                    toast.success(response.message);
+                } catch (error) {
+                    const message = error.response?.data?.message || error.message || 'Unable to send notification.';
+
+                    $('[data-push-test-status]').text(message);
+                    toast.error(message);
+                } finally {
+                    $form.find('[type="submit"]').prop('disabled', false);
+
+                    if (submitButton?.id) {
+                        window.dispatchEvent(new CustomEvent('button-loading', {
+                            detail: {
+                                id: submitButton.id,
+                                state: false
+                            }
+                        }));
+                    }
                 }
             });
         });

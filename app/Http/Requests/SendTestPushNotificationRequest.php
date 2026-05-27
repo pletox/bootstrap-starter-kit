@@ -26,6 +26,9 @@ class SendTestPushNotificationRequest extends FormRequest
             'title' => ['nullable', 'string', 'max:80'],
             'body' => ['nullable', 'string', 'max:180'],
             'url' => ['nullable', 'string', 'max:500'],
+            'icon' => ['nullable', 'string', 'max:500'],
+            'badge' => ['nullable', 'string', 'max:500'],
+            'tag' => ['nullable', 'string', 'max:80'],
         ];
     }
 }

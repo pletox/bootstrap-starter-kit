@@ -16,6 +16,8 @@ it('renders the ui kit locally for authenticated users', function () {
         ->assertSee('UI Kit')
         ->assertSee('Buttons')
         ->assertSee('Form Controls')
+        ->assertSee('Push Notification Tester')
+        ->assertSee('data-push-test-status', false)
         ->assertSee('Tables')
         ->assertSee('Rich Text');
 });

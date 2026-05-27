@@ -97,21 +97,30 @@ it('sends a test push notification with a deep link', function () {
                 'title' => $message['title'],
                 'body' => $message['body'],
                 'url' => $message['url'],
-                'icon' => url('/pwa/icons/icon-192x192.png'),
-                'badge' => url('/pwa/icons/icon-96x96.png'),
+                'icon' => $message['icon'],
+                'badge' => $message['badge'],
                 'tag' => $message['tag'],
                 'timestamp' => now()->timestamp,
             ]);
 
         $mock->shouldReceive('sendToUser')
             ->once()
-            ->with(Mockery::type(User::class), Mockery::on(fn (array $payload): bool => $payload['url'] === url('/categories')))
+            ->with(Mockery::type(User::class), Mockery::on(fn (array $payload): bool => $payload['url'] === url('/categories')
+                && $payload['title'] === 'Custom title'
+                && $payload['icon'] === url('/pwa/icons/icon-512x512.png')
+                && $payload['badge'] === url('/pwa/icons/icon-96x96.png')
+                && $payload['tag'] === 'custom-tag'))
             ->andReturn(1);
     });
 
     $this->actingAs($user)
         ->postJson(route('pwa.push.test'), [
+            'title' => 'Custom title',
+            'body' => 'Custom body',
             'url' => '/categories',
+            'icon' => '/pwa/icons/icon-512x512.png',
+            'badge' => '/pwa/icons/icon-96x96.png',
+            'tag' => 'custom-tag',
         ])
         ->assertOk()
         ->assertJson([
@@ -119,7 +128,7 @@ it('sends a test push notification with a deep link', function () {
             'sent' => 1,
         ])
         ->assertJsonPath('notification.url', url('/categories'))
-        ->assertJsonPath('notification.tag', 'pwa-test-notification');
+        ->assertJsonPath('notification.tag', 'custom-tag');
 });
 
 function pushSubscriptionPayload(): array

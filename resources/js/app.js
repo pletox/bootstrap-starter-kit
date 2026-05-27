@@ -108,7 +108,14 @@ async function getPwaPushRegistration() {
         throw new Error('Push notifications are not supported by this browser.');
     }
 
-    return navigator.serviceWorker.ready;
+    return Promise.race([
+        navigator.serviceWorker.ready,
+        new Promise((_, reject) => {
+            window.setTimeout(() => {
+                reject(new Error('Service worker is not ready yet. Refresh the page and try again.'));
+            }, 5000);
+        }),
+    ]);
 }
 
 window.pwaPush = {
