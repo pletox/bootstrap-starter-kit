@@ -2,6 +2,15 @@
 
 @import "fonts";
 
+:root {
+    --app-safe-top: env(safe-area-inset-top, 0px);
+    --app-safe-right: env(safe-area-inset-right, 0px);
+    --app-safe-bottom: env(safe-area-inset-bottom, 0px);
+    --app-safe-left: env(safe-area-inset-left, 0px);
+    --app-navbar-base-height: 3.75rem;
+    --app-navbar-height: calc(var(--app-navbar-base-height) + var(--app-safe-top));
+}
+
 [data-bs-theme="light"] {
     --bs-dark-bg-subtle: #f6f7f9;
     --bs-bg-sidebar: #ffffff;
@@ -44,8 +53,8 @@ body {
     margin: 0;
     background: var(--bs-dark-bg-subtle);
     color: #20242a;
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
+    padding-left: var(--app-safe-left);
+    padding-right: var(--app-safe-right);
 }
 
 a {
@@ -268,11 +277,11 @@ a.sidebar-link {
 
     .main {
         margin-left: 0;
-        padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+        padding-bottom: calc(6rem + var(--app-safe-bottom));
     }
 
     .content {
-        padding: 0.9rem 0.9rem calc(1rem + env(safe-area-inset-bottom)) !important;
+        padding: 0.9rem 0.9rem calc(1rem + var(--app-safe-bottom)) !important;
     }
 }
 
@@ -346,8 +355,8 @@ html[data-bs-theme="light"] .theme-toggle .bi-sun {
 nav.app-navbar {
     background: rgba(255, 255, 255, 0.86);
     backdrop-filter: blur(14px);
-    min-height: 3.75rem;
-    padding-top: max(0.25rem, env(safe-area-inset-top));
+    min-height: var(--app-navbar-height);
+    padding-top: max(0.25rem, var(--app-safe-top));
     z-index: 1030;
 }
 

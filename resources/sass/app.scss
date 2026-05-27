@@ -256,17 +256,31 @@ a.sidebar-link {
     background: rgba(255, 255, 255, 0.92);
     border: 1px solid rgba(226, 232, 240, 0.92);
     border-radius: 1.15rem;
-    bottom: max(0.5rem, env(safe-area-inset-bottom));
+    bottom: max(0.5rem, var(--app-safe-bottom));
     box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
     gap: 0.25rem;
     justify-content: space-between;
-    left: max(0.75rem, env(safe-area-inset-left));
+    left: max(0.75rem, var(--app-safe-left));
     min-height: 3.65rem;
     padding: 0.32rem;
     position: fixed;
-    right: max(0.75rem, env(safe-area-inset-right));
+    right: max(0.75rem, var(--app-safe-right));
     z-index: 1035;
     backdrop-filter: blur(18px);
+}
+
+.swal2-container.swal2-top,
+.swal2-container.swal2-top-start,
+.swal2-container.swal2-top-end {
+    padding-top: calc(var(--app-safe-top) + 0.75rem) !important;
+}
+
+.swal2-container.swal2-top-start {
+    padding-left: calc(var(--app-safe-left) + 0.75rem) !important;
+}
+
+.swal2-container.swal2-top-end {
+    padding-right: calc(var(--app-safe-right) + 0.75rem) !important;
 }
 
 .bottom-bar .bottom-bar-item {
