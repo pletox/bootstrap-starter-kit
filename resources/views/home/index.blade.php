@@ -14,6 +14,11 @@
                     <span>Manage Categories</span>
                 </x-button>
 
+                <x-button color="light" link="{{ route('install-app') }}" wire:navigate>
+                    <x-lucide-smartphone class="w-4 h-4"/>
+                    <span>Install App</span>
+                </x-button>
+
                 @if(app()->isLocal())
                     <x-button color="light" link="{{ route('ui-kit') }}" wire:navigate>
                         <x-lucide-component class="w-4 h-4"/>

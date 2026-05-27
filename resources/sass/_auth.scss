@@ -10,6 +10,64 @@
     width: 33%;
 }
 
+.auth-container-wide {
+    max-width: 560px;
+    width: 100%;
+}
+
+.pwa-install-status {
+    background-color: var(--bs-light);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 0.5rem;
+    color: var(--bs-secondary-color);
+    font-size: 0.875rem;
+    padding: 0.875rem 1rem;
+    text-align: center;
+}
+
+.pwa-install-ios {
+    border: 1px solid var(--bs-border-color);
+    border-radius: 0.5rem;
+    display: grid;
+    gap: 0.875rem;
+    padding: 1rem;
+}
+
+.pwa-install-step {
+    align-items: center;
+    background-color: var(--bs-dark);
+    border-radius: 0.5rem;
+    color: var(--bs-white);
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: 0.75rem;
+    font-weight: 700;
+    height: 1.75rem;
+    justify-content: center;
+    width: 1.75rem;
+}
+
+.pwa-install-benefits {
+    border: 1px solid var(--bs-border-color);
+    border-radius: 0.75rem;
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.pwa-install-benefit-icon {
+    align-items: center;
+    background-color: var(--bs-light);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 0.75rem;
+    color: var(--bs-dark);
+    display: inline-flex;
+    flex: 0 0 auto;
+    height: 2.25rem;
+    justify-content: center;
+    width: 2.25rem;
+}
+
 @media (max-width:768px) {
     .auth-container{
         width: 100%;

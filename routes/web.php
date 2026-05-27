@@ -8,7 +8,47 @@ use Illuminate\Support\Facades\Route;
 
 include '_utilities.php';
 
+Route::get('manifest.webmanifest', function () {
+    $appName = config('app.name', 'PletoxStarter');
+
+    return response()->json([
+        'name' => $appName,
+        'short_name' => str($appName)->limit(12, '')->toString(),
+        'description' => 'Installable Laravel Bootstrap starter kit.',
+        'start_url' => route('home'),
+        'scope' => url('/'),
+        'display' => 'standalone',
+        'background_color' => '#f8f9fa',
+        'theme_color' => '#212529',
+        'icons' => [
+            [
+                'src' => asset('pwa/icons/icon-192x192.png'),
+                'sizes' => '192x192',
+                'type' => 'image/png',
+            ],
+            [
+                'src' => asset('pwa/icons/icon-512x512.png'),
+                'sizes' => '512x512',
+                'type' => 'image/png',
+            ],
+            [
+                'src' => asset('pwa/icons/maskable-icon-192x192.png'),
+                'sizes' => '192x192',
+                'type' => 'image/png',
+                'purpose' => 'maskable',
+            ],
+            [
+                'src' => asset('pwa/icons/maskable-icon-512x512.png'),
+                'sizes' => '512x512',
+                'type' => 'image/png',
+                'purpose' => 'maskable',
+            ],
+        ],
+    ], 200, ['Content-Type' => 'application/manifest+json']);
+})->name('pwa.manifest');
+
 Route::redirect('/', 'home');
+Route::view('install-app', 'install-app')->name('install-app');
 
 Route::group(['middleware' => ['auth:web']], function () {
 

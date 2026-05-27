@@ -20,6 +20,27 @@ it('renders the ui kit locally for authenticated users', function () {
         ->assertSee('Rich Text');
 });
 
+it('serves the web app manifest', function () {
+    $this->get(route('pwa.manifest'))
+        ->assertOk()
+        ->assertHeader('content-type', 'application/manifest+json')
+        ->assertJsonPath('display', 'standalone')
+        ->assertJsonPath('theme_color', '#212529')
+        ->assertJsonPath('icons.0.sizes', '192x192')
+        ->assertJsonPath('icons.2.purpose', 'maskable');
+});
+
+it('renders the install app page', function () {
+    $this
+        ->get(route('install-app'))
+        ->assertOk()
+        ->assertSee('Install App')
+        ->assertSee('Checking install support')
+        ->assertSee('Add to Home Screen')
+        ->assertSee('No app store needed')
+        ->assertSee('Works better on weak internet');
+});
+
 it('hides the ui kit outside local environments', function () {
     $this->app->detectEnvironment(fn () => 'production');
 

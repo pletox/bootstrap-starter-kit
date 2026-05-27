@@ -29,6 +29,43 @@ window.refreshLucideIcons = function () {
     createIcons({icons});
 };
 
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+    });
+}
+
+window.deferredInstallPrompt = null;
+window.pwaInstallPrompt = null;
+
+window.addEventListener('beforeinstallprompt', function (event) {
+    event.preventDefault();
+    window.deferredInstallPrompt = event;
+    window.pwaInstallPrompt = event;
+    window.dispatchEvent(new CustomEvent('pwa-install-ready'));
+});
+
+window.addEventListener('appinstalled', function () {
+    window.deferredInstallPrompt = null;
+    window.pwaInstallPrompt = null;
+    window.dispatchEvent(new CustomEvent('pwa-installed'));
+});
+
+window.promptPwaInstall = async function () {
+    if (!window.pwaInstallPrompt) {
+        return null;
+    }
+
+    const promptEvent = window.pwaInstallPrompt;
+    promptEvent.prompt();
+
+    const choice = await promptEvent.userChoice;
+    window.deferredInstallPrompt = null;
+    window.pwaInstallPrompt = null;
+
+    return choice;
+};
+
 let developerDocsHighlighterPromise = null;
 
 function loadDeveloperDocsHighlighter() {
