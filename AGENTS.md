@@ -8,21 +8,26 @@ This starter kit is a Laravel + Bootstrap application with Blade components and 
 - Do not commit `.DS_Store`, local IDE files, or unrelated local changes.
 - Run `php artisan test` before finishing backend or Blade changes.
 - Run `npm run build` before finishing JavaScript or Sass changes.
+- Run `vendor/bin/pint --dirty --format agent` after PHP changes.
 - Keep UI behavior reusable in shared components/helpers instead of page-specific code.
 
 ## Frontend Patterns
 
 - Use Blade components from `resources/views/components` for common UI.
+- Prefer existing primitives such as `<x-page-header>`, `<x-section-header>`, `<x-stat-card>`, `<x-empty-state>`, `<x-card>`, `<x-button>`, `<x-form>`, `<x-input>`, `<x-select2>`, `<x-richtext>`, `<x-modal>`, and `<x-async-list>` before adding new markup patterns.
 - Keep page markup clean; put reusable behavior in the component or shared JS helper.
 - Use Bootstrap 5 conventions and utility classes as the default for layout, spacing, borders, typography, flex, overflow, and responsive behavior.
 - Use Lucide icons through existing Blade icon components where available.
 - Avoid custom modular CSS classes for one-off UI. Add custom CSS only when Bootstrap utilities cannot express the behavior or visual treatment cleanly.
 - For mobile behavior, prefer responsive CSS and shared helper options over duplicate markup.
+- Avatars should be rounded squares by default across the app, not circles, unless a specific design calls for a different shape.
 
 ## JavaScript Helpers
 
 - Keep page behavior jQuery-based as much as possible. Prefer jQuery selectors, events, DOM updates, and helpers over vanilla DOM code unless there is a clear reason not to.
 - Shared jQuery helpers live in `resources/js/extendJquery.js`.
+- Use `downloadBlob(data, filename)` for Axios blob downloads instead of repeating browser URL/link boilerplate in page scripts.
+- Use `useModal('#modalId')` for Bootstrap modal flows instead of direct modal calls in pages.
 - `useForm()` should be used for CRUD form submit flows where possible:
 
 ```js
@@ -38,11 +43,25 @@ form.post(route('example.store'), {
 - `form.fill(data)` should work with custom inputs, Select2, rich text editors, date pickers, and similar components.
 - When adding component behavior, make it respond to normal DOM events (`change`, `input`) so Alpine `x-model`, form helpers, and manual jQuery updates all stay compatible.
 
+## Async Lists
+
+- Use `<x-async-list>` for dashboard lists, feeds, and infinite scroll surfaces.
+- Use nested components for the shell:
+  - `<x-async-list.items>`
+  - `<x-async-list.empty>`
+  - `<x-async-list.loader>`
+- Keep only the repeated item template in the page; do not recreate the scroll container, empty state, and loader markup manually.
+- Use `useAsyncList(selector, options)` for loading, pagination, empty state, and scroll binding.
+- On create/update/delete, patch the list with `list.upsert()` or `list.remove()` instead of reloading the whole list.
+
 ## Select2 Component
 
 - Use `<x-select2>` for Select2 fields.
 - Do not initialize Select2 manually in page scripts with `jpSelect2()` for form fields. Put the field behind the reusable Select2 Blade component so init, `wire:navigate`, `form.fill()`, and `x-model` behavior stay component-level.
 - The component supports static options and API-backed options.
+- Use the `media` prop when options need icons, avatars, or subtitles in the dropdown and selected value.
+- Static media options may use `data-icon`, `data-avatar`, `data-avatar-src`, and `data-subtitle`.
+- API media options may return `icon`, `avatar`, `avatar_url`, `initials`, and `subtitle` fields.
 - API endpoints should return Select2-compatible JSON:
 
 ```json
@@ -99,6 +118,9 @@ useDataTable('#categories-table', {
 - Mobile card behavior should remain generic in `useDataTable`, not tied to a specific page.
 - Infinite scroll should load predictably, one page per meaningful scroll gesture.
 - Bulk action behavior should work for both table rows and mobile cards.
+- Use `table.upsertRow(row, { mode: 'prepend' })` and `table.removeRow(id)` after create/update/delete so mobile cards patch in place while desktop tables redraw normally.
+- Create/edit endpoints used by DataTables mobile cards should return an `item` payload with the same fields expected by `mobileCards.renderCard()`, including rendered HTML columns such as `status` and `action`.
+- Store/retrieve DataTable instances through `data('datatable-instance')` when a page needs the instance later.
 
 ## Categories Module
 
@@ -115,9 +137,17 @@ useDataTable('#categories-table', {
 
 ## UI Kit
 
-- `/ui-kit` should demonstrate reusable components with realistic examples.
+- `/ui-kit` uses the documentation shell and should demonstrate reusable components with realistic examples.
 - Add examples there when introducing new component behavior.
 - UI kit examples should be usable, not just decorative.
+
+## Developer Docs
+
+- Developer docs live under `resources/views/developer-docs` and use `layouts.developer-docs`.
+- The documentation shell owns the full docs sidebar, topbar, code styling, and copy buttons.
+- Keep `/developer-docs` and `/ui-kit` local-only routes.
+- Documentation examples should teach reusable components/helpers directly. Do not show raw implementation markup when a component exists.
+- Code examples should use fenced `<pre><code>` blocks; highlighting and copy buttons are added automatically.
 
 ## Styling
 
