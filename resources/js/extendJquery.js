@@ -1178,6 +1178,22 @@ $.fn.useDataTable = function (options = {}) {
                 }
             }
 
+            function clearBulkSelection() {
+                selected.clear();
+
+                const $mobileCards = getMobileCardsContainer();
+
+                $el.find('tbody').find(bulkOpts.rowSelector)
+                    .add($mobileCards.find(bulkOpts.rowSelector))
+                    .prop('checked', false);
+
+                $(bulkOpts.masterSelector)
+                    .prop('checked', false)
+                    .prop('indeterminate', false);
+
+                refreshBulkUI();
+            }
+
 
             // bind checkbox events for visible rows
             function bindRowCheckboxes() {
@@ -1225,7 +1241,10 @@ $.fn.useDataTable = function (options = {}) {
 
                     // If user provided callback
                     if (typeof bulkOpts.onBulkAction === 'function') {
-                        const done = () => tableInstance.draw(false);
+                        const done = () => {
+                            clearBulkSelection();
+                            tableInstance.draw(false);
+                        };
                         bulkOpts.onBulkAction(action, ids, done, customUrl);
                         return;
                     }
@@ -1247,6 +1266,7 @@ $.fn.useDataTable = function (options = {}) {
                             if (typeof options.onBulkSuccess === 'function') {
                                 options.onBulkSuccess(resp, action, ids, url);
                             } else {
+                                clearBulkSelection();
                                 tableInstance.draw(false);
                             }
                         },
