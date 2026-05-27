@@ -22,8 +22,15 @@
 
             <x-button color="primary" class="w-100 justify-content-center" type="button" data-install-button disabled>
                 <x-lucide-download class="w-4 h-4"/>
-                <span>Install app</span>
+                <span data-install-button-text>Install app</span>
             </x-button>
+
+            <div class="text-center d-none" data-install-progress>
+                <x-badge color="success" soft class="d-inline-flex align-items-center gap-2">
+                    <span class="spinner-border spinner-border-sm" data-install-progress-spinner aria-hidden="true"></span>
+                    <span data-install-progress-text>Installing app...</span>
+                </x-badge>
+            </div>
 
             <div class="pwa-install-ios d-none" data-ios-instructions>
                 <div class="d-flex gap-3 align-items-start">
@@ -47,16 +54,6 @@
                 <span>Back to app</span>
             </x-button>
 
-            @auth
-                <x-pwa-push-card :url="route('home')"/>
-            @else
-                <div class="border rounded-3 p-3 d-flex gap-3 align-items-start">
-                    <span class="pwa-install-inline-icon">
-                        <x-lucide-bell-ring class="w-4 h-4"/>
-                    </span>
-                    <p class="text-muted text-sm mb-0">After signing in, you can turn on app notifications for important updates.</p>
-                </div>
-            @endauth
         </div>
     </x-card>
 @endsection
@@ -64,12 +61,26 @@
 @push('js')
     <script type="module">
         const installButton = document.querySelector('[data-install-button]');
+        const installButtonText = document.querySelector('[data-install-button-text]');
+        const installProgress = document.querySelector('[data-install-progress]');
+        const installProgressSpinner = document.querySelector('[data-install-progress-spinner]');
+        const installProgressText = document.querySelector('[data-install-progress-text]');
         const installStatus = document.querySelector('[data-install-status]');
         const iosInstructions = document.querySelector('[data-ios-instructions]');
         const isIos = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
+        function setInstalling(isInstalling, text = 'Installing app...') {
+            installProgress.classList.toggle('d-none', !isInstalling);
+            installProgressSpinner.classList.remove('d-none');
+            installProgressText.textContent = text;
+            installButton.disabled = isInstalling;
+            installButtonText.textContent = isInstalling ? 'Installing...' : 'Install app';
+        }
+
         function updateInstallState() {
+            setInstalling(false);
+
             if (isStandalone) {
                 installStatus.textContent = 'This app is already installed.';
                 installButton.disabled = true;
@@ -101,18 +112,29 @@
             const promptEvent = window.deferredInstallPrompt;
             window.deferredInstallPrompt = null;
             window.pwaInstallPrompt = null;
+            setInstalling(true);
+            installStatus.textContent = 'Waiting for your browser to finish the install prompt.';
             promptEvent.prompt();
 
             const choice = await promptEvent.userChoice;
-            installStatus.textContent = choice.outcome === 'accepted'
-                ? 'Install started.'
-                : 'Install was dismissed. You can try again from this page.';
-            installButton.disabled = true;
+            if (choice.outcome === 'accepted') {
+                installStatus.textContent = 'Install started.';
+                setInstalling(true, 'Finishing install...');
+                return;
+            }
+
+            installStatus.textContent = 'Install was dismissed. You can try again from this page.';
+            setInstalling(false);
+            installButton.disabled = false;
         });
 
         window.addEventListener('pwa-install-ready', updateInstallState);
         window.addEventListener('appinstalled', () => {
             installStatus.textContent = 'App installed successfully.';
+            setInstalling(false);
+            installProgress.classList.remove('d-none');
+            installProgressSpinner.classList.add('d-none');
+            installProgressText.textContent = 'Installed successfully';
             installButton.disabled = true;
         });
 

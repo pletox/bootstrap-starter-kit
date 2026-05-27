@@ -430,6 +430,68 @@ function initBottomBarInteractions() {
     });
 }
 
+function initMobileModalSheets() {
+    let activeDrag = null;
+
+    $(document)
+        .off('.mobileModalSheet')
+        .on('pointerdown.mobileModalSheet', '.modal .modal-header', function (event) {
+            if (!isMobileViewport() || event.originalEvent.button > 0) {
+                return;
+            }
+
+            const $header = $(this);
+            const $modal = $header.closest('.modal');
+            const $dialog = $modal.find('.modal-dialog').first();
+
+            if (!$dialog.length || $dialog.hasClass('modal-fullscreen')) {
+                return;
+            }
+
+            activeDrag = {
+                dialog: $dialog,
+                modal: $modal,
+                pointerId: event.originalEvent.pointerId,
+                startY: event.originalEvent.clientY,
+                currentY: event.originalEvent.clientY,
+            };
+
+            $dialog.addClass('is-dragging');
+            this.setPointerCapture?.(activeDrag.pointerId);
+        })
+        .on('pointermove.mobileModalSheet', function (event) {
+            if (!activeDrag || event.originalEvent.pointerId !== activeDrag.pointerId) {
+                return;
+            }
+
+            const dragDistance = Math.max(0, event.originalEvent.clientY - activeDrag.startY);
+
+            activeDrag.currentY = event.originalEvent.clientY;
+            activeDrag.dialog.css('transform', `translate3d(0, ${dragDistance}px, 0)`);
+
+            if (dragDistance > 4) {
+                event.preventDefault();
+            }
+        })
+        .on('pointerup.mobileModalSheet pointercancel.mobileModalSheet', function (event) {
+            if (!activeDrag || event.originalEvent.pointerId !== activeDrag.pointerId) {
+                return;
+            }
+
+            const dragDistance = Math.max(0, activeDrag.currentY - activeDrag.startY);
+            const shouldClose = dragDistance > Math.min(120, window.innerHeight * 0.18);
+            const modalElement = activeDrag.modal[0];
+            const dialog = activeDrag.dialog;
+
+            activeDrag = null;
+            dialog.removeClass('is-dragging').css('transform', '');
+
+            if (shouldClose && modalElement) {
+                bootstrap.Modal.getOrCreateInstance(modalElement).hide();
+            }
+        });
+}
+
 let developerDocsHighlighterPromise = null;
 
 function loadDeveloperDocsHighlighter() {
@@ -549,6 +611,7 @@ async function initDeveloperDocsCodeBlocks() {
 document.addEventListener('DOMContentLoaded', function () {
     window.refreshLucideIcons();
     initBottomBarInteractions();
+    initMobileModalSheets();
     initPwaPushCards();
     initBrowserPermissionCards();
     initDeveloperDocsCodeBlocks();
@@ -567,6 +630,7 @@ document.addEventListener('livewire:navigating', function () {
 document.addEventListener('livewire:navigated', function () {
     window.refreshLucideIcons();
     initBottomBarInteractions();
+    initMobileModalSheets();
     initPwaPushCards();
     initBrowserPermissionCards();
     initDeveloperDocsCodeBlocks();
