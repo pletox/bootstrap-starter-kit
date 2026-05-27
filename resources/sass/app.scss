@@ -319,13 +319,14 @@ a.sidebar-link {
 }
 
 .bottom-bar .bottom-bar-item.active {
-    background: var(--bs-primary);
-    box-shadow: 0 0.65rem 1.35rem rgba(var(--bs-primary-rgb), 0.24);
-    color: #fff !important;
+    background: rgba(var(--bs-primary-rgb), 0.1);
+    box-shadow: none;
+    color: var(--bs-primary) !important;
 }
 
 .bottom-bar .bottom-bar-item.active .bottom-bar-icon {
-    background: rgba(255, 255, 255, 0.18);
+    background: rgba(var(--bs-primary-rgb), 0.08);
+    color: var(--bs-primary);
 }
 
 @media (max-width: 767.98px) {
