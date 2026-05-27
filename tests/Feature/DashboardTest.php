@@ -22,6 +22,8 @@ it('renders the starter dashboard for authenticated users', function () {
         ->assertSee('data-home-counters', false)
         ->assertSee('data-home-category-list', false)
         ->assertSee('data-quick-link-list', false)
+        ->assertSee('App notifications')
+        ->assertSee('data-pwa-push-card', false)
         ->assertSee('Starter Kit Includes');
 });
 

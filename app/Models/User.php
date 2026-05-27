@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -47,13 +48,18 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    public function pushSubscriptions(): HasMany
+    {
+        return $this->hasMany(PushSubscription::class);
+    }
+
     public function getInitialsAttribute()
     {
         $name = $this->name ?? '';
         $words = preg_split('/\s+/', trim($name));
 
         if (count($words) >= 2) {
-            return strtoupper(mb_substr($words[0], 0, 1) . mb_substr($words[1], 0, 1));
+            return strtoupper(mb_substr($words[0], 0, 1).mb_substr($words[1], 0, 1));
         }
 
         return strtoupper(mb_substr($name, 0, 2));

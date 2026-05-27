@@ -31,7 +31,25 @@ window.refreshLucideIcons = function () {
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+        navigator.serviceWorker.register('/service-worker.js')
+            .then((registration) => {
+                if (registration.waiting) {
+                    registration.waiting.postMessage({type: 'SKIP_WAITING'});
+                }
+
+                registration.update().catch(() => {});
+
+                registration.addEventListener('updatefound', () => {
+                    const worker = registration.installing;
+
+                    worker?.addEventListener('statechange', () => {
+                        if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+                            worker.postMessage({type: 'SKIP_WAITING'});
+                        }
+                    });
+                });
+            })
+            .catch(() => {});
     });
 }
 
@@ -65,6 +83,218 @@ window.promptPwaInstall = async function () {
 
     return choice;
 };
+
+function urlBase64ToUint8Array(value) {
+    const padding = '='.repeat((4 - value.length % 4) % 4);
+    const base64 = (value + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const output = new Uint8Array(rawData.length);
+
+    for (let index = 0; index < rawData.length; index++) {
+        output[index] = rawData.charCodeAt(index);
+    }
+
+    return output;
+}
+
+function hasPwaPushSupport() {
+    return 'serviceWorker' in navigator
+        && 'PushManager' in window
+        && 'Notification' in window;
+}
+
+async function getPwaPushRegistration() {
+    if (!hasPwaPushSupport()) {
+        throw new Error('Push notifications are not supported by this browser.');
+    }
+
+    return navigator.serviceWorker.ready;
+}
+
+window.pwaPush = {
+    isSupported: hasPwaPushSupport,
+
+    async status() {
+        if (!hasPwaPushSupport()) {
+            return {
+                supported: false,
+                permission: 'unsupported',
+                subscribed: false,
+            };
+        }
+
+        const registration = await getPwaPushRegistration();
+        const subscription = await registration.pushManager.getSubscription();
+
+        return {
+            supported: true,
+            permission: Notification.permission,
+            subscribed: Boolean(subscription),
+        };
+    },
+
+    async subscribe() {
+        const registration = await getPwaPushRegistration();
+        const keyResponse = await axios.get('/pwa/push/public-key');
+
+        if (!keyResponse.data.enabled || !keyResponse.data.publicKey) {
+            throw new Error('Push notifications are not configured yet.');
+        }
+
+        const permission = await Notification.requestPermission();
+
+        if (permission !== 'granted') {
+            throw new Error('Notification permission was not granted.');
+        }
+
+        let subscription = await registration.pushManager.getSubscription();
+
+        if (!subscription) {
+            subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(keyResponse.data.publicKey),
+            });
+        }
+
+        const payload = subscription.toJSON();
+        payload.contentEncoding = PushManager.supportedContentEncodings?.includes('aes128gcm')
+            ? 'aes128gcm'
+            : 'aesgcm';
+
+        await axios.post('/pwa/push/subscribe', payload);
+
+        return subscription;
+    },
+
+    async unsubscribe() {
+        const registration = await getPwaPushRegistration();
+        const subscription = await registration.pushManager.getSubscription();
+
+        if (!subscription) {
+            return false;
+        }
+
+        await axios.delete('/pwa/push/subscribe', {
+            data: {
+                endpoint: subscription.endpoint,
+            },
+        });
+
+        return subscription.unsubscribe();
+    },
+
+    async sendTest(payload = {}) {
+        const response = await axios.post('/pwa/push/test', payload);
+
+        return response.data;
+    },
+
+    async showNotification(payload = {}) {
+        const registration = await getPwaPushRegistration();
+
+        if (Notification.permission !== 'granted') {
+            throw new Error('Notification permission was not granted.');
+        }
+
+        await registration.showNotification(payload.title || document.title, {
+            body: payload.body || 'Open the app to view the update.',
+            icon: payload.icon || '/pwa/icons/icon-192x192.png',
+            badge: payload.badge || '/pwa/icons/icon-96x96.png',
+            tag: payload.tag || 'pwa-test-notification',
+            renotify: true,
+            data: {
+                url: payload.url || window.location.origin + '/home',
+            },
+        });
+    },
+};
+
+async function refreshPwaPushCards() {
+    const cards = document.querySelectorAll('[data-pwa-push-card]');
+
+    if (!cards.length) {
+        return;
+    }
+
+    const status = await window.pwaPush.status();
+
+    cards.forEach((card) => {
+        const statusEl = card.querySelector('[data-pwa-push-status]');
+        const enableButton = card.querySelector('[data-pwa-push-enable]');
+        const disableButton = card.querySelector('[data-pwa-push-disable]');
+        const testButton = card.querySelector('[data-pwa-push-test]');
+
+        if (!status.supported) {
+            statusEl.textContent = 'This browser does not support push notifications.';
+            enableButton?.setAttribute('disabled', 'disabled');
+            disableButton?.classList.add('d-none');
+            testButton?.classList.add('d-none');
+            return;
+        }
+
+        if (status.permission === 'denied') {
+            statusEl.textContent = 'Notifications are blocked in your browser settings.';
+            enableButton?.setAttribute('disabled', 'disabled');
+            disableButton?.classList.add('d-none');
+            testButton?.classList.add('d-none');
+            return;
+        }
+
+        statusEl.textContent = status.subscribed
+            ? 'Notifications are enabled on this device.'
+            : 'Enable notifications to receive important updates.';
+
+        enableButton?.classList.toggle('d-none', status.subscribed);
+        disableButton?.classList.toggle('d-none', !status.subscribed);
+        testButton?.classList.toggle('d-none', !status.subscribed);
+        enableButton?.removeAttribute('disabled');
+    });
+}
+
+function initPwaPushCards() {
+    document.querySelectorAll('[data-pwa-push-card]').forEach((card) => {
+        if (card.dataset.pwaPushReady === 'true') {
+            return;
+        }
+
+        card.dataset.pwaPushReady = 'true';
+        card.querySelector('[data-pwa-push-enable]')?.addEventListener('click', async () => {
+            try {
+                await window.pwaPush.subscribe();
+                toast.success('Push notifications enabled.');
+            } catch (error) {
+                toast.error(error.response?.data?.message || error.message || 'Unable to enable notifications.');
+            } finally {
+                refreshPwaPushCards();
+            }
+        });
+
+        card.querySelector('[data-pwa-push-disable]')?.addEventListener('click', async () => {
+            try {
+                await window.pwaPush.unsubscribe();
+                toast.success('Push notifications disabled.');
+            } catch (error) {
+                toast.error(error.response?.data?.message || error.message || 'Unable to disable notifications.');
+            } finally {
+                refreshPwaPushCards();
+            }
+        });
+
+        card.querySelector('[data-pwa-push-test]')?.addEventListener('click', async () => {
+            try {
+                const response = await window.pwaPush.sendTest({
+                    url: card.dataset.pwaPushUrl || window.location.origin + '/home',
+                });
+                await window.pwaPush.showNotification(response.notification || {});
+                toast.success(response.message);
+            } catch (error) {
+                toast.error(error.response?.data?.message || error.message || 'Unable to send test notification.');
+            }
+        });
+    });
+
+    refreshPwaPushCards();
+}
 
 function triggerTouchHaptic() {
     if (!('vibrate' in navigator)) {
@@ -208,6 +438,7 @@ async function initDeveloperDocsCodeBlocks() {
 document.addEventListener('DOMContentLoaded', function () {
     window.refreshLucideIcons();
     initBottomBarInteractions();
+    initPwaPushCards();
     initDeveloperDocsCodeBlocks();
 });
 
@@ -224,6 +455,7 @@ document.addEventListener('livewire:navigating', function () {
 document.addEventListener('livewire:navigated', function () {
     window.refreshLucideIcons();
     initBottomBarInteractions();
+    initPwaPushCards();
     initDeveloperDocsCodeBlocks();
 
     if (isMobileViewport()) {

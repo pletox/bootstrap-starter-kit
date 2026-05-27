@@ -12,6 +12,7 @@
         "laravel/tinker": "^3.0",
         "livewire/livewire": "^4.0",
         "mallardduck/blade-lucide-icons": "^1.26.20",
+        "minishlink/web-push": "^10.0",
         "tightenco/ziggy": "^2.6.2",
         "yajra/laravel-datatables-oracle": "^13.1.2"
     },

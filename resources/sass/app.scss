@@ -313,7 +313,6 @@ a.sidebar-link {
     .content {
         transform-origin: center top;
         transition: opacity 0.18s ease, transform 0.18s ease;
-        will-change: opacity, transform;
     }
 
     html.mobile-navigating .content {
@@ -323,6 +322,13 @@ a.sidebar-link {
 
     html.mobile-navigated .content {
         animation: mobile-page-enter 0.22s ease both;
+    }
+
+    body.modal-open .content {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
     }
 }
 

@@ -18,15 +18,6 @@
         <span class="text-xs">Categories</span>
     </a>
 
-    <a href="{{ route('install-app') }}"
-       class="bottom-bar-item text-muted text-decoration-none
-       {{ request()->routeIs('install-app') ? 'active' : '' }}">
-        <span class="bottom-bar-icon">
-            <x-lucide-smartphone class="w-4 h-4"/>
-        </span>
-        <span class="text-xs">Install</span>
-    </a>
-
     <a href="{{ route('settings.profile') }}" wire:navigate
        class="bottom-bar-item text-muted text-decoration-none
        {{ request()->routeIs('settings.profile') ? 'active' : '' }}">

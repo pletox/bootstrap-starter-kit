@@ -779,10 +779,9 @@ $.fn.useDataTable = function (options = {}) {
             let active = false;
             let currentRequest = null;
             let requestVersion = 0;
-            let lastLoadScrollY = null;
-            let nextUserLoadAt = 0;
-            let userLoadLocked = false;
-            let userLoadUnlockY = 0;
+            let nextLoadAt = 0;
+            let observer = null;
+            let scrollCheckQueued = false;
 
             const mediaQuery = window.matchMedia(`(max-width: ${mobileCardOpts.breakpoint - 1}px)`);
 
@@ -854,11 +853,23 @@ $.fn.useDataTable = function (options = {}) {
                 $status.text(text).toggleClass('d-none', !visible);
             }
 
-            function sentinelIsNearViewport() {
-                const rect = $sentinel[0].getBoundingClientRect();
+            function getLoadTarget() {
+                return $list.children('.jp-mobile-card').last().get(0)
+                    || $list.children().last().get(0)
+                    || $sentinel[0];
+            }
+
+            function loadTargetIsNearViewport() {
+                const target = getLoadTarget();
+
+                if (!target) {
+                    return false;
+                }
+
+                const rect = target.getBoundingClientRect();
                 const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
 
-                return rect.top <= viewportHeight + 160 && rect.bottom >= -160;
+                return rect.top <= viewportHeight + 320 && rect.bottom >= -120;
             }
 
             function pageNeedsMoreContent() {
@@ -867,41 +878,45 @@ $.fn.useDataTable = function (options = {}) {
                 return document.documentElement.scrollHeight <= viewportHeight + 16;
             }
 
-            function requestUserLoad() {
-                const currentScrollY = window.scrollY || document.documentElement.scrollTop || 0;
-
-                if (userLoadLocked) {
-                    if (currentScrollY < userLoadUnlockY + 160) {
-                        return;
-                    }
-
-                    userLoadLocked = false;
+            function observeLoadTarget() {
+                if (!observer) {
+                    return;
                 }
 
+                observer.disconnect();
+
+                const target = getLoadTarget();
+
+                if (target) {
+                    observer.observe(target);
+                }
+            }
+
+            function requestUserLoad() {
                 loadNextPage();
+            }
+
+            function queueScrollCheck() {
+                if (scrollCheckQueued) {
+                    return;
+                }
+
+                scrollCheckQueued = true;
+
+                window.requestAnimationFrame(() => {
+                    scrollCheckQueued = false;
+                    requestUserLoad();
+                });
             }
 
             function loadNextPage(force = false) {
                 if (!active || loading || finished) return;
-                if (!force && !sentinelIsNearViewport()) return;
-                if (!force && Date.now() < nextUserLoadAt) return;
-
-                const currentScrollY = window.scrollY || document.documentElement.scrollTop || 0;
-                if (
-                    !force
-                    && start > 0
-                    && lastLoadScrollY !== null
-                    && Math.abs(currentScrollY - lastLoadScrollY) < 80
-                ) {
-                    return;
-                }
+                if (!force && !loadTargetIsNearViewport()) return;
+                if (!force && Date.now() < nextLoadAt) return;
 
                 loading = true;
                 if (!force) {
-                    lastLoadScrollY = currentScrollY;
-                    nextUserLoadAt = Date.now() + 1200;
-                    userLoadLocked = true;
-                    userLoadUnlockY = currentScrollY;
+                    nextLoadAt = Date.now() + 250;
                 }
                 setStatus(mobileCardOpts.loadingText);
                 const version = requestVersion;
@@ -934,6 +949,7 @@ $.fn.useDataTable = function (options = {}) {
                         start += rows.length;
                         finished = rows.length < mobileCardOpts.pageLength || start >= (response.recordsFiltered ?? start);
                         setStatus('', false);
+                        observeLoadTarget();
                     },
                     error: function (xhr, textStatus) {
                         if (version !== requestVersion || textStatus === 'abort') return;
@@ -948,6 +964,8 @@ $.fn.useDataTable = function (options = {}) {
 
                             if (active && !finished && pageNeedsMoreContent()) {
                                 setTimeout(() => loadNextPage(true), 0);
+                            } else if (active && !finished && loadTargetIsNearViewport()) {
+                                setTimeout(() => loadNextPage(), 80);
                             }
                         }
                     }
@@ -964,11 +982,10 @@ $.fn.useDataTable = function (options = {}) {
                 draw = 1;
                 loading = false;
                 finished = false;
-                lastLoadScrollY = null;
-                nextUserLoadAt = 0;
-                userLoadLocked = false;
-                userLoadUnlockY = 0;
+                nextLoadAt = 0;
+                scrollCheckQueued = false;
                 $list.empty();
+                observeLoadTarget();
 
                 if (active) {
                     loadNextPage(true);
@@ -1031,6 +1048,7 @@ $.fn.useDataTable = function (options = {}) {
                 finished = false;
                 refreshEmptyState();
                 $cards.trigger('jp-mobile-cards:draw');
+                observeLoadTarget();
 
                 return true;
             }
@@ -1050,6 +1068,7 @@ $.fn.useDataTable = function (options = {}) {
                 start = Math.max(0, start - 1);
                 refreshEmptyState();
                 $cards.trigger('jp-mobile-cards:draw');
+                observeLoadTarget();
 
                 return true;
             }
@@ -1061,19 +1080,24 @@ $.fn.useDataTable = function (options = {}) {
 
                 if (active && !$list.children().length) {
                     reload();
+                } else if (active) {
+                    observeLoadTarget();
                 }
             }
 
-            const observer = new IntersectionObserver((entries) => {
+            observer = new IntersectionObserver((entries) => {
                 if (entries.some(entry => entry.isIntersecting)) {
                     requestUserLoad();
                 }
             }, {
-                rootMargin: '160px'
+                root: null,
+                rootMargin: '320px 0px 320px 0px',
+                threshold: 0.01
             });
 
-            observer.observe($sentinel[0]);
-            window.addEventListener('scroll', requestUserLoad, {passive: true});
+            observeLoadTarget();
+            window.addEventListener('scroll', queueScrollCheck, {passive: true});
+            window.addEventListener('resize', queueScrollCheck, {passive: true});
 
             if (typeof mediaQuery.addEventListener === 'function') {
                 mediaQuery.addEventListener('change', syncMode);

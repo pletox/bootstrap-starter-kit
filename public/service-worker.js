@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pletox-starter-offline-v1';
+const CACHE_NAME = 'pletox-starter-offline-v2';
 const OFFLINE_URL = '/offline.html';
 const APP_SHELL = [
     OFFLINE_URL,
@@ -24,6 +24,12 @@ self.addEventListener('activate', (event) => {
             ))
             .then(() => self.clients.claim())
     );
+});
+
+self.addEventListener('message', (event) => {
+    if (event.data?.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
 });
 
 self.addEventListener('fetch', (event) => {
@@ -60,6 +66,55 @@ self.addEventListener('fetch', (event) => {
 
                 return response;
             });
+        })
+    );
+});
+
+self.addEventListener('push', (event) => {
+    let data = {};
+
+    try {
+        data = event.data ? event.data.json() : {};
+    } catch (error) {
+        data = {
+            title: 'PletoxStarter',
+            body: event.data?.text() || 'Open the app to view the update.',
+            url: '/home',
+        };
+    }
+
+    const title = data.title || 'PletoxStarter';
+    const url = data.url || '/home';
+
+    event.waitUntil(
+        self.registration.showNotification(title, {
+            body: data.body || 'Open the app to view the update.',
+            icon: data.icon || '/pwa/icons/icon-192x192.png',
+            badge: data.badge || '/pwa/icons/icon-96x96.png',
+            data: {
+                url,
+            },
+            tag: data.tag || 'pwa-push-notification',
+            renotify: Boolean(data.tag),
+            timestamp: data.timestamp ? data.timestamp * 1000 : Date.now(),
+        })
+    );
+});
+
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+
+    const targetUrl = new URL(event.notification.data?.url || '/home', self.location.origin).href;
+
+    event.waitUntil(
+        self.clients.matchAll({type: 'window', includeUncontrolled: true}).then((clientList) => {
+            const matchingClient = clientList.find((client) => client.url === targetUrl);
+
+            if (matchingClient) {
+                return matchingClient.focus();
+            }
+
+            return self.clients.openWindow(targetUrl);
         })
     );
 });

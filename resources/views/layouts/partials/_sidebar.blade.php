@@ -29,16 +29,6 @@
                 </a>
             </li>
 
-            <li class="sidebar-item">
-                <a href="{{ route('install-app') }}"
-                   class="sidebar-link text-gray-600 font-bold {{ request()->routeIs('install-app') ? 'active' : '' }}">
-                    <x-lucide-smartphone class="w-4 h-4 text-slate-600"/>
-                    <span>Install App</span>
-                </a>
-            </li>
-
-
-
         </ul>
     </div>
 </aside>

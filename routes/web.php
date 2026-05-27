@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PwaPushSubscriptionController;
 use App\Http\Controllers\QuickLinksController;
 use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +57,13 @@ Route::group(['middleware' => ['auth:web']], function () {
     Route::post('/home/counters', [HomeController::class, 'counters'])->name('home.counters');
     Route::post('/home/recent-categories', [HomeController::class, 'recentCategories'])->name('home.recent-categories');
 
+    Route::controller(PwaPushSubscriptionController::class)->prefix('pwa/push')->name('pwa.push.')->group(function () {
+        Route::get('public-key', 'publicKey')->name('public-key');
+        Route::post('subscribe', 'store')->name('subscribe');
+        Route::delete('subscribe', 'destroy')->name('unsubscribe');
+        Route::post('test', 'test')->name('test');
+    });
+
     Route::post('quick-links/list', [QuickLinksController::class, 'index'])->name('quick-links.index');
     Route::post('quick-links', [QuickLinksController::class, 'storeOrUpdate'])->name('quick-links.storeOrUpdate');
     Route::get('quick-links/{quickLink}', [QuickLinksController::class, 'edit'])->name('quick-links.edit');
@@ -82,6 +90,7 @@ Route::group(['middleware' => ['auth:web']], function () {
 
         return view('uikit', ['page' => 'ui-kit']);
     })->name('ui-kit');
+
     Route::get('developer-docs/{page?}', function (?string $page = null) {
         abort_unless(app()->isLocal(), 404);
 

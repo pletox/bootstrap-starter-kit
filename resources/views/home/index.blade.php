@@ -13,18 +13,6 @@
                     <x-lucide-layout-grid class="w-4 h-4"/>
                     <span>Manage Categories</span>
                 </x-button>
-
-                <x-button color="light" link="{{ route('install-app') }}" wire:navigate>
-                    <x-lucide-smartphone class="w-4 h-4"/>
-                    <span>Install App</span>
-                </x-button>
-
-                @if(app()->isLocal())
-                    <x-button color="light" link="{{ route('ui-kit') }}" wire:navigate>
-                        <x-lucide-component class="w-4 h-4"/>
-                        <span>UI Kit</span>
-                    </x-button>
-                @endif
             </x-slot:actions>
         </x-page-header>
 
@@ -39,6 +27,12 @@
                 <div class="row g-3">
                     <div class="col-12">
                         @include('home.partials._quick_links')
+                    </div>
+
+                    <div class="col-12">
+                        <x-card>
+                            <x-pwa-push-card :url="route('home')" class="border-0 p-0"/>
+                        </x-card>
                     </div>
 
                     <div class="col-12">

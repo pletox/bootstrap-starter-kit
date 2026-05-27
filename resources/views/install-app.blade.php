@@ -46,6 +46,17 @@
                 <x-lucide-arrow-left class="w-4 h-4"/>
                 <span>Back to app</span>
             </x-button>
+
+            @auth
+                <x-pwa-push-card :url="route('home')"/>
+            @else
+                <div class="border rounded-3 p-3 d-flex gap-3 align-items-start">
+                    <span class="pwa-install-inline-icon">
+                        <x-lucide-bell-ring class="w-4 h-4"/>
+                    </span>
+                    <p class="text-muted text-sm mb-0">After signing in, you can turn on app notifications for important updates.</p>
+                </div>
+            @endauth
         </div>
     </x-card>
 @endsection
