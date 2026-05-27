@@ -5,7 +5,7 @@
     "keywords": ["laravel", "starter", "kit"],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
         "laravel/fortify": "^1.37.2",
         "laravel/framework": "^13.0",
         "laravel/sanctum": "^4.3.2",
