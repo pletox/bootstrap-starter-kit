@@ -61,6 +61,56 @@
             </div>
         </x-card>
 
+        <x-card title="Tenant Workspaces" subtitle="Use the starter kit command when an app needs user-owned workspaces and tenant-scoped data.">
+            <div class="d-grid gap-3">
+                <p class="text-muted mb-0">The command adds a <code>Tenant</code> model, tenant/user pivot, current tenant tracking, a registration workspace field, registration workspace creation, sidebar workspace switching, switch/create routes, and tenant scoping for selected models.</p>
+
+                <div>
+                    <h3 class="h6 mb-2">Install</h3>
+                    <pre class="bg-dark text-white rounded p-3 mb-0"><code>php artisan starter-kit:tenancy install
+php artisan migrate</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="h6 mb-2">Scope More Tables</h3>
+                    <pre class="bg-dark text-white rounded p-3 mb-0"><code>php artisan starter-kit:tenancy install \
+    --tables=categories,quick_links,projects \
+    --models=Category,QuickLink,Project</code></pre>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12 col-lg-6">
+                        <div class="border rounded p-3 h-100">
+                            <h3 class="h6 mb-2">Generated Backend</h3>
+                            <ul class="text-muted mb-0">
+                                <li><code>Tenant</code> model and <code>tenant_user</code> pivot.</li>
+                                <li><code>current_tenant_id</code> on users.</li>
+                                <li><code>BelongsToTenant</code> model concern.</li>
+                                <li>Create and switch tenant routes.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="border rounded p-3 h-100">
+                            <h3 class="h6 mb-2">Generated UI</h3>
+                            <ul class="text-muted mb-0">
+                                <li>Workspace name field on registration.</li>
+                                <li>Workspace created during registration.</li>
+                                <li>Sidebar workspace dropdown.</li>
+                                <li>Create workspace modal.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="h6 mb-2">Remove</h3>
+                    <p class="text-muted mb-2">Before reversing, roll back the generated migrations or create a new migration that removes the tenancy database changes. The command asks you to confirm this first.</p>
+                    <pre class="bg-dark text-white rounded p-3 mb-0"><code>php artisan starter-kit:tenancy remove</code></pre>
+                </div>
+            </div>
+        </x-card>
+
         <x-card title="Security Checklist" subtitle="Small habits that prevent large mistakes.">
             <ul class="text-muted mb-0">
                 <li>Validate all incoming fields and write only validated data.</li>

@@ -1,14 +1,9 @@
 <aside id="sidebar" class="js-sidebar ">
     <!-- Content For Sidebar -->
     <div class="h-100">
-        <div class="sidebar-logo text-truncate p-2 my-2 mx-3 ms-3">
-            <a href="#" class="text-sm d-flex align-items-center gap-2">
-                <div class="d-flex align-items-center justify-content-center overflow-hidden rounded w-8 h-8 bg-black">
-                    <x-lucide-building class="w-5 h-5 text-white"/>
-                </div>
-                <span class="text-truncate">{{ env('APP_NAME') }}</span>
-            </a>
-        </div>
+{{-- STARTER-KIT-TENANCY:sidebar-workspace-dropdown --}}
+        @include('tenants._workspace_dropdown')
+{{-- END-STARTER-KIT-TENANCY:sidebar-workspace-dropdown --}}
 
         <ul class="sidebar-nav">
             <li class="sidebar-nav-heading mx-4 mb-2 text-xs text-gray-500 text-uppercase fw-semibold">Platform</li>
@@ -35,6 +30,10 @@
 
 <!-- Sidebar Backdrop -->
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+{{-- STARTER-KIT-TENANCY:sidebar-tenant-modal --}}
+@include('tenants._form')
+{{-- END-STARTER-KIT-TENANCY:sidebar-tenant-modal --}}
+
 
 
 <!-- Sidebar Dropdown Item Snippet -->

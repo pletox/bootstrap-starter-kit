@@ -4,6 +4,11 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+// STARTER-KIT-TENANCY:user-imports
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+// END-STARTER-KIT-TENANCY:user-imports
+
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -47,6 +52,33 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
+
+// STARTER-KIT-TENANCY:user-methods
+    public function tenants(): BelongsToMany
+    {
+        return $this->belongsToMany(Tenant::class)
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    public function ownedTenants(): HasMany
+    {
+        return $this->hasMany(Tenant::class, 'owner_id');
+    }
+
+    public function currentTenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class, 'current_tenant_id');
+    }
+
+    public function switchTenant(Tenant $tenant): void
+    {
+        abort_unless($this->tenants()->whereKey($tenant->getKey())->exists(), 403);
+
+        $this->forceFill(['current_tenant_id' => $tenant->getKey()])->save();
+        $this->setRelation('currentTenant', $tenant);
+    }
+// END-STARTER-KIT-TENANCY:user-methods
 
     public function pushSubscriptions(): HasMany
     {

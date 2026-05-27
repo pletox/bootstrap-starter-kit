@@ -4,6 +4,10 @@ namespace App\Actions\Fortify;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+// STARTER-KIT-TENANCY:registration-imports
+use Illuminate\Support\Facades\DB;
+// END-STARTER-KIT-TENANCY:registration-imports
+
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
@@ -29,12 +33,28 @@ class CreateNewUser implements CreatesNewUsers
                 Rule::unique(User::class),
             ],
             'password' => $this->passwordRules(),
+            'workspace_name' => ['required', 'string', 'min:2', 'max:120'],
         ])->validate();
 
-        return User::create([
-            'name' => $input['name'],
-            'email' => $input['email'],
-            'password' => Hash::make($input['password']),
-        ]);
+// STARTER-KIT-TENANCY:registration-create
+        return DB::transaction(function () use ($input): User {
+            $user = User::create([
+                'name' => $input['name'],
+                'email' => $input['email'],
+                'password' => Hash::make($input['password']),
+            ]);
+
+            $tenant = $user->tenants()->create([
+                'name' => $input['workspace_name'],
+                'owner_id' => $user->getKey(),
+            ], [
+                'role' => 'owner',
+            ]);
+
+            $user->forceFill(['current_tenant_id' => $tenant->getKey()])->save();
+
+            return $user;
+        });
+// END-STARTER-KIT-TENANCY:registration-create
     }
 }

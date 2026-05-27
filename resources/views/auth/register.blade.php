@@ -12,6 +12,10 @@
         <x-form class="space-y-4" method="POST" action="{{ route('register') }}">
 
             <x-input placeholder="Full name" label="Name" name="name" id="name"/>
+{{-- STARTER-KIT-TENANCY:register-workspace-field --}}
+            <x-input placeholder="Acme Workspace" label="Workspace Name" name="workspace_name" id="workspace_name"/>
+{{-- END-STARTER-KIT-TENANCY:register-workspace-field --}}
+
 
             <x-input placeholder="email@example.com" type="email" label="E-mail Address" name="email" id="email"/>
 

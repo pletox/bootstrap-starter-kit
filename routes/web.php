@@ -4,6 +4,10 @@ use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PwaPushSubscriptionController;
 use App\Http\Controllers\QuickLinksController;
+// STARTER-KIT-TENANCY:routes-imports
+use App\Http\Controllers\TenantsController;
+// END-STARTER-KIT-TENANCY:routes-imports
+
 use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +60,11 @@ Route::group(['middleware' => ['auth:web']], function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::post('/home/counters', [HomeController::class, 'counters'])->name('home.counters');
     Route::post('/home/recent-categories', [HomeController::class, 'recentCategories'])->name('home.recent-categories');
+// STARTER-KIT-TENANCY:routes
+    Route::post('tenants', [TenantsController::class, 'store'])->name('tenants.store');
+    Route::post('tenants/{tenant}/switch', [TenantsController::class, 'switch'])->name('tenants.switch');
+// END-STARTER-KIT-TENANCY:routes
+
 
     Route::controller(PwaPushSubscriptionController::class)->prefix('pwa/push')->name('pwa.push.')->group(function () {
         Route::get('public-key', 'publicKey')->name('public-key');
