@@ -61,6 +61,43 @@ import select2 from 'select2';
 
 select2($);
 
+const Select2AttachBody = $.fn.select2?.amd?.require('select2/dropdown/attachBody');
+const Select2Utils = $.fn.select2?.amd?.require('select2/utils');
+
+if (Select2AttachBody && Select2Utils && !Select2AttachBody.prototype.__jpScrollPatch) {
+    Select2AttachBody.prototype._attachPositioningHandler = function (decorated, container) {
+        const self = this;
+        const scrollEvent = 'scroll.select2.' + container.id;
+        const resizeEvent = 'resize.select2.' + container.id;
+        const orientationEvent = 'orientationchange.select2.' + container.id;
+        const $watchers = this.$container.parents().filter(Select2Utils.hasScroll);
+
+        $watchers.each(function () {
+            Select2Utils.StoreData(this, 'select2-scroll-position', {
+                x: $(this).scrollLeft(),
+                y: $(this).scrollTop(),
+            });
+        });
+
+        $watchers.on(scrollEvent, function () {
+            const position = Select2Utils.GetData(this, 'select2-scroll-position') || {
+                x: $(this).scrollLeft(),
+                y: $(this).scrollTop(),
+            };
+
+            Select2Utils.StoreData(this, 'select2-scroll-position', position);
+            $(this).scrollTop(position.y);
+        });
+
+        $(window).on(scrollEvent + ' ' + resizeEvent + ' ' + orientationEvent, function () {
+            self._positionDropdown();
+            self._resizeDropdown();
+        });
+    };
+
+    Select2AttachBody.prototype.__jpScrollPatch = true;
+}
+
 import flatpickr from "flatpickr";
 
 window.flatpickr = flatpickr;
@@ -74,5 +111,4 @@ import 'quill-mention/dist/quill.mention.min.css';
 
 
 window.Quill = Quill;
-
 

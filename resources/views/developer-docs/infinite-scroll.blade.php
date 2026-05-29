@@ -33,6 +33,20 @@
 &lt;/x-async-list&gt;</code></pre>
         </x-card>
 
+        <x-card title="Page Scroll Lists" subtitle="Use body scroll for full-page lists that should not create their own internal scroll area.">
+            <pre class="bg-dark text-white rounded p-3 mb-0"><code>&lt;x-async-list body-scroll :url="route('resources.index')" data-resource-list&gt;
+    &lt;x-async-list.items data-resource-items/&gt;
+    &lt;x-async-list.empty icon="lucide-link" data-resource-empty&gt;No records yet.&lt;/x-async-list.empty&gt;
+    &lt;x-async-list.loader data-resource-loader/&gt;
+&lt;/x-async-list&gt;
+
+const resources = useAsyncList('[data-resource-list]', {
+    scrollTarget: 'window',
+    nearBottom: 320,
+    itemTemplate: '#resourceItemTemplate',
+});</code></pre>
+        </x-card>
+
         <x-card title="Item Template" subtitle="Keep only the repeated item markup in the page. The list shell belongs to x-async-list.">
             <pre class="bg-dark text-white rounded p-3 mb-0"><code>&lt;script type="text/x-handlebars-template" id="resourceItemTemplate"&gt;
     &lt;div class="d-flex justify-content-between gap-3 border-bottom p-3" data-resource-id="@{{ id }}"&gt;

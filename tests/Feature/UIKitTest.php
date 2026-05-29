@@ -91,7 +91,7 @@ it('renders developer docs sub pages locally', function (string $page, string $e
     ['components', 'Component Rules'],
     ['forms', 'AJAX CRUD Pattern'],
     ['datatables', 'Standard DataTable'],
-    ['infinite-scroll', 'jQuery Infinite Scroll Script'],
+    ['infinite-scroll', 'Page Scroll Lists'],
     ['pwa', 'Production Push Setup'],
     ['backend', 'Backend Patterns'],
     ['testing', 'Testing And Verification'],

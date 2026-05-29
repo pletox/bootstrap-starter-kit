@@ -234,6 +234,7 @@ window.useAsyncList = function (listSelector, options = {}) {
         getItems: response => response.data.items || [],
         getPagination: response => response.data.pagination || {},
         data: ({page}) => ({page}),
+        scrollTarget: 'self',
         onError: null,
         ...options
     };
@@ -242,6 +243,7 @@ window.useAsyncList = function (listSelector, options = {}) {
     const $empty = () => $list.find(settings.emptySelector);
     const $loader = () => $list.find(settings.loaderSelector);
     const template = settings.itemTemplate ? Handlebars.compile($(settings.itemTemplate).html()) : null;
+    const scrollEventName = `scroll.jpAsyncList.${Math.random().toString(36).slice(2)}`;
 
     const renderItem = function (item) {
         if (typeof settings.renderItem === 'function') {
@@ -249,6 +251,24 @@ window.useAsyncList = function (listSelector, options = {}) {
         }
 
         return template ? template(item) : '';
+    };
+
+    const isNearScrollBoundary = function () {
+        if (settings.scrollTarget === 'window') {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+
+            return scrollTop + viewportHeight >= documentHeight - settings.nearBottom;
+        }
+
+        const element = $list[0];
+
+        if (!element) {
+            return false;
+        }
+
+        return element.scrollTop + element.clientHeight >= element.scrollHeight - settings.nearBottom;
     };
 
     const refreshEmpty = function () {
@@ -297,14 +317,25 @@ window.useAsyncList = function (listSelector, options = {}) {
                 }
             }).finally(() => {
                 setLoading(false);
+
+                if ($list.data('has-more') !== false && isNearScrollBoundary()) {
+                    setTimeout(() => api.load(), 0);
+                }
             });
         },
         bindInfiniteScroll() {
-            $list.off('scroll.jpAsyncList').on('scroll.jpAsyncList', function () {
-                const element = this;
-                const isNearBottom = element.scrollTop + element.clientHeight >= element.scrollHeight - settings.nearBottom;
+            if (settings.scrollTarget === 'window') {
+                $(window).off(scrollEventName).on(scrollEventName, function () {
+                    if (isNearScrollBoundary()) {
+                        api.load();
+                    }
+                });
 
-                if (isNearBottom) {
+                return;
+            }
+
+            $list.off('scroll.jpAsyncList').on('scroll.jpAsyncList', function () {
+                if (isNearScrollBoundary()) {
                     api.load();
                 }
             });
