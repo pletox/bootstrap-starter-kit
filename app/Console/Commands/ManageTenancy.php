@@ -339,7 +339,7 @@ PHP;
         ]);
 PHP;
 
-        $contents = preg_replace($this->blockPattern('registration-create'), $replacement, $contents) ?? $contents;
+        $contents = preg_replace($this->blockPattern('registration-create'), rtrim($replacement)."\n", $contents) ?? $contents;
         $this->files->put($path, $contents);
     }
 
@@ -814,7 +814,7 @@ return new class extends Migration
     {
         Schema::create('{{ table }}', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id')->after('id')->constrained()->cascadeOnDelete();
+            $table->foreignId('tenant_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -908,7 +908,7 @@ return new class extends Migration
             }
 
             Schema::table(\$tableName, function (Blueprint \$table) {
-                \$table->foreignId('tenant_id')->nullable()->after('id')->constrained()->cascadeOnDelete();
+                \$table->foreignId('tenant_id')->nullable()->constrained()->cascadeOnDelete();
             });
         }
     }
