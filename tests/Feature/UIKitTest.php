@@ -19,7 +19,8 @@ it('renders the ui kit locally for authenticated users', function () {
         ->assertSee('Push Notification Tester')
         ->assertSee('data-push-test-status', false)
         ->assertSee('Tables')
-        ->assertSee('Rich Text');
+        ->assertSee('Rich Text')
+        ->assertSee('modal-body px-3 py-3', false);
 });
 
 it('serves the web app manifest', function () {
