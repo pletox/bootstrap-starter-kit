@@ -2,6 +2,8 @@
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\ViewErrorBag;
 
 uses(RefreshDatabase::class);
 
@@ -42,6 +44,19 @@ it('renders the install app page', function () {
         ->assertSee('Add to Home Screen')
         ->assertSee('No app store needed')
         ->assertSee('Share button');
+});
+
+it('renders multiple select2 fields without a blank option', function () {
+    view()->share('errors', new ViewErrorBag);
+
+    $multiple = Blade::render('<x-select2 name="categories[]" label="Categories" multiple><option value="1">Hardware</option></x-select2>');
+    $single = Blade::render('<x-select2 name="category_id" label="Category"><option value="1">Hardware</option></x-select2>');
+
+    expect($multiple)
+        ->toContain('multiple', 'closeOnSelect: false')
+        ->not->toContain('<option></option>')
+        ->and($single)
+        ->toContain('<option></option>', 'closeOnSelect: true');
 });
 
 it('hides the ui kit outside local environments', function () {

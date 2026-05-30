@@ -498,13 +498,13 @@ window.setInputFieldVal = function (inputField, value) {
     // --- Select2 ---
     if ($input.hasClass('select2-hidden-accessible')) {
         const isMultiple = $input.prop('multiple');
-        const selectedVals = Array.isArray(value) ? value : [value];
+        const selectedVals = (Array.isArray(value) ? value : [value]).filter(v => v !== null && v !== undefined && v !== '');
         const existing = $input.find('option').map((_, o) => $(o).val()).get();
         const missing = selectedVals.filter(v => !existing.includes(v));
         const url = $input.attr('data-jp-select2-url');
 
         const applyValue = () => {
-            $input.val(isMultiple ? selectedVals : selectedVals[0]).trigger('change');
+            $input.val(isMultiple ? selectedVals : (selectedVals[0] ?? null)).trigger('change');
         };
 
         if (!url || missing.length === 0) {
@@ -1356,6 +1356,7 @@ $.fn.jpSelect2 = function (options = {}) {
 
             $el.select2('destroy');
             $el.removeData('jp-select2-initialized');
+            $el.siblings('.select2-container').remove();
 
             setTimeout(() => {
                 $el.jpSelect2(newOptions);
@@ -1366,6 +1367,16 @@ $.fn.jpSelect2 = function (options = {}) {
 
         if ($el.data('jp-select2-initialized')) return;
         $el.data('jp-select2-initialized', true);
+
+        if ($el.data('select2')) {
+            $el.select2('destroy');
+        }
+
+        $el
+            .removeClass('select2-hidden-accessible')
+            .removeAttr('data-select2-id')
+            .siblings('.select2-container')
+            .remove();
 
         const dataUrl = $el.attr('data-url');
         const placeholder = $el.attr('data-placeholder') || $el.attr('placeholder');

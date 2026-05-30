@@ -499,6 +499,95 @@ input.hasDatepicker::placeholder,
     padding: 0.35rem 2rem 0.35rem 0.75rem;
 }
 
+.select2-container--bootstrap-5 .select2-selection--multiple {
+    align-items: center;
+    display: flex;
+    min-height: 2.45rem;
+    padding: 0.25rem 0.45rem;
+}
+
+.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0;
+    min-width: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice {
+    align-items: center;
+    background: var(--bs-primary-bg-subtle);
+    border: 1px solid rgba(var(--bs-primary-rgb), 0.18);
+    border-radius: 0.45rem;
+    color: var(--bs-primary);
+    display: inline-flex;
+    font-size: 0.72rem !important;
+    font-weight: 500;
+    gap: 0.25rem;
+    line-height: 1;
+    margin: 0;
+    max-width: 14rem;
+    min-height: 1.35rem;
+    padding: 0.22rem 0.5rem;
+    position: relative;
+}
+
+.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice .jp-select2-media-option.is-compact {
+    gap: 0.25rem;
+    height: auto;
+    min-height: 0;
+}
+
+.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice .jp-select2-media-title {
+    font-size: 0.72rem !important;
+    font-weight: 500;
+    line-height: 1 !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice .jp-select2-media-copy {
+    line-height: 1 !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice__display {
+    align-items: center;
+    display: inline-flex;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice__remove {
+    align-items: center;
+    border: 0;
+    color: var(--bs-primary);
+    display: inline-flex;
+    font-size: 0.68rem !important;
+    height: 0.7rem;
+    justify-content: center;
+    line-height: 1;
+    margin-right: 0.24rem;
+    padding: 0;
+    position: static;
+    transform: none;
+    width: 0.7rem;
+}
+
+.select2-container--bootstrap-5 .select2-selection--multiple .select2-search--inline {
+    flex: 1 1 8rem;
+    min-width: 8rem;
+}
+
+.select2-container--bootstrap-5 .select2-selection--multiple .select2-search__field {
+    font-size: 0.875rem;
+    margin: 0;
+    min-height: 1.55rem;
+    padding: 0.1rem 0;
+    width: 100% !important;
+}
+
 .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
     align-items: center;
     color: var(--bs-body-color) !important;
