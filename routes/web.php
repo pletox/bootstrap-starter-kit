@@ -4,7 +4,6 @@ use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PwaPushSubscriptionController;
 use App\Http\Controllers\QuickLinksController;
-
 use App\Http\Controllers\Settings\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,7 +48,7 @@ Route::get('manifest.webmanifest', function () {
     ], 200, ['Content-Type' => 'application/manifest+json']);
 })->name('pwa.manifest');
 
-Route::redirect('/', 'home');
+Route::view('/', 'landing')->name('landing');
 Route::view('install-app', 'install-app')->name('install-app');
 
 Route::group(['middleware' => ['auth:web']], function () {
@@ -57,7 +56,6 @@ Route::group(['middleware' => ['auth:web']], function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::post('/home/counters', [HomeController::class, 'counters'])->name('home.counters');
     Route::post('/home/recent-categories', [HomeController::class, 'recentCategories'])->name('home.recent-categories');
-
 
     Route::controller(PwaPushSubscriptionController::class)->prefix('pwa/push')->name('pwa.push.')->group(function () {
         Route::get('public-key', 'publicKey')->name('public-key');

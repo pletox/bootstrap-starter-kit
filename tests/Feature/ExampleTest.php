@@ -3,5 +3,9 @@
 it('returns a successful response', function () {
     $response = $this->get('/');
 
-    $response->assertRedirect('/home');
+    $response
+        ->assertSuccessful()
+        ->assertSee('Experience the Sacred')
+        ->assertSee('Our Packages')
+        ->assertSee('KumbhSnaan.com');
 });
