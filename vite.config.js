@@ -8,8 +8,7 @@ export default defineConfig({
                 "resources/sass/app.scss",
                 "resources/js/jquery.js",
                 "resources/js/jqueryui.js",
-                "resources/js/app.js",
-                "resources/js/landing.js"],
+                "resources/js/app.js"],
             refresh: true,
         })
     ],

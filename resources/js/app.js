@@ -699,15 +699,6 @@ document.addEventListener('livewire:navigating', function () {
     showMobilePageSkeleton();
 
     $.fn.dataTable.tables({visible: true, api: true}).destroy();
-    $('select.select2-hidden-accessible').each(function () {
-        const select = $(this);
-
-        if (select.data('select2')) {
-            select.select2('destroy');
-        }
-
-        select.siblings('.select2-container').remove();
-    });
     $('[data-jp-editor]').jpEditorDestroy();
 });
 

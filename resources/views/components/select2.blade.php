@@ -13,7 +13,6 @@
     'allowClear' => true,
     'selectedOptions' => [],
     'media' => false,
-    'required' => false,
 ])
 
 @php
@@ -26,7 +25,6 @@
 
     $wireModel = collect($attributes->whereStartsWith('wire:model'))->first();
     $ajaxUrl = $apiUrl ?? $url;
-    $isRequired = $required || $attributes->has('required');
 
     $selectedOptions = collect($selectedOptions)->map(function ($label, $value) {
         if (is_array($label)) {
@@ -61,13 +59,10 @@
         name="{{ $name }}"
         class="form-select {{ $sizeClass }} @error($name) is-invalid @enderror"
         @if($ajaxUrl) data-jp-select2-url="{{ $ajaxUrl }}" @endif
-        @if($isRequired) required @endif
         {{ $multiple ? 'multiple' : '' }}
         {{ $attributes }}  {{-- Enables wire:model and x-model --}}
     >
-        @unless($multiple)
-            <option></option>
-        @endunless
+        <option></option>
         @foreach($selectedOptions as $option)
             <option
                 value="{{ $option['id'] }}"
@@ -96,18 +91,11 @@
             select.select2('destroy');
         }
 
-        select
-            .removeClass('select2-hidden-accessible')
-            .removeAttr('data-select2-id')
-            .siblings('.select2-container')
-            .remove();
-
         let config = {
             dropdownParent: $('#{{ $id }}').parent(),
             theme: 'bootstrap-5',
             placeholder: @json($placeholder),
             allowClear: @json($allowClear),
-            closeOnSelect: @json(! $multiple),
             minimumInputLength: @json((int) $minimumInputLength),
             width: '100%'
         };
@@ -239,9 +227,7 @@
         function valuesArray(value) {
             if (!value) return [];
 
-            return (Array.isArray(value) ? value : [value]).filter(function (item) {
-                return item !== null && item !== undefined && item !== '';
-            });
+            return Array.isArray(value) ? value : [value];
         }
 
         function syncExternalModels() {

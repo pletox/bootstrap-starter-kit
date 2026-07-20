@@ -48,7 +48,7 @@ Route::get('manifest.webmanifest', function () {
     ], 200, ['Content-Type' => 'application/manifest+json']);
 })->name('pwa.manifest');
 
-Route::view('/', 'landing')->name('landing');
+Route::redirect('/', 'home');
 Route::view('install-app', 'install-app')->name('install-app');
 
 Route::group(['middleware' => ['auth:web']], function () {
