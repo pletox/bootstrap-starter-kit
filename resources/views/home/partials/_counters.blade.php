@@ -2,7 +2,9 @@
     <div class="col-12 col-md-4">
         <x-stat-card
             label="Categories"
+            subtitle="Total sample records"
             icon="lucide-database"
+            tone="stock"
             loading
             data-home-counter="total"
             aria-busy="true"
@@ -12,9 +14,11 @@
     <div class="col-12 col-md-4">
         <x-stat-card
             label="Active Records"
+            subtitle="Ready to use"
             icon="lucide-circle-check"
             icon-bg="bg-green-100"
             icon-class="w-5 h-5 text-green-700"
+            tone="sales"
             loading
             data-home-counter="active"
             aria-busy="true"
@@ -24,9 +28,11 @@
     <div class="col-12 col-md-4">
         <x-stat-card
             label="Inactive Records"
+            subtitle="Parked records"
             icon="lucide-circle-pause"
             icon-bg="bg-yellow-100"
             icon-class="w-5 h-5 text-yellow-700"
+            tone="production"
             loading
             data-home-counter="inactive"
             aria-busy="true"

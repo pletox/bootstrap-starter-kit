@@ -1,6 +1,7 @@
 @props([
     'label' => '',
     'name' => '',
+    'id' => null,
     'size' => 'md',
     'required' => false
 ])
@@ -13,49 +14,22 @@
     };
 @endphp
 
+@php
+    $id = $id ?? $name;
+@endphp
+
 <div class="form-group form-check {{ $sizeClass }} d-flex align-items-center gap-2">
     <input
-        id="{{ $name }}"
+        id="{{ $id }}"
         type="checkbox"
         name="{{ $name }}"
         {{ $attributes->merge(['class' => 'form-check-input' . ($errors->has($name) ? ' is-invalid' : '')]) }}
         @if($required) required @endif
     >
 
-    <label class="form-check-label" for="{{ $name }}">
+    <label class="form-check-label" for="{{ $id }}">
         {{ $label }}
     </label>
 
     <div class="invalid-feedback"> @error($name) {{ $message }}   @enderror</div>
 </div>
-
-<style>
-
-    .form-check-md .form-check-input {
-        width: 1.1rem;
-        height: 1.1rem;
-    }
-
-    .form-check-md .form-check-label {
-        display: inline-block;
-        margin-top: 5px;
-        font-size: 0.936rem;
-    }
-
-
-    .form-check-sm .form-check-input {
-        width: 0.875rem;
-        height: 0.875rem;
-    }
-
-    .form-check-lg .form-check-label {
-        display: inline-block;
-        margin-top: 4px;
-        font-size: 1.2rem;
-    }
-
-    .form-check-lg .form-check-input {
-        width: 1.5rem;
-        height: 1.5rem;
-    }
-</style>

@@ -1,22 +1,19 @@
-<div class="d-flex align-items-center gap-1">
-    <x-dropdown align="end" color="light" icon="lucide-ellipsis" buttonClass="btn-sm">
-        <x-dropdown.header>Manage</x-dropdown.header>
+<div class="master-row-actions">
+    <button
+        type="button"
+        class="btn master-row-action editCategory"
+        data-id="{{ $category->id }}"
+        aria-label="Edit {{ $category->name }}"
+    >
+        <x-lucide-pencil class="w-4 h-4"/>
+    </button>
 
-        <x-dropdown.item
-            icon="lucide-edit"
-            class="editCategory"
-            data-id="{{ $category->id }}"
-        >
-            Edit
-        </x-dropdown.item>
-
-        <x-dropdown.item
-            icon="lucide-trash"
-            class="text-danger deleteCategory"
-            data-id="{{ $category->id }}"
-        >
-            Delete
-        </x-dropdown.item>
-    </x-dropdown>
-
+    <button
+        type="button"
+        class="btn master-row-action master-row-action-danger deleteCategory"
+        data-id="{{ $category->id }}"
+        aria-label="Delete {{ $category->name }}"
+    >
+        <x-lucide-trash-2 class="w-4 h-4"/>
+    </button>
 </div>

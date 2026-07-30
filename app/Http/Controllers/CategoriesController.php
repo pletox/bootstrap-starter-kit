@@ -71,6 +71,9 @@ class CategoriesController extends Controller
                 ->addColumn('select', function ($row) {
                     return view('categories.columns._select', ['category' => $row])->render();
                 })
+                ->addColumn('name_display', function ($row) {
+                    return view('categories.columns._name', ['category' => $row])->render();
+                })
                 ->editColumn('description', function ($row) {
                     return view('categories.columns._description', ['category' => $row])->render();
                 })
@@ -80,7 +83,7 @@ class CategoriesController extends Controller
                 ->addColumn('action', function ($row) {
                     return view('categories.columns._actions', ['category' => $row])->render();
                 })
-                ->rawColumns(['action', 'select', 'description', 'status'])
+                ->rawColumns(['action', 'select', 'name_display', 'description', 'status'])
                 ->make(true);
         }
 
@@ -205,6 +208,7 @@ class CategoriesController extends Controller
         return [
             'id' => $category->id,
             'name' => $category->name,
+            'name_display' => view('categories.columns._name', ['category' => $category])->render(),
             'description' => view('categories.columns._description', ['category' => $category])->render(),
             'status' => view('categories.columns._status', ['category' => $category])->render(),
             'action' => view('categories.columns._actions', ['category' => $category])->render(),
