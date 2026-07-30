@@ -91,8 +91,10 @@
             select.select2('destroy');
         }
 
+        let dropdownParent = select.closest('.modal');
+
         let config = {
-            dropdownParent: $('#{{ $id }}').parent(),
+            dropdownParent: dropdownParent.length ? dropdownParent : $(document.body),
             theme: 'bootstrap-5',
             placeholder: @json($placeholder),
             allowClear: @json($allowClear),
