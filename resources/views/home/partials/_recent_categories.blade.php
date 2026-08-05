@@ -1,4 +1,4 @@
-<x-card title="Recent Categories" subtitle="The sample CRUD module used by this starter kit." class="h-100 erp-dashboard-card" body-class="px-0 pb-0">
+<x-card title="Recent Categories" subtitle="The sample CRUD module used by this starter kit." class="h-100" body-class="px-0 pb-0">
     <x-async-list max-height="22rem" :url="route('home.recent-categories')" data-home-category-list>
         <x-async-list.items class="d-grid" data-category-items/>
 

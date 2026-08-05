@@ -5,8 +5,7 @@
     'type' => 'text',
     'placeholder' => '',
     'size' => 'md',
-    'required' => false,
-    'sublabel' => '',
+    'required' => false
 ])
 
 @php
@@ -23,37 +22,27 @@
 
 <div class="form-group" @if($type === 'password') x-data="{ show: false }" @endif>
     @if($label)
-        <label for="{{ $id }}" class="form-label mb-1">
-            {{ $label }}
-            @if($required)
-                <span class="text-danger">*</span>
-            @endif
-            @if($sublabel)
-                <small class="text-muted ms-1">[{{ $sublabel }}]</small>
-            @endif
-        </label>
+        <label for="{{ $name }}" class="form-label">{{ $label }}</label>
     @endif
 
-    <div class="input-group {{ $type === 'password' ? 'app-password-field' : '' }}">
+    <div class="input-group">
         <input
             id="{{ $id }}"
             :type="{{ $type === 'password' ? 'show ? `text` : `password`' : '`' . $type . '`' }}"
             name="{{ $name }}"
             placeholder="{{ $placeholder }}"
             {{ $attributes->merge([
-               'class' => 'form-control text-sm p-2 rounded ' . $sizeClass . ($type === 'password' ? ' app-password-input' : '') . ($inInvalid ? ' is-invalid' : '')
+               'class' => 'form-control text-sm  p-2 ' . $sizeClass . ($type === 'password' ? ' rounded-start' : ' rounded') . ($inInvalid ? ' is-invalid' : '')
            ]) }}
             @if($required) required @endif
         >
 
         @if($type === 'password')
             <button type="button"
-                    class="app-password-toggle {{ $inInvalid ? ' is-invalid' : '' }}"
-                    @click="show = !show"
-                    :aria-label="show ? 'Hide password' : 'Show password'"
-                    :aria-pressed="show">
-                <x-lucide-eye x-show="!show" class="app-password-icon"/>
-                <x-lucide-eye-off x-cloak x-show="show" class="app-password-icon"/>
+                    class="btn btn-outline-secondary border-start-0 shadow-none {{ $inInvalid ? ' is-invalid' : '' }}"
+                    @click="show = !show">
+                <x-lucide-eye-off x-cloak x-show="!show" class="icon-size"/>
+                <x-lucide-eye x-cloak x-show="show" class="icon-size"/>
             </button>
         @endif
 
@@ -63,3 +52,24 @@
 
 
 </div>
+
+<style>
+    .icon-size {
+        width: 1.25rem; /* Bootstrap equivalent of w-5 (20px) */
+        height: 1.25rem;
+    }
+
+    /* Fix button border inconsistency */
+    .input-group .btn {
+        border-color: var(--bs-border-color); /* Match input border */
+    }
+
+    /* Fixes validation message positioning */
+    .input-group .invalid-feedback {
+        width: 100%;
+    }
+
+    .btn.is-invalid {
+        border-color: var(--bs-form-invalid-border-color);
+    }
+</style>

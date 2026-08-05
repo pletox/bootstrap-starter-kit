@@ -94,7 +94,7 @@
 
         <x-card class="mt-3" body-class="px-0 pt-0 pb-1">
             <div class="table-responsive">
-                <x-table id="categories-table" class="table table-borderless master-index-table categories-index-table">
+                <x-table id="categories-table" class="table table-borderless">
                     <thead>
                     <x-table.row>
                         <x-table.header><input type="checkbox" id="select-all"></x-table.header>
@@ -129,7 +129,7 @@
                 columns: [
                     {data: 'select', name: 'select', orderable: false, searchable: false},
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                    {data: 'name_display', name: 'name'},
+                    {data: 'name', name: 'name'},
                     {data: 'status', name: 'active'},
                     {data: 'description', name: 'description'},
                     {data: 'action', name: 'action', orderable: false, searchable: false},
@@ -154,7 +154,10 @@
                                         </div>
                                     </div>
 
-                                    ${row.action}
+                                    <x-dropdown align="end" color="light" icon="lucide-ellipsis" buttonClass="btn-sm">
+                                        <x-dropdown.item icon="lucide-pencil" class="editCategory" data-id="${row.id}">Edit</x-dropdown.item>
+                                        <x-dropdown.item icon="lucide-trash-2" class="deleteCategory text-danger" data-id="${row.id}">Delete</x-dropdown.item>
+                                    </x-dropdown>
                                 </div>
                             </div>
                         `;

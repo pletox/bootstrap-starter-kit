@@ -3,7 +3,7 @@
 @section('title', 'Home')
 
 @section('content')
-    <div class="container-fluid px-2 starter-dashboard erp-dashboard">
+    <div class="container-fluid px-2">
         <x-page-header
             title="Starter Dashboard"
             subtitle="A practical home base for building authenticated Bootstrap admin panels."
@@ -30,13 +30,13 @@
                     </div>
 
                     <div class="col-12">
-                        <x-card class="erp-dashboard-card">
+                        <x-card>
                             <x-pwa-push-card :url="route('home')" class="border-0 p-0"/>
                         </x-card>
                     </div>
 
                     <div class="col-12">
-                        <x-card title="Starter Kit Includes" subtitle="Core pieces already wired together." class="erp-dashboard-card">
+                        <x-card title="Starter Kit Includes" subtitle="Core pieces already wired together.">
                             <div class="d-grid gap-3">
                                 <div class="d-flex gap-3">
                                     <x-lucide-shield-check class="w-5 h-5 text-green-700 flex-shrink-0"/>
@@ -66,7 +66,7 @@
                     </div>
 
                     <div class="col-12">
-                        <x-card title="Next Build Steps" subtitle="A short path from starter to product." class="erp-dashboard-card">
+                        <x-card title="Next Build Steps" subtitle="A short path from starter to product.">
                             <div class="list-group list-group-flush">
                                 <div class="list-group-item px-0 d-flex align-items-center gap-2">
                                     <x-lucide-check class="w-4 h-4 text-green-700"/>

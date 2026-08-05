@@ -9,20 +9,22 @@
                 <span class="text-truncate">{{ env('APP_NAME') }}</span>
             </a>
         </div>
-        <ul class="sidebar-nav" id="sidebar-nav">
+        <ul class="sidebar-nav">
+            <li class="sidebar-nav-heading mx-4 mb-2 text-xs text-gray-500 text-uppercase fw-semibold">Platform</li>
+
             <li class="sidebar-item">
                 <a href="{{ route('home') }}" wire:navigate
-                   class="sidebar-link font-bold {{ request()->routeIs('home') ? 'active' : '' }}">
-                    <x-lucide-house class="w-4 h-4"/>
-                    <span class="ps-2">Dashboard</span>
+                   class="sidebar-link text-gray-600 font-bold {{ request()->routeIs('home') ? 'active' : '' }}">
+                    <x-lucide-house class="w-4 h-4 text-slate-600"/>
+                    <span>Dashboard</span>
                 </a>
             </li>
 
             <li class="sidebar-item">
                 <a href="{{ route('categories.index') }}" wire:navigate
-                   class="sidebar-link font-bold {{ request()->routeIs('categories.index') ? 'active' : '' }}">
-                    <x-lucide-layout-grid class="w-4 h-4"/>
-                    <span class="ps-2">Categories</span>
+                   class="sidebar-link text-gray-600 font-bold {{ request()->routeIs('categories.index') ? 'active' : '' }}">
+                    <x-lucide-layout-grid class="w-4 h-4 text-slate-600"/>
+                    <span>Categories</span>
                 </a>
             </li>
 

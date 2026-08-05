@@ -1,11 +1,9 @@
 @props([
     'id' => 'modal-' . uniqid(), // Unique modal ID
     'title' => null,
-    'size' => 'md', // sm, md, lg, xl, full
+    'size' => 'md', // sm, md, lg
     'headerHidden' => false,
     'mobileSheet' => true,
-    'staticBackdrop' => false,
-    'disableEscape' => false,
 ])
 
 @php
@@ -14,31 +12,20 @@
         'md' => '',
         'lg' => 'modal-lg',
         'xl' => 'modal-xl',
-        'full' => 'modal-full',
     ];
     $modalSizeClass = $sizes[$size] ?? '';
-
-    $backdropAttr = $staticBackdrop ? 'static' : 'true';
-    $keyboardAttr = $disableEscape ? 'false' : 'true';
 @endphp
 
     <!-- Bootstrap Modal -->
-<div @class(['modal fade', 'modal-mobile-sheet' => $mobileSheet])
-     id="{{ $id }}"
-     tabindex="-1"
-     aria-hidden="true"
-     data-bs-backdrop="{{ $backdropAttr }}"
-     data-bs-keyboard="{{ $keyboardAttr }}">
-    <div class="modal-dialog modal-dialog-scrollable {{ $modalSizeClass }}">
+<div @class(['modal fade', 'modal-mobile-sheet' => $mobileSheet]) id="{{ $id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog {{ $modalSizeClass }}">
         <div class="modal-content">
 
             @if(!$headerHidden)
                 <!-- Modal Header -->
                 <div class="modal-header py-2">
                     <h6 class="modal-title">{{ $title }}</h6>
-                    @unless($staticBackdrop)
-                        <button type="button" class="btn-close modal-close-button" data-bs-dismiss="modal" aria-label="Close"></button>
-                    @endunless
+                    <button type="button" class="btn-close" style="font-size: 12px;" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
             @endif
 

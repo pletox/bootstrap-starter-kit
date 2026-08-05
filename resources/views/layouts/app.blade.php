@@ -22,14 +22,14 @@
 </head>
 
 <body>
-<div class="wrapper sidebar-layout">
+<div class="wrapper">
     @include('layouts.partials._sidebar')
 
     <div class="main">
 
         @include('layouts.partials._navbar')
 
-        <main class="content app-page-content py-3">
+        <main class="content px-3 py-3">
             @yield('content')
         </main>
 
