@@ -1,4 +1,4 @@
-<x-card class="h-100" body-class="px-0 pb-0">
+<x-card class="h-100 erp-dashboard-card" body-class="px-0 pb-0">
     <x-slot:header>
         <div class="d-flex align-items-center justify-content-between gap-3">
             <h5 class="card-title mb-0">Quick Links</h5>

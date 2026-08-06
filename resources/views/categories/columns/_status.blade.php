@@ -1,3 +1,3 @@
-<x-badge :color="$category->active ? 'success' : 'warning'" size="sm">
+<span class="table-status-badge {{ $category->active ? 'is-active' : 'is-inactive' }}">
     {{ $category->active ? 'Active' : 'Inactive' }}
-</x-badge>
+</span>

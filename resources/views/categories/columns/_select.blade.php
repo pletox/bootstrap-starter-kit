@@ -1,1 +1,1 @@
-<input type="checkbox" class="row-select" value="{{ $category->id }}">
+<input type="checkbox" class="form-check-input row-select category-row-checkbox" value="{{ $category->id }}">

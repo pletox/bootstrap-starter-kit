@@ -5,10 +5,16 @@
     'link' => null,
     'disabled' => false,
     'loading' => false,
-     'id' => null,
+    'id' => null,
+    'responsive' => false,
+    'icon' => null,
+    'iconPosition' => 'left',
+    'iconClass' => 'w-4 h-4',
 ])
 
 @php
+    use Illuminate\Support\Str;
+
     $sizeClass = match($size) {
         'sm' => 'btn-sm',
         'lg' => 'btn-lg',
@@ -17,29 +23,58 @@
 
     $colorClass = 'btn-' . $color;
 
-      $buttonId = $id ?? Str::random(10);
+    $buttonId = $id ?? Str::random(10);
+
+    $iconRaw = $icon ? trim($icon) : null;
+    $iconComponent = null;
+
+    if ($iconRaw) {
+        $iconComponent = Str::startsWith($iconRaw, 'lucide-')
+            ? $iconRaw
+            : 'lucide-' . $iconRaw;
+    }
+
+    $baseClasses = "btn $colorClass $sizeClass d-inline-flex align-items-center justify-content-center gap-2";
+
+    $iconHtml = null;
+    if ($iconComponent) {
+        $iconHtml = view('components.dynamic-component', [
+            'component' => $iconComponent,
+            'attributes' => new \Illuminate\View\ComponentAttributeBag(['class' => $iconClass]),
+        ])->render();
+    }
 @endphp
 
 @if($link)
     <a href="{{ $link }}" id="{{ $buttonId }}"
-        {{ $attributes->merge(['class' => "btn $colorClass $sizeClass d-flex align-items-center justify-content-center gap-2"]) }}>
+        {{ $attributes->merge(['class' => $baseClasses . ($loading ? ' is-loading' : '')]) }}>
         @if($loading)
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         @endif
-        <span class="button-text d-flex align-items-center gap-1">{{ $slot }}</span>
+
+        @if($iconHtml && $iconPosition === 'left' && ! $loading)
+            {!! $iconHtml !!}
+        @endif
+
+        <span class="button-text @if($responsive) d-none d-md-inline-flex @else d-inline-flex @endif align-items-center gap-1">{{ $slot }}</span>
+
+        @if($iconHtml && $iconPosition === 'right' && ! $loading)
+            {!! $iconHtml !!}
+        @endif
     </a>
 @else
     <button
         type="{{ $type }}"
         id="{{ $buttonId }}"
         x-data="{ loading: @json($loading) }"
+        :class="{ 'is-loading': loading }"
         x-init="
           let form = $el.closest('form');
             if (form) {
                 form.addEventListener('submit', (event) => {
-                    let submitButton = event.submitter; // Gets the clicked submit button
+                    let submitButton = event.submitter;
                     if (submitButton === $el) {
-                        loading = true; // Apply loading only to this button
+                        loading = true;
                     }
                 });
 
@@ -49,29 +84,34 @@
                 });
             }
 
-            // Detect AJAX request completion (for jQuery-based AJAX forms)
             document.addEventListener('ajaxComplete', function(event) {
                 loading = false;
             });
 
-          // Ensure each button listens for updates
-            window.addEventListener('button-loading', (event) => {
+            const syncLoadingState = (event) => {
                 $nextTick(() => {
                     if (event.detail.id === '{{ $buttonId }}') {
                         loading = event.detail.state;
                     }
                 });
-            });
+            };
 
-            // Detect Livewire request completion
-            document.addEventListener('livewire:load', () => {
-                Livewire.hook('message.processed', () => loading = false);
-            });
+            window.addEventListener('button-loading', syncLoadingState);
+            window.addEventListener('pletox:button-loading', syncLoadingState);
         "
         :disabled="loading || {{ $disabled ? 'true' : 'false' }}"
-        {{ $attributes->merge(['class' => "btn $colorClass $sizeClass d-flex align-items-center justify-content-center gap-2"]) }}>
+        {{ $attributes->merge(['class' => $baseClasses]) }}>
 
-        <span x-cloak x-show="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        <span class="button-text d-flex align-items-center gap-1">{{ $slot }}</span>
+        <span x-cloak x-show="loading" class="button-loader spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+
+        @if($iconHtml && $iconPosition === 'left')
+            <span x-cloak x-show="!loading" class="button-icon d-inline-flex">{!! $iconHtml !!}</span>
+        @endif
+
+        <span class="button-text @if($responsive) d-none d-md-inline-flex @else d-inline-flex @endif align-items-center gap-1">{{ $slot }}</span>
+
+        @if($iconHtml && $iconPosition === 'right')
+            <span x-cloak x-show="!loading" class="button-icon d-inline-flex">{!! $iconHtml !!}</span>
+        @endif
     </button>
 @endif

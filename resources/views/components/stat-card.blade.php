@@ -5,26 +5,30 @@
     'iconClass' => 'w-5 h-5 text-slate-600',
     'iconBg' => 'bg-gray-100',
     'valueClass' => 'h4',
+    'subtitle' => null,
+    'tone' => 'default',
     'loading' => false,
 ])
 
-<x-card {{ $attributes->merge(['class' => 'h-100 jp-stat-card']) }}>
-    <div class="d-flex align-items-center justify-content-between">
-        <div>
-            <p class="text-muted text-sm mb-1">{{ $label }}</p>
-
-            @if($loading)
-                <h3 class="mb-0 d-none" data-counter-value></h3>
-                <div class="line-loader mt-3" data-counter-loader aria-hidden="true"></div>
-            @else
-                <h4 class="{{ $valueClass }} mb-0">{{ $value }}</h4>
-            @endif
-        </div>
-
+<x-card {{ $attributes->merge(['class' => 'h-100 jp-stat-card jp-stat-card-' . $tone]) }} body-class="p-0">
+    <div class="jp-stat-card-grid">
         @if($icon)
-            <div class="d-flex align-items-center justify-content-center rounded {{ $iconBg }} w-10 h-10 jp-stat-card-icon">
+            <span class="jp-stat-card-icon {{ $iconBg }}">
                 <x-dynamic-component :component="$icon" class="{{ $iconClass }}"/>
-            </div>
+            </span>
+        @endif
+
+        <span class="jp-stat-card-label">{{ $label }}</span>
+
+        @if($loading)
+            <strong class="jp-stat-card-value d-none" data-counter-value></strong>
+            <div class="line-loader jp-stat-card-loader" data-counter-loader aria-hidden="true"></div>
+        @else
+            <strong class="jp-stat-card-value {{ $valueClass }}">{{ $value }}</strong>
+        @endif
+
+        @if($subtitle)
+            <small class="jp-stat-card-subtitle">{{ $subtitle }}</small>
         @endif
     </div>
 </x-card>
